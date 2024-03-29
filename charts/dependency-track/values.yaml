@@ -1,0 +1,101 @@
+---
+common:
+  nameOverride: ""
+  fullnameOverride: ""
+  image:
+    registry: docker.io
+    pullSecrets: []
+  secretKey:
+    # -- Whether the chart should generate a secret key upon deployment.
+    createSecret: false
+    # -- Use the secret key defined in an existing secret.
+    existingSecretName: ""
+
+apiServer:
+  annotations: {}
+  image:
+    repository: dependencytrack/apiserver
+    tag: ~
+    pullPolicy: IfNotPresent
+  command: []
+  args: []
+  resources:
+    requests:
+      cpu: "2"
+      memory: 5Gi
+    limits:
+      cpu: "4"
+      memory: 5Gi
+  persistentVolume:
+    enabled: false
+    className: ""
+    size: 5Gi
+  extraEnv: {}
+  extraEnvFrom: []
+  extraContainers: []
+  probes:
+    liveness:
+      failureThreshold: 3
+      initialDelaySeconds: 10
+      periodSeconds: 15
+      successThreshold: 1
+      timeoutSeconds: 5
+    readiness:
+      failureThreshold: 3
+      initialDelaySeconds: 10
+      periodSeconds: 15
+      successThreshold: 1
+      timeoutSeconds: 5
+  service:
+    type: ClusterIP
+    nodePort: ~
+  serviceMonitor:
+    enabled: false
+    namespace: monitoring
+    scrapeInternal: 15s
+    scrapeTimeout: 30s
+  ingress:
+    enabled: false
+    annotations: {}
+    hostname: "example.com"
+
+frontend:
+  replicaCount: 1
+  annotations: {}
+  image:
+    repository: dependencytrack/frontend
+    tag: 4.10.0
+    pullPolicy: IfNotPresent
+  command: []
+  args: []
+  resources:
+    requests:
+      cpu: 150m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 128Mi
+  extraEnv: {}
+  extraEnvFrom: []
+  extraContainers: []
+  probes:
+    liveness:
+      failureThreshold: 3
+      initialDelaySeconds: 5
+      periodSeconds: 15
+      successThreshold: 1
+      timeoutSeconds: 5
+    readiness:
+      failureThreshold: 3
+      initialDelaySeconds: 5
+      periodSeconds: 15
+      successThreshold: 1
+      timeoutSeconds: 5
+  service:
+    type: ClusterIP
+    nodePort: ~
+  ingress:
+    enabled: false
+    annotations: {}
+    hostname: "example.com"
+  apiBaseUrl: ""

@@ -1,0 +1,10 @@
+apiVersion: v2
+name: dependency-track
+version: 0.1.0
+type: application
+appVersion: 4.10.1
+home: https://github.com/DependencyTrack/dependency-track
+icon: https://avatars.githubusercontent.com/u/40258585
+maintainers:
+- name: nscuro
+  email: nscuro@protonmail.com

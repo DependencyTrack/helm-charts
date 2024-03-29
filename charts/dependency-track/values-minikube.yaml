@@ -1,0 +1,23 @@
+apiServer:
+  resources:
+    requests:
+      cpu: "2"
+      memory: "2Gi"
+    limits:
+      cpu: "4"
+      memory: "2Gi"
+  persistentVolume:
+    enabled: true
+    className: "standard"
+  service:
+    type: NodePort
+    nodePort: 30080
+  extraEnv:
+    EXTRA_JAVA_OPTIONS: "-Xmx2g"
+    SYSTEM_REQUIREMENT_CHECK_ENABLED: "false"
+
+frontend:
+  service:
+    type: NodePort
+    nodePort: 30081
+  apiBaseUrl: "http://localhost:30080"

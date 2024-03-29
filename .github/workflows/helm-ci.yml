@@ -1,0 +1,57 @@
+name: Helm CI
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+    paths:
+    - charts/**
+
+permissions: { }
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
+    - name: Set up Helm
+      uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 # tag=v3.5
+    - name: Set up Python
+      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # tag=v5.0.0
+      with:
+        python-version: "3.11"
+        check-latest: true
+    - name: Set up Chart Testing
+      uses: helm/chart-testing-action@e6669bcd63d7cb57cb4380c33043eebe5d111992 # tag=v2.6.1
+    - name: Lint Chart
+      run: |-
+        ct lint
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
+    - name: Set up Helm
+      uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 # tag=v3.5
+    - name: Set up Python
+      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # tag=v5.0.0
+      with:
+        python-version: "3.11"
+        check-latest: true
+    - name: Set up Chart Testing
+      uses: helm/chart-testing-action@e6669bcd63d7cb57cb4380c33043eebe5d111992 # tag=v2.6.1
+    - name: Create Kind Cluster
+      uses: helm/kind-action@dda0770415bac9fc20092cacbc54aa298604d140 # tag=v1.8.0
+    - name: Lint
+      run: ct lint
+    - name: Test
+      run: ct install --debug

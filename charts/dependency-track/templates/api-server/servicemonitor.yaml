@@ -1,0 +1,21 @@
+{{- if .Values.apiServer.serviceMonitor.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "dependencytrack.apiServerFullname" . }}
+  namespace: {{ .Values.apiServer.serviceMonitor.namespace }}
+  labels: {{- include "dependencytrack.apiServerLabels" . | nindent 4 }}
+spec:
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels: {{- include "dependencytrack.apiServerSelectorLabels" . | nindent 6 }}
+  jobLabel: {{ include "dependencytrack.apiServerFullname" . }}
+  endpoints:
+  - port: web
+    path: /metrics
+    interval: {{ .Values.apiServer.serviceMonitor.scrapeInternal }}
+    timeout: {{ .Values.apiServer.serviceMonitor.scrapeTimeout }}
+{{- end }}

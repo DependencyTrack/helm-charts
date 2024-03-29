@@ -1,0 +1,17 @@
+common:
+  secretKey:
+    createSecret: true
+
+apiServer:
+  resources:
+    requests:
+      cpu: "1"
+      memory: "512Mi"
+    limits:
+      cpu: "2"
+      memory: "512Mi"
+  persistentVolume:
+    enabled: true
+    size: "128Mi"
+  extraEnv:
+    SYSTEM_REQUIREMENT_CHECK_ENABLED: "false"

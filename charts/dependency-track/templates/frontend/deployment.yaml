@@ -23,6 +23,15 @@ spec:
       - name: {{ include "dependencytrack.frontendName" . }}
         image: {{ include "dependencytrack.frontendImage" . }}
         imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
         {{- with .Values.frontend.command }}
         command: {{ toYaml . | nindent 8 }}
         {{- end }}
@@ -45,6 +54,9 @@ spec:
         - name: web
           containerPort: 8080
           protocol: TCP
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
         livenessProbe:
           httpGet:
             scheme: HTTP
@@ -68,3 +80,6 @@ spec:
       {{- if .Values.apiServer.extraContainers }}
       {{- toYaml .Values.apiServer.extraContainers | nindent 6 }}
       {{- end }}
+      volumes:
+      - name: tmp
+        emptyDir: { }

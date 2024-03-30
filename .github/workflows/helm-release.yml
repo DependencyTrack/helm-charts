@@ -1,0 +1,32 @@
+name: Helm Release
+
+on:
+  # TODO: Consider triggering for pushes to main.
+  workflow_dispatch: { }
+
+permissions: { }
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
+      with:
+        fetch-depth: "0"
+    - name: Configure Git
+      run: |
+        git config user.name "$GITHUB_ACTOR"
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+    - name: Set up Helm
+      uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 # tag=v3.5
+    - name: Release Chart
+      uses: helm/chart-releaser-action@a917fd15b20e8b64b94d9158ad54cd6345335584 # tag=v1.6.0
+      env:
+        CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      with:
+        skip_existing: true

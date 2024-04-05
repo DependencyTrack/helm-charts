@@ -1,6 +1,6 @@
 apiVersion: v2
 name: dependency-track
-version: 0.1.0
+version: 0.1.1
 type: application
 appVersion: 4.10.1
 home: https://github.com/DependencyTrack/dependency-track

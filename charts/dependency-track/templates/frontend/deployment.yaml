@@ -29,7 +29,7 @@ spec:
             drop:
             - ALL
           runAsNonRoot: true
-          readOnlyRootFilesystem: true
+          readOnlyRootFilesystem: false # RO filesystems are not supported by the frontend
           seccompProfile:
             type: RuntimeDefault
         {{- with .Values.frontend.command }}

@@ -1,0 +1,44 @@
+name: Helm Docs
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/**
+    - charts/**
+  workflow_dispatch: { }
+
+permissions: { }
+
+jobs:
+  update-docs:
+    name: Update Docs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # tag=v4.1.2
+    - name: Setup Go
+      uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491 # tag=v5.0.0
+      with:
+        go-version: "1.22"
+        check-latest: true
+    - name: Install helm-docs
+      run: go install -v github.com/norwoodj/helm-docs/cmd/helm-docs@v1.13.1
+    - name: Run helm-docs
+      run: helm-docs
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@70a41aba780001da0a30141984ae2a0c95d8704e # tag=v6.0.2
+      with:
+        add-paths: "charts/*/README.md"
+        branch: update-helm-docs
+        body: "Updates Helm chart documentation using [helm-docs](https://github.com/norwoodj/helm-docs)"
+        commit-message: Update helm docs
+        delete-branch: true
+        labels: documentation
+        signoff: true
+        title: Update helm docs

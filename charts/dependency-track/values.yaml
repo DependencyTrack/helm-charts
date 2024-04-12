@@ -120,5 +120,18 @@ frontend:
 
 ingress:
   enabled: false
+  selfSigned: false
+  pathType: ImplementationSpecific
+  apiVersion: ""
+  hostname: dependency-track.local.gd
+  path: /
   annotations: {}
   hostname: "example.com"
+  ingressClassName: ""
+  tls: false
+  tlsWwwPrefix: false
+  extraHosts: []
+  extraPaths: []
+  extraTls: []
+  secrets: []
+  extraRules: []

@@ -55,7 +55,7 @@ spec:
         envFrom: {{ toYaml . | nindent 8 }}
         {{- end }}
         ports:
-        - name: web
+        - name: http
           containerPort: 8080
           protocol: TCP
         volumeMounts:
@@ -64,7 +64,7 @@ spec:
         livenessProbe:
           httpGet:
             scheme: HTTP
-            port: web
+            port: http
             path: /
           failureThreshold: {{ .Values.frontend.probes.liveness.failureThreshold }}
           initialDelaySeconds: {{ .Values.frontend.probes.liveness.initialDelaySeconds }}
@@ -74,7 +74,7 @@ spec:
         readinessProbe:
           httpGet:
             scheme: HTTP
-            port: web
+            port: http
             path: /
           failureThreshold: {{ .Values.frontend.probes.readiness.failureThreshold }}
           initialDelaySeconds: {{ .Values.frontend.probes.readiness.initialDelaySeconds }}

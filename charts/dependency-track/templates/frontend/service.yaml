@@ -12,9 +12,9 @@ metadata:
 spec:
   type: {{ .Values.frontend.service.type | quote }}
   ports:
-  - name: web
+  - name: http
     port: 8080
-    targetPort: web
+    targetPort: http
     {{- with .Values.frontend.service.nodePort }}
     nodePort: {{ . }}
     {{- end }}

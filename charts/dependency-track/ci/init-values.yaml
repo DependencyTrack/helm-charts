@@ -31,3 +31,4 @@ apiServer:
         runAsUser: 0
         seccompProfile:
           type: RuntimeDefault
+

@@ -1,11 +1,9 @@
 name: Helm Release
 
 on:
-  push:
-    branches:
-      - main
+  # TODO: Consider triggering for pushes to main.
+  workflow_dispatch: { }
 
-      
 permissions: { }
 
 jobs:

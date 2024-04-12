@@ -1,18 +1,24 @@
-{{- if .Values.frontend.ingress.enabled }}
+{{- if .Values.ingress.enabled -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "dependencytrack.frontendFullname" . }}
+  name: {{ include "dependencytrack.fullname" . }}
   namespace: {{ .Release.Namespace }}
-  labels: {{- include "dependencytrack.frontendLabels" . | nindent 4 }}
-  {{- with .Values.frontend.ingress.annotations }}
+  {{- with .Values.ingress.annotations }}
   annotations: {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   rules:
-  - host: {{ .Values.frontend.ingress.hostname | quote }}
+  - host: {{ .Values.ingress.hostname | quote }}
     http:
       paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "dependencytrack.apiServerFullname" . }}
+            port:
+              name: web
       - path: /
         pathType: Prefix
         backend:

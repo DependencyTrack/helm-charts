@@ -19,6 +19,10 @@ spec:
       {{- with .Values.common.image.pullSecrets }}
       imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
+      initContainers:
+      {{- if .Values.frontend.initContainers }}
+      {{- toYaml .Values.frontend.initContainers | nindent 6 }}
+      {{- end }}
       containers:
       - name: {{ include "dependencytrack.frontendName" . }}
         image: {{ include "dependencytrack.frontendImage" . }}
@@ -42,7 +46,7 @@ spec:
           {{- toYaml .Values.frontend.resources | nindent 10 }}
         env:
         - name: API_BASE_URL
-          value: {{ .Values.frontend.apiBaseUrl | quote }}
+          value: {{ default .Values.frontend.apiBaseUrl .Values.ingress.hostname | quote }}
         {{- range $k, $v := .Values.frontend.extraEnv }}
         - name: {{ $k }}
           value: {{ $v | quote }}
@@ -77,8 +81,12 @@ spec:
           periodSeconds: {{ .Values.frontend.probes.readiness.periodSeconds }}
           successThreshold: {{ .Values.frontend.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.frontend.probes.readiness.timeoutSeconds }}
-      {{- if .Values.apiServer.extraContainers }}
-      {{- toYaml .Values.apiServer.extraContainers | nindent 6 }}
+      {{- if .Values.frontend.extraContainers }}
+      {{- toYaml .Values.frontend.extraContainers | nindent 6 }}
+      {{- end }}
+      {{- if .Values.apiServer.tolerations }}
+      tolerations:
+      {{- toYaml .Values.apiServer.tolerations | nindent 8 }}
       {{- end }}
       volumes:
       - name: tmp

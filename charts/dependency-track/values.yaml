@@ -33,6 +33,7 @@ apiServer:
   extraEnv: {}
   extraEnvFrom: []
   extraContainers: []
+  tolerations: []
   probes:
     liveness:
       failureThreshold: 3
@@ -49,15 +50,33 @@ apiServer:
   service:
     type: ClusterIP
     nodePort: ~
+    annotations: {}
   serviceMonitor:
     enabled: false
     namespace: monitoring
     scrapeInternal: 15s
     scrapeTimeout: 30s
-  ingress:
-    enabled: false
-    annotations: {}
-    hostname: "example.com"
+  initContainers: []
+  # Use the following to fix permissions on the /data volume.
+  # initContainers:
+  #   - name: fix-permissions
+  #     image: docker.io/library/busybox
+  #     command:
+  #       - sh
+  #       - -c
+  #       - |
+  #         chown -R 1000:1000 /data
+  #     volumeMounts:
+  #       - name: data
+  #         mountPath: /data
+  #     securityContext:
+  #       capabilities:
+  #         add:
+  #         - CHOWN
+  #       runAsNonRoot: false
+  #       runAsUser: 0
+  #       seccompProfile:
+  #         type: RuntimeDefault
 
 frontend:
   replicaCount: 1
@@ -78,6 +97,7 @@ frontend:
   extraEnv: {}
   extraEnvFrom: []
   extraContainers: []
+  tolerations: []
   probes:
     liveness:
       failureThreshold: 3
@@ -94,8 +114,11 @@ frontend:
   service:
     type: ClusterIP
     nodePort: ~
-  ingress:
-    enabled: false
     annotations: {}
-    hostname: "example.com"
   apiBaseUrl: ""
+  initContainers: []
+
+ingress:
+  enabled: false
+  annotations: {}
+  hostname: "example.com"

@@ -1,6 +1,6 @@
 # dependency-track
 
-![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.10.1](https://img.shields.io/badge/AppVersion-4.10.1-informational?style=flat-square)
+![Version: 0.1.7](https://img.shields.io/badge/Version-0.1.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.10.1](https://img.shields.io/badge/AppVersion-4.10.1-informational?style=flat-square)
 
 Dependency-Track is an intelligent Component Analysis platform
 that allows organizations to identify and reduce risk in the software supply chain.
@@ -30,9 +30,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.image.pullPolicy | string | `"IfNotPresent"` |  |
 | apiServer.image.repository | string | `"dependencytrack/apiserver"` |  |
 | apiServer.image.tag | string | `nil` |  |
-| apiServer.ingress.annotations | object | `{}` |  |
-| apiServer.ingress.enabled | bool | `false` |  |
-| apiServer.ingress.hostname | string | `"example.com"` |  |
+| apiServer.initContainers | list | `[]` |  |
 | apiServer.persistentVolume.className | string | `""` |  |
 | apiServer.persistentVolume.enabled | bool | `false` |  |
 | apiServer.persistentVolume.size | string | `"5Gi"` |  |
@@ -50,12 +48,14 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.resources.limits.memory | string | `"5Gi"` |  |
 | apiServer.resources.requests.cpu | string | `"2"` |  |
 | apiServer.resources.requests.memory | string | `"5Gi"` |  |
+| apiServer.service.annotations | object | `{}` |  |
 | apiServer.service.nodePort | string | `nil` |  |
 | apiServer.service.type | string | `"ClusterIP"` |  |
 | apiServer.serviceMonitor.enabled | bool | `false` |  |
 | apiServer.serviceMonitor.namespace | string | `"monitoring"` |  |
 | apiServer.serviceMonitor.scrapeInternal | string | `"15s"` |  |
 | apiServer.serviceMonitor.scrapeTimeout | string | `"30s"` |  |
+| apiServer.tolerations | list | `[]` |  |
 | common.fullnameOverride | string | `""` |  |
 | common.image.pullSecrets | list | `[]` |  |
 | common.image.registry | string | `"docker.io"` |  |
@@ -72,9 +72,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | frontend.image.pullPolicy | string | `"IfNotPresent"` |  |
 | frontend.image.repository | string | `"dependencytrack/frontend"` |  |
 | frontend.image.tag | string | `"4.10.0"` |  |
-| frontend.ingress.annotations | object | `{}` |  |
-| frontend.ingress.enabled | bool | `false` |  |
-| frontend.ingress.hostname | string | `"example.com"` |  |
+| frontend.initContainers | list | `[]` |  |
 | frontend.probes.liveness.failureThreshold | int | `3` |  |
 | frontend.probes.liveness.initialDelaySeconds | int | `5` |  |
 | frontend.probes.liveness.periodSeconds | int | `15` |  |
@@ -90,6 +88,11 @@ that allows organizations to identify and reduce risk in the software supply cha
 | frontend.resources.limits.memory | string | `"128Mi"` |  |
 | frontend.resources.requests.cpu | string | `"150m"` |  |
 | frontend.resources.requests.memory | string | `"64Mi"` |  |
+| frontend.service.annotations | object | `{}` |  |
 | frontend.service.nodePort | string | `nil` |  |
 | frontend.service.type | string | `"ClusterIP"` |  |
+| frontend.tolerations | list | `[]` |  |
+| ingress.annotations | object | `{}` |  |
+| ingress.enabled | bool | `false` |  |
+| ingress.hostname | string | `"example.com"` |  |
 

@@ -23,6 +23,10 @@ spec:
       {{- with .Values.common.image.pullSecrets }}
       imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
+      initContainers:
+      {{- if .Values.apiServer.initContainers }}
+      {{- toYaml .Values.apiServer.initContainers | nindent 6 }}
+      {{- end }}
       containers:
       - name: {{ include "dependencytrack.apiServerName" . }}
         image: {{ include "dependencytrack.apiServerImage" . }}
@@ -94,6 +98,10 @@ spec:
           timeoutSeconds: {{ .Values.apiServer.probes.readiness.timeoutSeconds }}
       {{- if .Values.apiServer.extraContainers }}
       {{- toYaml .Values.apiServer.extraContainers | nindent 6 }}
+      {{- end }}
+      {{- if .Values.apiServer.tolerations }}
+      tolerations:
+      {{- toYaml .Values.apiServer.tolerations | nindent 8 }}
       {{- end }}
       volumes:
       {{- if not .Values.apiServer.persistentVolume.enabled }}

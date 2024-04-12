@@ -14,3 +14,7 @@ maintainers:
 - name: nscuro
   email: nscuro@protonmail.com
   url: https://github.com/nscuro
+dependencies:
+- name: common
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: ^2.19.1

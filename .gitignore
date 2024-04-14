@@ -1,20 +1,38 @@
-# File created using '.gitignore Generator' for Visual Studio Code: https://bit.ly/vscode-gig
-# Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,linux,helm,jetbrains
-# Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,linux,helm,jetbrains
+##########################
+# Helm and related files #
+##########################
 
-### Helm ###
 # Chart dependencies
 **/charts/*.tgz
+
+##########################
+# OS and temporary files #
+##########################
+
+### Linux ###
+*~
+
+### Windows ###
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+# Folder config file
+[Dd]esktop.ini
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+####################
+# IDEs and editors #
+####################
 
 ### IntelliJ ###
 .idea/*
 !.idea/icon.svg
 
-### Linux ###
-*~
-
-# Linux trash folder which might appear on any partition or disk
-.Trash-*
 
 ### VisualStudioCode ###
 .vscode/*
@@ -26,21 +44,5 @@
 
 # Local History for Visual Studio Code
 .history/
-
-### VisualStudioCode Patch ###
-# Ignore all local history of files
 .history
-.ionide
 
-### Windows ###
-# Windows thumbnail cache files
-Thumbs.db
-Thumbs.db:encryptable
-ehthumbs.db
-ehthumbs_vista.db
-
-# Dump file
-*.stackdump
-
-# Folder config file
-[Dd]esktop.ini

@@ -29,4 +29,4 @@ jobs:
       env:
         CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       with:
-        skip_existing: true
+        config: cr.yaml

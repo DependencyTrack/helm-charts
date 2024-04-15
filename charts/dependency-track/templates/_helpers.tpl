@@ -167,6 +167,20 @@ Params:
 {{- printf "%s" $value -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return true if cert-manager required annotations for TLS signed
+certificates are set in the Ingress annotations
+Ref: https://cert-manager.io/docs/usage/ingress/#supported-annotations
+Usage:
+{{ include "dependencytrack.ingress.certManagerRequest" (dict "ANNOTATIONS" .Values.path.to.the.ingress.annotations) }}
+*/}}
+{{- define "dependencytrack.ingress.certManagerRequest" -}}
+{{ if or (hasKey .ANNOTATIONS "cert-manager.io/cluster-issuer") (hasKey .ANNOTATIONS "cert-manager.io/issuer") (hasKey .ANNOTATIONS "kubernetes.io/tls-acme") }}
+    {{- true -}}
+{{- end -}}
+{{- end -}}
+
 {{- /*
 
   dependencytrack.tpl.render - Renders a value that contains a template

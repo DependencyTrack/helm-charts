@@ -134,6 +134,39 @@ Frontend image
 {{- printf "%s-secret-key" (include "dependencytrack.fullname" .) -}}
 {{- end -}}
 {{- end -}}
+
+{{- /*
+Expand the name of the namespace
+*/ -}}
+{{- define "dependencytrack.namespace" -}}
+{{- default .Release.Namespace (include "!TPL" (dict "ROOT" . "VALUE" (get .Values "namespaceOverride" | default ""))) | trunc 63 | trimSuffix "-" -}}
+{{- end }}
+
+{{/*
+Reuses the value from an existing secret, otherwise sets its value to a default value.
+
+Usage:
+{{ include "dependencytrack.secrets.lookup" (dict "SECRET" "secret-name" "KEY" "keyName" "DEFAULTVALUE" .Values.myValue "ROOT" $) }}
+
+Params:
+  - SECRET - String - Required - Name of the 'Secret' resource where the password is stored.
+  - KEY - String - Required - Name of the key in the secret.
+  - DEFAULTVALUE - String - Required - The path to the validating value in the values.yaml, e.g: "mysql.password". Will pick first parameter with a defined value.
+  - ROOT - Context - Required - Parent context.
+
+*/}}
+{{- define "dependencytrack.secrets.lookup" -}}
+{{- $value := "" -}}
+{{- $secretData := (lookup "v1" "Secret" (include "dependencytrack.namespace" .ROOT) .SECRET).data -}}
+{{- if and $secretData (hasKey $secretData .KEY) -}}
+  {{- $value = index $secretData .KEY -}}
+{{- else if .DEFAULTVALUE -}}
+  {{- $value = .DEFAULTVALUE | toString | b64enc -}}
+{{- end -}}
+{{- if $value -}}
+{{- printf "%s" $value -}}
+{{- end -}}
+{{- end -}}
 {{- /*
 
   dependencytrack.tpl.render - Renders a value that contains a template

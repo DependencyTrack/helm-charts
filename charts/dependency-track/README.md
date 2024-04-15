@@ -17,12 +17,6 @@ that allows organizations to identify and reduce risk in the software supply cha
 
 * <https://github.com/DependencyTrack/helm-charts/tree/main/charts/dependency-track>
 
-## Requirements
-
-| Repository | Name | Version |
-|------------|------|---------|
-| oci://registry-1.docker.io/bitnamicharts | common | ^2.19.1 |
-
 ## Values
 
 | Key | Type | Default | Description |
@@ -62,12 +56,16 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.serviceMonitor.scrapeInternal | string | `"15s"` |  |
 | apiServer.serviceMonitor.scrapeTimeout | string | `"30s"` |  |
 | apiServer.tolerations | list | `[]` |  |
+| clusterDomain | string | `"cluster.local"` | The domain name used for the Kubernetes cluster. ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names |
 | common.fullnameOverride | string | `""` |  |
 | common.image.pullSecrets | list | `[]` |  |
 | common.image.registry | string | `"docker.io"` |  |
 | common.nameOverride | string | `""` |  |
 | common.secretKey.createSecret | bool | `false` | Whether the chart should generate a secret key upon deployment. |
 | common.secretKey.existingSecretName | string | `""` | Use the secret key defined in an existing secret. |
+| commonAnnotations | object | `{"test":"test"}` | Common annotations for all the resources created by the chart. |
+| commonLabels | object | `{}` | Common labels for all the resources created by the chart. |
+| extraDeploy | list | `[]` | additional Kubernetes resources that are not included in the main chart package. Each item in the list can be (string) or (object) |
 | frontend.annotations | object | `{}` |  |
 | frontend.apiBaseUrl | string | `""` |  |
 | frontend.args | list | `[]` |  |
@@ -99,15 +97,14 @@ that allows organizations to identify and reduce risk in the software supply cha
 | frontend.service.type | string | `"ClusterIP"` |  |
 | frontend.tolerations | list | `[]` |  |
 | ingress.annotations | object | `{}` | Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations. For a full list of possible ingress annotations. Use this parameter to set the required annotations for cert-manager, see ref: https://cert-manager.io/docs/usage/ingress/#supported-annotations |
-| ingress.apiVersion | string | `""` | Force Ingress API version (automatically detected if not set) |
+| ingress.apiPath | string | `"/api"` | The URL Path to **dependency-track** API. You may need to set this to `/*` in order to use this with ALB ingress controllers. |
 | ingress.enabled | bool | `false` | Set to true to enable ingress record generation |
-| ingress.extraHosts | list | `[]` | The list of additional hostnames to be covered with this ingress record. Most likely the hostname above will be enough, but in the event more hosts are needed, this is an array |
 | ingress.extraPaths | list | `[]` | Any additional arbitrary paths that may need to be added to the ingress under the main host. For example: The ALB ingress controller requires a special rule for handling SSL redirection. |
 | ingress.extraRules | list | `[]` | The list of additional rules to be added to this ingress record. Evaluated as a template. Useful when looking for additional customization, such as using different backend |
 | ingress.extraTls | list | `[]` | The tls configuration for additional hostnames to be covered with this ingress record. see: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls |
 | ingress.hostname | string | `"dependency-track.local.gd"` | Default host for the ingress resource |
 | ingress.ingressClassName | string | `""` | Set the ingerssClassName on the ingress record for k8s 1.18+ This is supported in **Kubernetes 1.18+** and required if you have more than one `IngressClass` marked as the `default` for your cluster. ref: https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/ |
-| ingress.path | string | `"/"` | The URL Path to **dependency-track**. You may need to set this to `/*` in order to use this with ALB ingress controllers. |
+| ingress.path | string | `"/"` | The URL Path to **dependency-track** frontend. You may need to set this to `/*` in order to use this with ALB ingress controllers. |
 | ingress.pathType | string | `"ImplementationSpecific"` | Ingress path type |
 | ingress.secrets | list | `[]` | If you're providing your own certificates, please use this to add the certificates as secrets key and certificate should start with `-----BEGIN CERTIFICATE-----` or `-----BEGIN RSA PRIVATE KEY-----` and name should line up with a `tlsSecret` set further up. If you're using **cert-manager**, this is unneeded, as it will create the **secret** for you if it is not set. It is also possible to create and manage the certificates outside of this helm chart. |
 | ingress.selfSigned | bool | `false` | Create a TLS secret for this ingress record using self-signed certificates generated by Helm |

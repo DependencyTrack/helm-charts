@@ -134,3 +134,62 @@ Frontend image
 {{- printf "%s-secret-key" (include "dependencytrack.fullname" .) -}}
 {{- end -}}
 {{- end -}}
+{{- /*
+
+  dependencytrack.tpl.render - Renders a value that contains a template
+
+  ALIAS: !TPL
+
+  This template takes a value that may contain a Helm template and renders it. It's useful for dynamic configuration
+  values that need to be evaluated during chart rendering. If the value is a empty, nothing is returned. If the value is
+  not a string, it converts it to a YAML string first. If the value doesn't contain a Helm template (identified by "{{"),
+  input value is passed and returned as-is. If a scope is provided, it prepares the scope before evaluating the
+  template. This is useful if you need to evaluate the template in a different context (with, range).
+
+  Arguments:
+  - ROOT: The root context. If not provided, a default empty dictionary is used.
+  - VALUE: The value that may contain a Helm template. This is the value that will be rendered.
+  - SCOPE: The scope within which to evaluate the template. If not provided, a default empty dictionary is used.
+
+  Example Usage:
+    {{ include "dependencytrack.tpl.render" (dict "ROOT" $ "VALUE" .Values.path.to.the.Value) }}
+    {{ include "!TPL" (dict "ROOT" $ "VALUE" .Values.path.to.the.Value) }}
+    {{ include "!TPL" (dict "ROOT" $ "VALUE" .Values.path.to.the.Value "SCOPE" .scope) }}
+
+*/ -}}
+{{- define "dependencytrack.tpl.render" -}}
+{{- /* Initialize arguments */ -}}
+{{- $ := .ROOT | default (dict) -}}
+{{- $SCOPE := .SCOPE | default (dict) -}}
+{{- $VALUE := .VALUE -}}
+
+{{- /* Check, if $VALUE is NOT empty */ -}}
+{{- if $VALUE | empty | not -}}
+  {{- /* If $VALUE is NOT a string, convert it to YAML string first */ -}}
+  {{- $value := ternary $VALUE ($VALUE | toYaml) ($VALUE | typeIs "string") }}
+  {{- /* Initialize the $result */ -}}
+  {{- $result := "" -}}
+
+  {{- /* If $value contains "{{" (it's template), ... */ -}}
+  {{- /* NOTE: This avoids templating of values that are not templates for better performance */ -}}
+  {{- if contains "{{" (toJson $value) }}
+    {{- /* ... check, if $SCOPE is defined and ... */ -}}
+    {{- if $SCOPE | empty | not -}}
+        {{- /* ... prepare scope and then evaluate the template */ -}}
+        {{- $result = tpl (cat "{{- with $.RelativeScope -}}" $value "{{- end }}") (merge (dict "RelativeScope" $SCOPE) $) }}
+    {{- else }}
+      {{- /* ... evaluate the template */ -}}
+      {{- $result = tpl $value $ }}
+    {{- end }}
+  {{- else }}
+      {{- /* ... pass $value AS-IS */ -}}
+      {{- $result = $value }}
+  {{- end }}
+
+  {{- /* Return the result */ -}}
+  {{- $result -}}
+{{- end -}}
+{{- end -}}
+
+{{- /* ALIAS */ -}}
+{{- define "!TPL" }}{{- include "dependencytrack.tpl.render" . }}{{- end -}}

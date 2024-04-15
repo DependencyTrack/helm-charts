@@ -1,83 +1,75 @@
-{{- if .Values.ingress.enabled }}
-apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
+{{- if eq (.Values.ingress.enabled | toString) "true" }}
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "common.names.fullname" . }}
-  namespace: {{ include "common.names.namespace" . | quote }}
-  labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
-  {{- if or .Values.ingress.annotations .Values.commonAnnotations }}
-  {{- $annotations := include "common.tplvalues.merge" ( dict "values" ( list .Values.ingress.annotations .Values.commonAnnotations ) "context" . ) }}
-  annotations: {{- include "common.tplvalues.render" ( dict "value" $annotations "context" $) | nindent 4 }}
+  name: {{ include "dependencytrack.fullname" . }}
+  namespace: {{ include "dependencytrack.namespace" . | quote }}
+  labels: {{ include "dependencytrack.commonLabels" . | fromYaml | mustToJson }}
+  {{- if or (.Values.ingress.annotations | empty | not) (.Values.commonAnnotations | empty | not) }}
+  {{- $annotations := merge (.Values.ingress.annotations | default (dict) | deepCopy) (.Values.commonAnnotations | default (dict) | deepCopy) }}
+  annotations: {{ include "!TPL" ( dict "ROOT" $ "VALUE" $annotations) | fromYaml | mustToJson }}
   {{- end }}
 spec:
-  {{- if and .Values.ingress.ingressClassName (eq "true" (include "common.ingress.supportsIngressClassname" .)) }}
+  {{- if .Values.ingress.ingressClassName | empty | not }}
   ingressClassName: {{ .Values.ingress.ingressClassName | quote }}
   {{- end }}
   rules:
-    {{- if .Values.ingress.hostname }}
+    {{- if .Values.ingress.hostname | empty | not }}
     - host: {{ .Values.ingress.hostname | quote }}
-      http:
-        paths:
-          {{- if .Values.ingress.extraPaths }}
-          {{- toYaml .Values.ingress.extraPaths | nindent 10 }}
-          {{- end }}
-          - path: {{ default "/api" .apiPath }}
-            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
-            pathType: {{ default "ImplementationSpecific" .pathType }}
-            {{- end }}
-            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "dependencytrack.apiServerFullname" $) "servicePort" "http" "context" $) | nindent 14 }}
-          - path: {{ default "/" .path }}
-            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
-            pathType: {{ default "ImplementationSpecific" .pathType }}
-            {{- end }}
-            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "dependencytrack.frontendFullname" $) "servicePort" "http" "context" $) | nindent 14 }}
-    {{- else if .Values.ingress.path }}
+      paths:
+        {{- if .Values.ingress.extraPaths | empty | not }}
+        {{- toYaml .Values.ingress.extraPaths | nindent 10 }}
+        {{- end }}
+        - path: {{ .Values.ingress.apiPath | default "/api"  }}
+          pathType: {{ .Values.ingress.pathType | default "ImplementationSpecific" }}
+          backend:
+            service:
+              name: {{ include "dependencytrack.apiServerFullname" $ }}
+              port:
+                name: http
+        - path: {{ .Values.ingress.path | default "/" }}
+          pathType: {{ .Values.ingress.pathType | default "ImplementationSpecific" }}
+          backend:
+            service:
+              name: {{ include "dependencytrack.frontendFullname" $ }}
+              port:
+                name: http
+    {{- else }}
     - http:
         paths:
-          {{- if .Values.ingress.extraPaths }}
+          {{- if .Values.ingress.extraPaths | empty | not }}
           {{- toYaml .Values.ingress.extraPaths | nindent 10 }}
           {{- end }}
-          - path: {{ default "/api" .apiPath }}
-            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
-            pathType: {{ default "ImplementationSpecific" .pathType }}
-            {{- end }}
-            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "dependencytrack.apiServerFullname" $) "servicePort" "http" "context" $) | nindent 14 }}
-          - path: {{ default "/" .path }}
-            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
-            pathType: {{ default "ImplementationSpecific" .pathType }}
-            {{- end }}
-            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "dependencytrack.frontendFullname" $) "servicePort" "http" "context" $) | nindent 14 }}
+          - path: {{ .Values.ingress.apiPath | default "/api"  }}
+            pathType: {{ .Values.ingress.pathType | default "ImplementationSpecific" }}
+            backend:
+              service:
+                name: {{ include "dependencytrack.apiServerFullname" $ }}
+                port:
+                  name: http
+          - path: {{ .Values.ingress.path | default "/" }}
+            pathType: {{ .Values.ingress.pathType | default "ImplementationSpecific" }}
+            backend:
+              service:
+                name: {{ include "dependencytrack.frontendFullname" $ }}
+                port:
+                  name: http
     {{- end }}
-    {{- range .Values.ingress.extraHosts }}
-    - host: {{ .name | quote }}
-      http:
-        paths:
-          - path: {{ default "/api" .apiPath }}
-            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
-            pathType: {{ default "ImplementationSpecific" .pathType }}
-            {{- end }}
-            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "dependencytrack.apiServerFullname" $) "servicePort" "http" "context" $) | nindent 14 }}
-          - path: {{ default "/" .path }}
-            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
-            pathType: {{ default "ImplementationSpecific" .pathType }}
-            {{- end }}
-            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "dependencytrack.frontendFullname" $) "servicePort" "http" "context" $) | nindent 14 }}
+    {{- if .Values.ingress.extraRules | empty | not }}
+    {{- include "!TPL" (dict "ROOT" $ "VALUE" .Values.ingress.extraRules) | nindent 4 }}
     {{- end }}
-    {{- if .Values.ingress.extraRules }}
-    {{- include "common.tplvalues.render" (dict "value" .Values.ingress.extraRules "context" $) | nindent 4 }}
-    {{- end }}
-  {{- if or (and .Values.ingress.tls (or (include "common.ingress.certManagerRequest" ( dict "annotations" .Values.ingress.annotations )) .Values.ingress.selfSigned (not (empty .Values.ingress.secrets)))) .Values.ingress.extraTls }}
+  {{- if or (and .Values.ingress.tls (or (include "dependencytrack.ingress.certManagerRequest" ( dict "ANNOTATIONS" .Values.ingress.annotations )) .Values.ingress.selfSigned (not (empty .Values.ingress.secrets)))) .Values.ingress.extraTls }}
   tls:
-    {{- if and .Values.ingress.tls (or (include "common.ingress.certManagerRequest" ( dict "annotations" .Values.ingress.annotations )) .Values.ingress.selfSigned (not (empty .Values.ingress.secrets))) }}
+    {{- if and .Values.ingress.tls (or (include "dependencytrack.ingress.certManagerRequest" ( dict "ANNOTATIONS" .Values.ingress.annotations )) .Values.ingress.selfSigned (not (empty .Values.ingress.secrets))) }}
     - hosts:
         - {{ .Values.ingress.hostname | quote }}
-        {{- if or (.Values.ingress.tlsWwwPrefix) (eq (index .Values.ingress.annotations "nginx.ingress.kubernetes.io/from-to-www-redirect") "true" ) }}
-        - {{ printf "www.%s" (tpl .Values.ingress.hostname $) | quote }}
+        {{- if or (.Values.ingress.tlsWwwPrefix | empty | not) (eq (index .Values.ingress.annotations "nginx.ingress.kubernetes.io/from-to-www-redirect") "true" ) }}
+        - {{ printf "www.%s" (include "!TPL" (dict "ROOT" $ "VALUE" .Values.ingress.hostname)) | quote }}
         {{- end }}
       secretName: {{ printf "%s-tls" .Values.ingress.hostname }}
     {{- end }}
-    {{- if .Values.ingress.extraTls }}
-    {{- include "common.tplvalues.render" (dict "value" .Values.ingress.extraTls "context" $) | nindent 4 }}
+    {{- if .Values.ingress.extraTls | empty | not }}
+    {{- include "!TPL" (dict "ROOT" $ "VALUE" .Values.ingress.extraTls) | nindent 4 }}
     {{- end }}
   {{- end }}
 {{- end }}

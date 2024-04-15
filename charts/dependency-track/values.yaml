@@ -215,3 +215,22 @@ ingress:
   # -- The list of additional rules to be added to this ingress record. Evaluated as a template.
   # Useful when looking for additional customization, such as using different backend
   extraRules: []
+
+# -- (list) additional Kubernetes resources that are not included in the main chart package. Each item in the list can be (string) or (object)
+extraDeploy: []
+# - apiVersion: v1
+#   kind: ConfigMap
+#   metadata:
+#     name: {{ .Release.Name }}-config
+#     namespace: {{ .Release.Namespace }}
+#   data:
+#     key: value
+# - |-
+#   apiVersion: v1
+#   kind: Secret
+#   metadata:
+#     name: {{ .Release.Name }}-secret
+#     namespace: {{ .Release.Namespace }}
+#   stringData:
+#     username: user
+#     password: pass

@@ -1,3 +1,48 @@
-# IntelliJ
+##########################
+# Helm and related files #
+##########################
+
+# Chart dependencies
+**/charts/*.tgz
+
+##########################
+# OS and temporary files #
+##########################
+
+### Linux ###
+*~
+
+### Windows ###
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+# Folder config file
+[Dd]esktop.ini
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+####################
+# IDEs and editors #
+####################
+
+### IntelliJ ###
 .idea/*
 !.idea/icon.svg
+
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Local History for Visual Studio Code
+.history/
+.history
+

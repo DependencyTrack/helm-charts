@@ -1,29 +1,75 @@
-{{- if .Values.ingress.enabled -}}
+{{- if eq (.Values.ingress.enabled | toString) "true" }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "dependencytrack.fullname" . }}
-  namespace: {{ .Release.Namespace }}
-  {{- with .Values.ingress.annotations }}
-  annotations: {{- toYaml . | nindent 4 }}
+  namespace: {{ include "dependencytrack.namespace" . | quote }}
+  labels: {{ include "dependencytrack.commonLabels" . | fromYaml | mustToJson }}
+  {{- if or (.Values.ingress.annotations | empty | not) (.Values.commonAnnotations | empty | not) }}
+  {{- $annotations := merge (.Values.ingress.annotations | default (dict) | deepCopy) (.Values.commonAnnotations | default (dict) | deepCopy) }}
+  annotations: {{ include "!TPL" ( dict "ROOT" $ "VALUE" $annotations) | fromYaml | mustToJson }}
   {{- end }}
 spec:
+  {{- if .Values.ingress.ingressClassName | empty | not }}
+  ingressClassName: {{ .Values.ingress.ingressClassName | quote }}
+  {{- end }}
   rules:
-  - host: {{ .Values.ingress.hostname | quote }}
-    http:
+    {{- if .Values.ingress.hostname | empty | not }}
+    - host: {{ .Values.ingress.hostname | quote }}
       paths:
-      - path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ include "dependencytrack.apiServerFullname" . }}
-            port:
-              name: web
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ include "dependencytrack.frontendFullname" . }}
-            port:
-              name: web
+        {{- if .Values.ingress.extraPaths | empty | not }}
+        {{- toYaml .Values.ingress.extraPaths | nindent 10 }}
+        {{- end }}
+        - path: {{ .Values.ingress.apiPath | default "/api"  }}
+          pathType: {{ .Values.ingress.pathType | default "ImplementationSpecific" }}
+          backend:
+            service:
+              name: {{ include "dependencytrack.apiServerFullname" $ }}
+              port:
+                name: http
+        - path: {{ .Values.ingress.path | default "/" }}
+          pathType: {{ .Values.ingress.pathType | default "ImplementationSpecific" }}
+          backend:
+            service:
+              name: {{ include "dependencytrack.frontendFullname" $ }}
+              port:
+                name: http
+    {{- else }}
+    - http:
+        paths:
+          {{- if .Values.ingress.extraPaths | empty | not }}
+          {{- toYaml .Values.ingress.extraPaths | nindent 10 }}
+          {{- end }}
+          - path: {{ .Values.ingress.apiPath | default "/api"  }}
+            pathType: {{ .Values.ingress.pathType | default "ImplementationSpecific" }}
+            backend:
+              service:
+                name: {{ include "dependencytrack.apiServerFullname" $ }}
+                port:
+                  name: http
+          - path: {{ .Values.ingress.path | default "/" }}
+            pathType: {{ .Values.ingress.pathType | default "ImplementationSpecific" }}
+            backend:
+              service:
+                name: {{ include "dependencytrack.frontendFullname" $ }}
+                port:
+                  name: http
+    {{- end }}
+    {{- if .Values.ingress.extraRules | empty | not }}
+    {{- include "!TPL" (dict "ROOT" $ "VALUE" .Values.ingress.extraRules) | nindent 4 }}
+    {{- end }}
+  {{- if or (and .Values.ingress.tls (or (include "dependencytrack.ingress.certManagerRequest" ( dict "ANNOTATIONS" .Values.ingress.annotations )) .Values.ingress.selfSigned (not (empty .Values.ingress.secrets)))) .Values.ingress.extraTls }}
+  tls:
+    {{- if and .Values.ingress.tls (or (include "dependencytrack.ingress.certManagerRequest" ( dict "ANNOTATIONS" .Values.ingress.annotations )) .Values.ingress.selfSigned (not (empty .Values.ingress.secrets))) }}
+    - hosts:
+        - {{ .Values.ingress.hostname | quote }}
+        {{- if or (.Values.ingress.tlsWwwPrefix | empty | not) (eq (index .Values.ingress.annotations "nginx.ingress.kubernetes.io/from-to-www-redirect") "true" ) }}
+        - {{ printf "www.%s" (include "!TPL" (dict "ROOT" $ "VALUE" .Values.ingress.hostname)) | quote }}
+        {{- end }}
+      secretName: {{ printf "%s-tls" .Values.ingress.hostname }}
+    {{- end }}
+    {{- if .Values.ingress.extraTls | empty | not }}
+    {{- include "!TPL" (dict "ROOT" $ "VALUE" .Values.ingress.extraTls) | nindent 4 }}
+    {{- end }}
+  {{- end }}
 {{- end }}

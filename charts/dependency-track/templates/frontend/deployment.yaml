@@ -46,7 +46,7 @@ spec:
           {{- toYaml .Values.frontend.resources | nindent 10 }}
         env:
         - name: API_BASE_URL
-          value: {{ default .Values.frontend.apiBaseUrl .Values.ingress.hostname | quote }}
+          value: {{ .Values.frontend.apiBaseUrl | default "/" | quote }}
         {{- range $k, $v := .Values.frontend.extraEnv }}
         - name: {{ $k }}
           value: {{ $v | quote }}

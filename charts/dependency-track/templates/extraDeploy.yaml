@@ -1,5 +1,4 @@
-{{- /*
-This template is part of a Helm chart for deploying additional Kubernetes resources that are not
+{{- /*This template is part of a Helm chart for deploying additional Kubernetes resources that are not
 included in the main chart package. It is designed to extend the capabilities of the chart by
 allowing users to specify custom Kubernetes resources.
 
@@ -8,7 +7,7 @@ allowing users to specify custom Kubernetes resources.
 It is intended for use only when the Helm chart does not provide a way to configure the desired resource natively.
 
 How it works:
-- The template iterates over each item in `$.Values.extraDeploy` which is a list representing extra
+- The template iterates over each item in `$.Values.extraResources` which is a list representing extra
   Kubernetes resources.
 - Each resource (item of the list) is passed through the `dependencytrack.tpl.render` template.
 - The resultant YAML is parsed to ensure that it is valid. If not, the template fails with an error containing the
@@ -16,7 +15,7 @@ How it works:
 - If all checks pass, the item is rendered as YAML multi-document and printed to the output (passed to the Helm engine).
 
 Usage Notes:
-- Ensure that `$.Values.extraDeploy` is properly formatted as
+- Ensure that `$.Values.extraResources` is properly formatted as
 
   a) A list of dictionaries. Each dictionary represents a Kubernetes resource.
   b) A list of multiline strings (using `|-`). Each multiline string should be properly indented and will be converted to
@@ -27,15 +26,15 @@ Usage Notes:
 
   See examples below. Note that the indentation is important!
 
-- Each item of the `$.Values.extraDeploy` should represent a valid Kubernetes resource.
+- Each item of the `$.Values.extraResources` should represent a valid Kubernetes resource.
 - Each item can contain templating. (See examples below.) ⚠ IMPORTANT: Dictinary keys are not templated, only values are! If
   you need to template the keys, or if you need to use a complex template, use option b) above.
 
-Examples of a valid `$.Values.extraDeploy` structure:
+Examples of a valid `$.Values.extraResources` structure:
 
 Option a) combined with b):
 
-  extraDeploy:
+  extraResources:
     - apiVersion: v1
       kind: ConfigMap
       metadata:
@@ -75,8 +74,8 @@ Option a) combined with b):
 {{- /* Initialize the resultList */ -}}
 {{- $resultList := (list) -}}
 
-{{- /* Iterate over each value in the $.Values.extraDeploy */ -}}
-{{- range $i, $value := $.Values.extraDeploy }}
+{{- /* Iterate over each value in the $.Values.extraResources */ -}}
+{{- range $i, $value := $.Values.extraResources }}
   {{- /* Initialize the result */ -}}
   {{- $result := "" -}}
 
@@ -87,18 +86,18 @@ Option a) combined with b):
 
     {{- /* Check, if the $manifest has key "Error" (means that the input $value after rendering is not valid YAML) */ -}}
     {{- if hasKey $manifest "Error" -}}
-      {{- printf "$.Values.extraDeploy[%d]: Invalid YAML:\n\n%s\n" $i $source | fail -}}
+      {{- printf "$.Values.extraResources[%d]: Invalid YAML:\n\n%s\n" $i $source | fail -}}
     {{- end -}}
 
     {{- if any ($manifest.metadata.name | empty) ($manifest.kind | empty) ($manifest.apiVersion | empty) -}}
-      {{- printf "$.Values.extraDeploy[%d]: apiVersion, kind and metadata.name are required:\n\n%s\n" $i $source | fail -}}
+      {{- printf "$.Values.extraResources[%d]: apiVersion, kind and metadata.name are required:\n\n%s\n" $i $source | fail -}}
     {{- end -}}
 
     {{- /* Add the Kind and Name of the $manifest for easier identification */ -}}
     {{- $result = printf "%s# KIND: %s\n" $result $manifest.kind -}}
     {{- $result = printf "%s# NAME: %s\n" $result $manifest.metadata.name -}}
-    {{- /* Add the reference to $.Values.extraDeploy for easier debugging (in case of error) */ -}}
-    {{- $result = printf "%s# ORIGIN: $.Values.extraDeploy[%d]\n" $result $i -}}
+    {{- /* Add the reference to $.Values.extraResources for easier debugging (in case of error) */ -}}
+    {{- $result = printf "%s# ORIGIN: $.Values.extraResources[%d]\n" $result $i -}}
 
     {{- /* Append the $manifest to the $result */ -}}
     {{- $result = print $result ($manifest | toYaml) -}}

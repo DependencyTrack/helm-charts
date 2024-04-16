@@ -217,7 +217,7 @@ ingress:
   extraRules: []
 
 # -- (list) additional Kubernetes resources that are not included in the main chart package. Each item in the list can be (string) or (object)
-extraDeploy: []
+extraResources: []
 # - apiVersion: v1
 #   kind: ConfigMap
 #   metadata:

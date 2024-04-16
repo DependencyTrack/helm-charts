@@ -65,7 +65,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | common.secretKey.existingSecretName | string | `""` | Use the secret key defined in an existing secret. |
 | commonAnnotations | object | `{"test":"test"}` | Common annotations for all the resources created by the chart. |
 | commonLabels | object | `{}` | Common labels for all the resources created by the chart. |
-| extraDeploy | list | `[]` | additional Kubernetes resources that are not included in the main chart package. Each item in the list can be (string) or (object) |
+| extraResources | list | `[]` | additional Kubernetes resources that are not included in the main chart package. Each item in the list can be (string) or (object) |
 | frontend.annotations | object | `{}` |  |
 | frontend.apiBaseUrl | string | `""` |  |
 | frontend.args | list | `[]` |  |

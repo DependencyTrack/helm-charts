@@ -16,24 +16,25 @@ spec:
   rules:
     {{- if .Values.ingress.hostname | empty | not }}
     - host: {{ .Values.ingress.hostname | quote }}
-      paths:
-        {{- if .Values.ingress.extraPaths | empty | not }}
-        {{- toYaml .Values.ingress.extraPaths | nindent 10 }}
-        {{- end }}
-        - path: {{ .Values.ingress.apiPath | default "/api"  }}
-          pathType: {{ .Values.ingress.pathType | default "ImplementationSpecific" }}
-          backend:
-            service:
-              name: {{ include "dependencytrack.apiServerFullname" $ }}
-              port:
-                name: http
-        - path: {{ .Values.ingress.path | default "/" }}
-          pathType: {{ .Values.ingress.pathType | default "ImplementationSpecific" }}
-          backend:
-            service:
-              name: {{ include "dependencytrack.frontendFullname" $ }}
-              port:
-                name: http
+        http:
+          paths:
+            {{- if .Values.ingress.extraPaths | empty | not }}
+            {{- toYaml .Values.ingress.extraPaths | nindent 10 }}
+            {{- end }}
+            - path: {{ .Values.ingress.apiPath | default "/api"  }}
+              pathType: {{ .Values.ingress.pathType | default "ImplementationSpecific" }}
+              backend:
+                service:
+                  name: {{ include "dependencytrack.apiServerFullname" $ }}
+                  port:
+                    name: http
+            - path: {{ .Values.ingress.path | default "/" }}
+              pathType: {{ .Values.ingress.pathType | default "ImplementationSpecific" }}
+              backend:
+                service:
+                  name: {{ include "dependencytrack.frontendFullname" $ }}
+                  port:
+                    name: http
     {{- else }}
     - http:
         paths:

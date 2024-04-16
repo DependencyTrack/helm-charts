@@ -117,13 +117,17 @@ spec:
       {{- end }}
   {{- if .Values.apiServer.persistentVolume.enabled }}
   volumeClaimTemplates:
-  - metadata:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
       name: data
     spec:
+      {{- if .Values.apiServer.persistentVolume.className | empty | not }}
       storageClassName: {{ .Values.apiServer.persistentVolume.className }}
+      {{- end }}
       resources:
         requests:
-          storage: {{ .Values.apiServer.persistentVolume.size }}
+          storage: {{ .Values.apiServer.persistentVolume.size | quote }}
       accessModes:
-      - ReadWriteOnce
+        - ReadWriteOnce
   {{- end }}

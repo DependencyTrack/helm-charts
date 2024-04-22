@@ -84,9 +84,9 @@ spec:
       {{- if .Values.frontend.extraContainers }}
       {{- toYaml .Values.frontend.extraContainers | nindent 6 }}
       {{- end }}
-      {{- if .Values.apiServer.tolerations }}
+      {{- if .Values.frontend.tolerations }}
       tolerations:
-      {{- toYaml .Values.apiServer.tolerations | nindent 8 }}
+      {{- toYaml .Values.frontend.tolerations | nindent 8 }}
       {{- end }}
       volumes:
       - name: tmp

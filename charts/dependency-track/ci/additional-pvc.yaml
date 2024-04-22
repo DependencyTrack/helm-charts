@@ -1,0 +1,28 @@
+common:
+  secretKey:
+    createSecret: true
+
+apiServer:
+  resources:
+    requests:
+      cpu: "1"
+      memory: "512Mi"
+    limits:
+      cpu: "2"
+      memory: "512Mi"
+  extraEnv:
+    SYSTEM_REQUIREMENT_CHECK_ENABLED: "false"
+  additionalVolumeMounts:
+    - name: foo
+      mountPath: /bar
+  additionalVolumes:
+    - name: foo
+      emptyDir: {}
+
+frontend:
+  additionalVolumeMounts:
+    - name: foo
+      mountPath: /bar
+  additionalVolumes:
+    - name: foo
+      emptyDir: {}

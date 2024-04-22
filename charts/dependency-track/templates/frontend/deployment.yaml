@@ -61,6 +61,9 @@ spec:
         volumeMounts:
         - name: tmp
           mountPath: /tmp
+        {{- if .Values.frontend.additionalVolumeMounts }}
+          {{- toYaml .Values.frontend.additionalVolumeMounts | nindent 8 }}
+        {{- end }}
         livenessProbe:
           httpGet:
             scheme: HTTP
@@ -91,3 +94,6 @@ spec:
       volumes:
       - name: tmp
         emptyDir: { }
+      {{- if .Values.frontend.additionalVolumes }}
+        {{- toYaml .Values.frontend.additionalVolumes | nindent 6 }}
+      {{- end }}

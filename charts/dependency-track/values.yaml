@@ -47,6 +47,13 @@ apiServer:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+  additionalVolumeMounts: []
+  #   - name: foo
+  #     mountPath: /bar
+  additionalVolumes:
+    []
+    # - name: foo
+    #   emptyDir: {}
   service:
     type: ClusterIP
     nodePort: ~
@@ -111,6 +118,14 @@ frontend:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+  additionalVolumeMounts:
+    []
+    # - name: foo
+    #   mountPath: /bar
+  additionalVolumes:
+    []
+    # - name: foo
+    #   emptyDir: {}
   service:
     type: ClusterIP
     nodePort: ~

@@ -76,6 +76,9 @@ spec:
           mountPath: /var/run/secrets/secret.key
           readOnly: true
         {{- end }}
+        {{- if .Values.apiServer.additionalVolumeMounts }}
+          {{- toYaml .Values.apiServer.additionalVolumeMounts | nindent 8 }}
+        {{- end }}
         livenessProbe:
           httpGet:
             scheme: HTTP
@@ -114,6 +117,9 @@ spec:
       - name: secret-key
         secret:
           secretName: {{ . }}
+      {{- end }}
+      {{- if .Values.apiServer.additionalVolumes }}
+        {{- toYaml .Values.apiServer.additionalVolumes | nindent 6 }}
       {{- end }}
   {{- if .Values.apiServer.persistentVolume.enabled }}
   volumeClaimTemplates:

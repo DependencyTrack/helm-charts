@@ -1,6 +1,6 @@
 # dependency-track
 
-![Version: 0.2.1](https://img.shields.io/badge/Version-0.2.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.10.1](https://img.shields.io/badge/AppVersion-4.10.1-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.10.1](https://img.shields.io/badge/AppVersion-4.10.1-informational?style=flat-square)
 
 Dependency-Track is an intelligent Component Analysis platform
 that allows organizations to identify and reduce risk in the software supply chain.
@@ -21,6 +21,8 @@ that allows organizations to identify and reduce risk in the software supply cha
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| apiServer.additionalVolumeMounts | list | `[]` |  |
+| apiServer.additionalVolumes | list | `[]` |  |
 | apiServer.annotations | object | `{}` |  |
 | apiServer.args | list | `[]` |  |
 | apiServer.command | list | `[]` |  |
@@ -63,6 +65,8 @@ that allows organizations to identify and reduce risk in the software supply cha
 | common.secretKey.createSecret | bool | `false` | Whether the chart should generate a secret key upon deployment. |
 | common.secretKey.existingSecretName | string | `""` | Use the secret key defined in an existing secret. |
 | extraObjects | list | `[]` | Create extra manifests via values. |
+| frontend.additionalVolumeMounts | list | `[]` |  |
+| frontend.additionalVolumes | list | `[]` |  |
 | frontend.annotations | object | `{}` |  |
 | frontend.apiBaseUrl | string | `""` |  |
 | frontend.args | list | `[]` |  |

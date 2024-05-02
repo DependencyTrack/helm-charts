@@ -64,6 +64,7 @@ apiServer:
     scrapeInternal: 15s
     scrapeTimeout: 30s
   initContainers: []
+  nodeSelector: {}
   # Use the following to fix permissions on the /data volume.
   # initContainers:
   #   - name: fix-permissions
@@ -132,6 +133,7 @@ frontend:
     annotations: {}
   apiBaseUrl: ""
   initContainers: []
+  nodeSelector: {}
 
 ingress:
   enabled: false
@@ -144,8 +146,7 @@ ingress:
   #      - example.com
 
 # -- Create extra manifests via values.
-extraObjects:
-  []
+extraObjects: []
   # - apiVersion: "kubernetes-client.io/v1"
   #   kind: ExternalSecret
   #   metadata:

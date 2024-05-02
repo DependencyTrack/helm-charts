@@ -91,6 +91,10 @@ spec:
       tolerations:
       {{- toYaml .Values.frontend.tolerations | nindent 8 }}
       {{- end }}
+      {{- if .Values.frontend.nodeSelector }}
+      nodeSelector:
+      {{- toYaml .Values.frontend.nodeSelector | nindent 8 }}
+      {{- end }}
       volumes:
       - name: tmp
         emptyDir: { }

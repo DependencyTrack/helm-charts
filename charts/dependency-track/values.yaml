@@ -91,7 +91,7 @@ frontend:
   annotations: {}
   image:
     repository: dependencytrack/frontend
-    tag: 4.10.0
+    tag: ~
     pullPolicy: IfNotPresent
   command: []
   args: []

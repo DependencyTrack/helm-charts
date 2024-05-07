@@ -1,6 +1,6 @@
 # dependency-track
 
-![Version: 0.3.1](https://img.shields.io/badge/Version-0.3.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.10.1](https://img.shields.io/badge/AppVersion-4.10.1-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.11.0](https://img.shields.io/badge/AppVersion-4.11.0-informational?style=flat-square)
 
 Dependency-Track is an intelligent Component Analysis platform
 that allows organizations to identify and reduce risk in the software supply chain.
@@ -77,7 +77,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | frontend.extraEnvFrom | list | `[]` |  |
 | frontend.image.pullPolicy | string | `"IfNotPresent"` |  |
 | frontend.image.repository | string | `"dependencytrack/frontend"` |  |
-| frontend.image.tag | string | `"4.10.0"` |  |
+| frontend.image.tag | string | `nil` |  |
 | frontend.initContainers | list | `[]` |  |
 | frontend.nodeSelector | object | `{}` |  |
 | frontend.probes.liveness.failureThreshold | int | `3` |  |

@@ -134,3 +134,16 @@ Frontend image
 {{- printf "%s-secret-key" (include "dependencytrack.fullname" .) -}}
 {{- end -}}
 {{- end -}}
+
+
+{{/*
+Create the name of the service account
+*/}}
+{{- define "dependencytrack.serviceAccountName" -}}
+{{- if .Values.common.serviceAccount.create }}
+{{- default (include "dependencytrack.fullname" .) .Values.common.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.common.serviceAccount.name }}
+{{- end }}
+{{- end }}
+

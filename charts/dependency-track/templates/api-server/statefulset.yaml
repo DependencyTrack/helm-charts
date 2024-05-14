@@ -27,6 +27,7 @@ spec:
       {{- if .Values.apiServer.initContainers }}
       {{- toYaml .Values.apiServer.initContainers | nindent 6 }}
       {{- end }}
+      serviceAccount: {{ include "dependencytrack.serviceAccountName" . }}
       containers:
       - name: {{ include "dependencytrack.apiServerName" . }}
         image: {{ include "dependencytrack.apiServerImage" . }}

@@ -23,6 +23,7 @@ spec:
       {{- if .Values.frontend.initContainers }}
       {{- toYaml .Values.frontend.initContainers | nindent 6 }}
       {{- end }}
+      serviceAccount: {{ include "dependencytrack.serviceAccountName" . }}
       containers:
       - name: {{ include "dependencytrack.frontendName" . }}
         image: {{ include "dependencytrack.frontendImage" . }}

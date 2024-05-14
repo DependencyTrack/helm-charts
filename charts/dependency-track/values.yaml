@@ -10,6 +10,14 @@ common:
     createSecret: false
     # -- Use the secret key defined in an existing secret.
     existingSecretName: ""
+  serviceAccount:
+    # -- Whether the chart should generate a serviceAccount
+    create: true
+    annotations: {}
+    # -- Use the name of the name of the release by default, or specify a custom name.
+    name: ""
+    # -- Whether the serviceAccount should mount the token.
+    automount: false
 
 apiServer:
   annotations: {}
@@ -146,7 +154,8 @@ ingress:
   #      - example.com
 
 # -- Create extra manifests via values.
-extraObjects: []
+extraObjects:
+  []
   # - apiVersion: "kubernetes-client.io/v1"
   #   kind: ExternalSecret
   #   metadata:

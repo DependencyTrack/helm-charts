@@ -7,7 +7,7 @@ metadata:
   labels: {{- include "dependencytrack.frontendLabels" . | nindent 4 }}
   {{- if .Values.frontend.service.annotations }}
   annotations:
-  {{ toYaml .Values.frontend.service.annotations | indent 4 }}
+  {{- .Values.frontend.service.annotations | toYaml | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.frontend.service.type | quote }}

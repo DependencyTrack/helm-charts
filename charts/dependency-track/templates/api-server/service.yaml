@@ -7,7 +7,7 @@ metadata:
   labels: {{- include "dependencytrack.apiServerLabels" . | nindent 4 }}
   {{- if .Values.apiServer.service.annotations }}
   annotations:
-  {{ toYaml .Values.apiServer.service.annotations | indent 4 }}
+  {{- toYaml .Values.apiServer.service.annotations | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .Values.apiServer.service.type | quote }}

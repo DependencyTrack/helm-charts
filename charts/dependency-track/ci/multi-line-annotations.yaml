@@ -1,0 +1,12 @@
+api-server:
+  service:
+    annotations:
+      foo: |
+        bar
+        naz
+frontend:
+  service:
+    annotations:
+      foo: |
+        bar
+        naz

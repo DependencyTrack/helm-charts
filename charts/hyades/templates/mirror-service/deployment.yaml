@@ -27,6 +27,15 @@ spec:
       - name: {{ include "hyades.mirrorServiceName" . }}
         image: {{ include "hyades.mirrorServiceImage" . }}
         imagePullPolicy: {{ .Values.mirrorService.image.pullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
         {{- with .Values.mirrorService.command }}
         command: {{ toYaml . | nindent 8 }}
         {{- end }}

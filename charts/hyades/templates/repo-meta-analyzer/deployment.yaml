@@ -26,6 +26,15 @@ spec:
       - name: {{ include "hyades.repoMetaAnalyzerName" . }}
         image: {{ include "hyades.repoMetaAnalyzerImage" . }}
         imagePullPolicy: {{ .Values.repoMetaAnalyzer.image.pullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
         {{- with .Values.repoMetaAnalyzer.command }}
         command: {{ toYaml . | nindent 8 }}
         {{- end }}

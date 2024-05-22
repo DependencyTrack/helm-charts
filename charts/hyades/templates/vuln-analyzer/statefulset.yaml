@@ -27,6 +27,15 @@ spec:
       - name: {{ include "hyades.vulnAnalyzerName" . }}
         image: {{ include "hyades.vulnAnalyzerImage" . }}
         imagePullPolicy: {{ .Values.vulnAnalyzer.image.pullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
         {{- with .Values.vulnAnalyzer.command }}
         command: {{ toYaml . | nindent 8 }}
         {{- end }}

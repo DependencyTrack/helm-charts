@@ -55,6 +55,9 @@ spec:
         - name: web
           containerPort: 8080
           protocol: TCP
+        volumeMounts:
+          - name: tmp
+            mountPath: /tmp
         livenessProbe:
           httpGet:
             scheme: HTTP
@@ -75,4 +78,7 @@ spec:
           periodSeconds: {{ .Values.frontend.probes.readiness.periodSeconds }}
           successThreshold: {{ .Values.frontend.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.frontend.probes.readiness.timeoutSeconds }}
+      volumes:
+        - name: tmp
+          emptyDir: { }
   {{- end }}

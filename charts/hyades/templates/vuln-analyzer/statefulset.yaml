@@ -80,6 +80,8 @@ spec:
         volumeMounts:
         - name: kafka-streams-state
           mountPath: /tmp/kafka-streams
+        - name: tmp
+          mountPath: /tmp
         livenessProbe:
           httpGet:
             scheme: HTTP
@@ -103,6 +105,8 @@ spec:
       {{- if not .Values.vulnAnalyzer.persistentVolume.enabled }}
       volumes:
       - name: kafka-streams-state
+        emptyDir: { }
+      - name: tmp
         emptyDir: { }
       {{- end }}
   {{- if .Values.vulnAnalyzer.persistentVolume.enabled }}

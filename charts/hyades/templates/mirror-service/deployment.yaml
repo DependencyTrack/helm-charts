@@ -62,6 +62,9 @@ spec:
         - name: web
           containerPort: 8093
           protocol: TCP
+        volumeMounts:
+          - name: tmp
+            mountPath: /tmp
         livenessProbe:
           httpGet:
             scheme: HTTP
@@ -82,4 +85,7 @@ spec:
           periodSeconds: {{ .Values.mirrorService.probes.readiness.periodSeconds }}
           successThreshold: {{ .Values.mirrorService.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.mirrorService.probes.readiness.timeoutSeconds }}
+      volumes:
+      - name: tmp
+        emptyDir: { }
   {{- end }}

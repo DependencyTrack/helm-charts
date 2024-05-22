@@ -50,6 +50,9 @@ apiServer:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+  additionalVolumeMounts: [ ]
+  additionalVolumes:
+    [ ]
   service:
     type: ClusterIP
     nodePort: ~
@@ -99,6 +102,9 @@ frontend:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+  additionalVolumeMounts: [ ]
+  additionalVolumes:
+    [ ]
   service:
     type: ClusterIP
     nodePort: ~
@@ -141,6 +147,9 @@ mirrorService:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+  additionalVolumeMounts: [ ]
+  additionalVolumes:
+    [ ]
 
 notificationPublisher:
   enabled: true
@@ -174,6 +183,9 @@ notificationPublisher:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+  additionalVolumeMounts: [ ]
+  additionalVolumes:
+    [ ]
 
 repoMetaAnalyzer:
   annotations: {}
@@ -206,6 +218,9 @@ repoMetaAnalyzer:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+  additionalVolumeMounts: [ ]
+  additionalVolumes:
+    [ ]
 
 vulnAnalyzer:
   annotations: {}
@@ -242,3 +257,6 @@ vulnAnalyzer:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+  additionalVolumeMounts: [ ]
+  additionalVolumes:
+    [ ]

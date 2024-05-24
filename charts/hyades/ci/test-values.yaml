@@ -29,6 +29,21 @@ extraObjects:
             - name: postgredb
               persistentVolumeClaim:
                 claimName: postgres-pv-claim
-#  - apiVersion: apps/v1
-#    kind: Deployment
+
+  - apiVersion: apps/v1
+    kind: Service
+    metadata:
+      name: postgres
+    spec:
+      selector:
+        app: postgres-container
+        tier: backend
+      ports:
+        - name: postgres
+          protocol: TCP
+          port: 5432
+          targetPort: 5432
+      
+  - apiVersion: apps/v1
+    kind: Deployment
     # TODO: Kafka

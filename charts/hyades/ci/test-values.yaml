@@ -36,8 +36,7 @@ extraObjects:
       name: postgres
     spec:
       selector:
-        app: postgres-container
-        tier: backend
+        app: postgres
       ports:
         - name: postgres
           protocol: TCP

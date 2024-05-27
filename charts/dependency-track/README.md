@@ -1,6 +1,6 @@
 # dependency-track
 
-![Version: 0.6.1](https://img.shields.io/badge/Version-0.6.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.11.1](https://img.shields.io/badge/AppVersion-4.11.1-informational?style=flat-square)
+![Version: 0.6.2](https://img.shields.io/badge/Version-0.6.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.11.1](https://img.shields.io/badge/AppVersion-4.11.1-informational?style=flat-square)
 
 Dependency-Track is an intelligent Component Analysis platform
 that allows organizations to identify and reduce risk in the software supply chain.

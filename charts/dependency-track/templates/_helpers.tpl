@@ -35,7 +35,6 @@ Common labels
 */}}
 {{- define "dependencytrack.commonLabels" -}}
 helm.sh/chart: {{ include "dependencytrack.chart" . }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/part-of: {{ include "dependencytrack.name" . }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
@@ -54,6 +53,7 @@ API server labels
 {{- define "dependencytrack.apiServerLabels" -}}
 {{ include "dependencytrack.commonLabels" . }}
 {{ include "dependencytrack.apiServerSelectorLabels" . }}
+app.kubernetes.io/version: {{ (.Values.apiServer.image.tag | default .Chart.AppVersion) | quote }}
 {{- end -}}
 
 {{/*
@@ -93,6 +93,7 @@ Frontend labels
 {{- define "dependencytrack.frontendLabels" -}}
 {{ include "dependencytrack.commonLabels" . }}
 {{ include "dependencytrack.frontendSelectorLabels" . }}
+app.kubernetes.io/version: {{ (.Values.frontend.image.tag | default .Chart.AppVersion) | quote }}
 {{- end -}}
 
 {{/*

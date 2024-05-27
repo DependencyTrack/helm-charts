@@ -1,2 +1,3 @@
 target-branch: main
 helm-extra-args: --timeout 60s
+check-version-increment: false

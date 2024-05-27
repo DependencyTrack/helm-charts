@@ -165,4 +165,3 @@ extraObjects:
   #     data:
   #       - key: secret-access-key
   #         name: awssm-secret
-

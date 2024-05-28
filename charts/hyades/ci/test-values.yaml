@@ -34,7 +34,6 @@ extraObjects:
     kind: Service
     metadata:
       name: postgres
-      namespace: {{.Release.Namespace}}
     spec:
       selector:
         app: postgres

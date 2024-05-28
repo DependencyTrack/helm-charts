@@ -45,3 +45,48 @@ extraObjects:
           port: 5432
           targetPort: 5432
       type: ClusterIP
+
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: kafka-connect
+      namespace: kafka
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app.kubernetes.io/component: connector
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/component: connector
+        spec:
+          containers:
+            - name: connect
+              image: KAFKA-CONNECT-IMAGE
+              imagePullPolicy: IfNotPresent
+              ports:
+                - name: connector
+                  containerPort: 8083
+              volumeMounts:
+                - name: configuration
+                  mountPath: /bitnami/kafka/config
+          volumes:
+            - name: configuration
+              configMap:
+                name: kafka-connect
+
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: kafka-connect
+      labels:
+        app.kubernetes.io/component: connector
+    spec:
+      type: NodePort
+      ports:
+        - protocol: TCP
+          port: 8083
+          targetPort: connector
+      selector:
+        app.kubernetes.io/component: connector

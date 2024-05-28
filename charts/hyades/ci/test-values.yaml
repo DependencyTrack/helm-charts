@@ -50,7 +50,6 @@ extraObjects:
     kind: Deployment
     metadata:
       name: kafka-connect
-      namespace: kafka
     spec:
       replicas: 1
       selector:

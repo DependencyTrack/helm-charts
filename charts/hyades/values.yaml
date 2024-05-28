@@ -6,9 +6,9 @@ common:
     registry: ghcr.io
     pullSecrets: []
   database:
-    jdbcUrl: ""
-    username: ""
-    password: ""
+    jdbcUrl: "jdbc:postgresql://postgres.test.svc.cluster.local:5432/dtrack"
+    username: "dtrack"
+    password: "dtrack"
   kafka:
     bootstrapServers: ""
     topicPrefix: ""
@@ -37,6 +37,10 @@ apiServer:
       memory: 8Gi
   extraEnv: {}
   extraEnvFrom: []
+  database:
+    jdbcUrl: "jdbc:postgresql://postgres.test.svc.cluster.local:5432/dtrack"
+    username: "dtrack"
+    password: "dtrack"
   probes:
     liveness:
       failureThreshold: 3
@@ -86,6 +90,10 @@ frontend:
       memory: 128Mi
   extraEnv: {}
   extraEnvFrom: []
+  database:
+    jdbcUrl: "jdbc:postgresql://postgres.test.svc.cluster.local:5432/dtrack"
+    username: "dtrack"
+    password: "dtrack"
   probes:
     liveness:
       failureThreshold: 3
@@ -128,6 +136,10 @@ mirrorService:
       memory: 2Gi
   extraEnv: {}
   extraEnvFrom: []
+  database:
+    jdbcUrl: "jdbc:postgresql://postgres.test.svc.cluster.local:5432/dtrack"
+    username: "dtrack"
+    password: "dtrack"
   probes:
     liveness:
       failureThreshold: 3
@@ -161,6 +173,10 @@ notificationPublisher:
       memory: 2Gi
   extraEnv: {}
   extraEnvFrom: []
+  database:
+    jdbcUrl: "jdbc:postgresql://postgres.test.svc.cluster.local:5432/dtrack"
+    username: "dtrack"
+    password: "dtrack"
   probes:
     liveness:
       failureThreshold: 3
@@ -193,6 +209,10 @@ repoMetaAnalyzer:
       memory: 2Gi
   extraEnv: {}
   extraEnvFrom: []
+  database:
+    jdbcUrl: "jdbc:postgresql://postgres.test.svc.cluster.local:5432/dtrack"
+    username: "dtrack"
+    password: "dtrack"
   probes:
     liveness:
       failureThreshold: 3
@@ -229,6 +249,10 @@ vulnAnalyzer:
     size: 2Gi
   extraEnv: {}
   extraEnvFrom: []
+  database:
+    jdbcUrl: "jdbc:postgresql://postgres.test.svc.cluster.local:5432/dtrack"
+    username: "dtrack"
+    password: "dtrack"
   probes:
     liveness:
       failureThreshold: 3

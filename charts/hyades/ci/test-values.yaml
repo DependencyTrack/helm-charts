@@ -3,7 +3,7 @@ extraObjects:
     kind: Deployment
     metadata:
       name: postgres
-      namespace: default
+      namespace: test
     spec:
       replicas: 1
       selector:
@@ -16,26 +16,23 @@ extraObjects:
         spec:
           containers:
             - name: postgres
-              image: postgres:10.1
+              image: postgres:16
               imagePullPolicy: "IfNotPresent"
               ports:
                 - containerPort: 5432
-              envFrom:
-                - configMapRef:
-                    name: postgres-config
-              volumeMounts:
-                - mountPath: /var/lib/postgresql/data
-                  name: postgredb
-          volumes:
-            - name: postgredb
-              persistentVolumeClaim:
-                claimName: postgres-pv-claim
+              env:
+                - name: POSTGRES_DB
+                  value: "dtrack"
+                - name: POSTGRES_USER
+                  value: "dtrack"
+                - name: POSTGRES_PASSWORD
+                  value: "dtrack"
 
   - apiVersion: v1
     kind: Service
     metadata:
       name: postgres
-      namespace: default
+      namespace: test
     spec:
       selector:
         app: postgres

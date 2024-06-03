@@ -8,6 +8,42 @@ common:
   secretKey:
     createSecret: true
 
+apiServer:
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: "2"
+      memory: 512Mi
+
+mirrorService:
+  resources:
+    requests:
+      cpu: 500m
+      memory: 256Mi
+    limits:
+      cpu: "2"
+      memory: 256Mi
+
+repoMetaAnalyzer:
+  resources:
+    requests:
+      cpu: 500m
+      memory: 256Mi
+    limits:
+      cpu: "2"
+      memory: 256Mi
+
+vulnAnalyzer:
+  resources:
+    requests:
+      cpu: 500m
+      memory: 256Mi
+    limits:
+      cpu: "2"
+      memory: 256Mi
+
 extraObjects:
 - apiVersion: apps/v1
   kind: Deployment
@@ -91,6 +127,8 @@ extraObjects:
           - '1'
           - --reserve-memory
           - 0M
+          - --memory
+          - 512M
           - --overprovisioned
           - --node-id
           - '0'

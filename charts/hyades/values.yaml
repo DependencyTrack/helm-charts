@@ -24,7 +24,7 @@ apiServer:
   annotations: {}
   image:
     repository: dependencytrack/hyades-apiserver
-    tag: latest
+    tag: 5.4.0
     pullPolicy: Always
   command: []
   args: []
@@ -115,7 +115,7 @@ mirrorService:
   annotations: {}
   image:
     repository: dependencytrack/hyades-mirror-service
-    tag: latest-native
+    tag: 0.4.0-native
     pullPolicy: Always
   command: []
   args: []
@@ -148,7 +148,7 @@ notificationPublisher:
   annotations: {}
   image:
     repository: dependencytrack/hyades-notification-publisher
-    tag: latest-native
+    tag: 0.4.0-native
     pullPolicy: Always
   command: []
   args: []
@@ -180,7 +180,7 @@ repoMetaAnalyzer:
   replicaCount: 1
   image:
     repository: dependencytrack/hyades-repository-meta-analyzer
-    tag: latest-native
+    tag: 0.4.0-native
     pullPolicy: Always
   command: []
   args: []
@@ -212,7 +212,7 @@ vulnAnalyzer:
   replicaCount: 1
   image:
     repository: dependencytrack/hyades-vulnerability-analyzer
-    tag: latest-native
+    tag: 0.4.0-native
     pullPolicy: Always
   command: []
   args: []

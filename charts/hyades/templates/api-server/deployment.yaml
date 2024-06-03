@@ -117,9 +117,9 @@ spec:
           timeoutSeconds: {{ .Values.apiServer.probes.readiness.timeoutSeconds }}
       volumes:
       - name: data
-        emptyDir: { }
+        emptyDir: {}
       - name: tmp
-        emptyDir: { }
+        emptyDir: {}
       {{- with (include "hyades.secretKeySecretName" .) }}
       - name: secret-key
         secret:

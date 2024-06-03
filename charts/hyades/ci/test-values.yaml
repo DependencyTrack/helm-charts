@@ -66,8 +66,7 @@ extraObjects:
       spec:
         containers:
         - name: postgres
-          image: postgres:16
-          imagePullPolicy: IfNotPresent
+          image: postgres:16-alpine
           env:
           - name: POSTGRES_DB
             value: dtrack
@@ -118,8 +117,7 @@ extraObjects:
       spec:
         containers:
         - name: redpanda
-          image: docker.redpanda.com/vectorized/redpanda:v23.3.13
-          imagePullPolicy: IfNotPresent
+          image: docker.redpanda.com/vectorized/redpanda:v23.3.16
           args:
           - redpanda
           - start
@@ -204,7 +202,7 @@ extraObjects:
       spec:
         containers:
         - name: redpanda
-          image: docker.redpanda.com/vectorized/redpanda:v23.3.13
+          image: docker.redpanda.com/vectorized/redpanda:v23.3.16
           command:
           - /bin/bash
           args:

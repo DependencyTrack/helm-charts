@@ -106,10 +106,10 @@ spec:
           timeoutSeconds: {{ .Values.vulnAnalyzer.probes.readiness.timeoutSeconds }}
       volumes:
       - name: tmp
-        emptyDir: { }
+        emptyDir: {}
       {{- if not .Values.vulnAnalyzer.persistentVolume.enabled }}
       - name: kafka-streams-state
-        emptyDir: { }
+        emptyDir: {}
       {{- end }}
   {{- if .Values.vulnAnalyzer.persistentVolume.enabled }}
   volumeClaimTemplates:

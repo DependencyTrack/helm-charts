@@ -10,7 +10,6 @@ common:
     createSecret: true
 
 apiServer:
-  enabled: true
   replicaCount: 1
   resources:
     requests:
@@ -24,8 +23,6 @@ apiServer:
     nodePort: 30080
   extraEnv:
     EXTRA_JAVA_OPTIONS: "-Xmx2g"
-    SYSTEM_REQUIREMENT_CHECK_ENABLED: "false"
-    KAFKA_NUM_STREAM_THREADS: "12"
 
 frontend:
   enabled: true

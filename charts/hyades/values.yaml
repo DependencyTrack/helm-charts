@@ -242,3 +242,14 @@ vulnAnalyzer:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+
+extraObjects: []
+  # - apiVersion: "kubernetes-client.io/v1"
+  #   kind: ExternalSecret
+  #   metadata:
+  #     name: tempo-secrets
+  #   spec:
+  #     backendType: aws
+  #     data:
+  #       - key: secret-access-key
+  #         name: awssm-secret

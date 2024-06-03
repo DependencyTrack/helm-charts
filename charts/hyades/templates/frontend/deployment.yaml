@@ -24,6 +24,15 @@ spec:
       - name: {{ include "hyades.frontendName" . }}
         image: {{ include "hyades.frontendImage" . }}
         imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          readOnlyRootFilesystem: false # RO filesystems are not supported by the frontend
+          seccompProfile:
+            type: RuntimeDefault
         {{- with .Values.frontend.command }}
         command: {{ toYaml . | nindent 8 }}
         {{- end }}

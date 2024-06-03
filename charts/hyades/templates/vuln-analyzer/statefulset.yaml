@@ -27,6 +27,15 @@ spec:
       - name: {{ include "hyades.vulnAnalyzerName" . }}
         image: {{ include "hyades.vulnAnalyzerImage" . }}
         imagePullPolicy: {{ .Values.vulnAnalyzer.image.pullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
         {{- with .Values.vulnAnalyzer.command }}
         command: {{ toYaml . | nindent 8 }}
         {{- end }}
@@ -53,6 +62,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: KAFKA_STREAMS_STATE_DIR
+          value: /var/lib/kafka-streams
         {{- with .Values.common.kafka.topicPrefix }}
         - name: KAFKA_TOPIC_PREFIX
           value: {{ . | quote }}
@@ -69,8 +80,10 @@ spec:
           containerPort: 8092
           protocol: TCP
         volumeMounts:
+        - name: tmp
+          mountPath: /tmp
         - name: kafka-streams-state
-          mountPath: /tmp/kafka-streams
+          mountPath: /var/lib/kafka-streams
         livenessProbe:
           httpGet:
             scheme: HTTP
@@ -91,8 +104,10 @@ spec:
           periodSeconds: {{ .Values.vulnAnalyzer.probes.readiness.periodSeconds }}
           successThreshold: {{ .Values.vulnAnalyzer.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.vulnAnalyzer.probes.readiness.timeoutSeconds }}
-      {{- if not .Values.vulnAnalyzer.persistentVolume.enabled }}
       volumes:
+      - name: tmp
+        emptyDir: { }
+      {{- if not .Values.vulnAnalyzer.persistentVolume.enabled }}
       - name: kafka-streams-state
         emptyDir: { }
       {{- end }}

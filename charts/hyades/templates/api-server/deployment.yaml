@@ -28,6 +28,15 @@ spec:
       - name: {{ include "hyades.apiServerName" . }}
         image: {{ include "hyades.apiServerImage" . }}
         imagePullPolicy: {{ .Values.apiServer.image.pullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
         {{- with .Values.apiServer.command }}
         command: {{ toYaml . | nindent 8 }}
         {{- end }}
@@ -45,7 +54,7 @@ spec:
         - name: ALPINE_DATABASE_MODE
           value: "external"
         - name: ALPINE_DATABASE_DRIVER
-          value: "org.postgresql.Driver" # TODO: Compute correct driver based on JDBC URL
+          value: "org.postgresql.Driver"
         {{- with .Values.common.database.jdbcUrl }}
         - name: ALPINE_DATABASE_URL
           value: {{ tpl . $ | quote }}

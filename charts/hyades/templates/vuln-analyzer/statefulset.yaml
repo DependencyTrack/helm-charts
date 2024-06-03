@@ -37,7 +37,7 @@ spec:
         env:
         {{- with .Values.common.database.jdbcUrl }}
         - name: QUARKUS_DATASOURCE_JDBC_URL
-          value: {{ . | quote }}
+          value: {{ tpl . $ | quote }}
         {{- end}}
         {{- with .Values.common.database.username }}
         - name: QUARKUS_DATASOURCE_USERNAME

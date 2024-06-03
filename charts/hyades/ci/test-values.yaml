@@ -1,0 +1,60 @@
+common:
+  database:
+    jdbcUrl: "jdbc:postgresql://postgres.{{ .Release.Namespace }}.svc.cluster.local:5432/dtrack"
+    username: dtrack
+    password: dtrack
+
+extraObjects:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: postgres
+    namespace: "{{ .Release.Namespace }}"
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        app.kubernetes.io/name: "{{ printf \"%s-postgres\" (include \"hyades.name\" .) }}"
+        app.kubernetes.io/component: postgres
+    template:
+      metadata:
+        labels:
+          app.kubernetes.io/instance: "{{ .Release.Name }}"
+          app.kubernetes.io/name: "{{ printf \"%s-postgres\" (include \"hyades.name\" .) }}"
+          app.kubernetes.io/component: postgres
+      spec:
+        containers:
+        - name: postgres
+          image: postgres:16
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: POSTGRES_DB
+            value: dtrack
+          - name: POSTGRES_USER
+            value: dtrack
+          - name: POSTGRES_PASSWORD
+            value: dtrack
+          ports:
+          - name: postgres
+            containerPort: 5432
+            protocol: TCP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: postgres
+    namespace: "{{ .Release.Namespace }}"
+    labels:
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+      app.kubernetes.io/name: "{{ printf \"%s-postgres\" (include \"hyades.name\" .) }}"
+      app.kubernetes.io/component: postgres
+  spec:
+    type: ClusterIP
+    selector:
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+      app.kubernetes.io/name: "{{ printf \"%s-postgres\" (include \"hyades.name\" .) }}"
+      app.kubernetes.io/component: postgres
+    ports:
+    - name: postgres
+      port: 5432
+      targetPort: postgres

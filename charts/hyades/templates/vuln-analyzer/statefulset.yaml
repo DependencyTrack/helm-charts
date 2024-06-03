@@ -48,7 +48,7 @@ spec:
           value: {{ . | quote }}
         {{- end }}
         - name: KAFKA_BOOTSTRAP_SERVERS
-          value: {{ .Values.common.kafka.bootstrapServers | quote }}
+          value: {{ tpl .Values.common.kafka.bootstrapServers $ | quote }}
         - name: KAFKA_STREAMS_GROUP_INSTANCE_ID
           valueFrom:
             fieldRef:

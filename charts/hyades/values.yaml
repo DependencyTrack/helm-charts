@@ -19,7 +19,7 @@ common:
     existingSecretName: ""
 
 apiServer:
-  enabled: false
+  enabled: true
   replicaCount: 1
   annotations: {}
   image:
@@ -68,7 +68,7 @@ apiServer:
     hostname: "example.com"
 
 frontend:
-  enabled: false
+  enabled: true
   replicaCount: 1
   annotations: {}
   image:

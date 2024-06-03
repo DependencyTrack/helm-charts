@@ -172,13 +172,13 @@ extraObjects:
   data:
     create-topics.sh: |-
       #!/usr/bin/env bash
-      
+
       set -euxo pipefail
-      
+
       # Wait for Redpanda to become available
       rpk cluster health --watch --exit-when-healthy \
         --api-urls "$(echo "$REDPANDA_BROKERS" | sed -E 's/:[[:digit:]]+/:9644/g')"
-      
+
       # Create required topics.
       # Note that this is exclusively to allow for the service pods to come up.
       # The topics are not created with recommended configs.

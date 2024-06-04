@@ -1,6 +1,13 @@
 # hyades
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0-SNAPSHOT](https://img.shields.io/badge/AppVersion-1.0.0--SNAPSHOT-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0-SNAPSHOT](https://img.shields.io/badge/AppVersion-1.0.0--SNAPSHOT-informational?style=flat-square)
+
+Hyades is an incubating project for decoupling responsibilities from Dependency-Track's
+monolithic API server into separate, scalable services. It will eventually become
+Dependency-Track version 5. HYADES IS NOT CONSIDERED GENERALLY AVAILABLE YET,
+and breaking changes may be introduced without prior notice. Use this chart
+locally or in test environments, but don't rely on it in production yet.
+The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hyades/issues/860
 
 **Homepage:** <https://github.com/DependencyTrack/hyades>
 
@@ -13,6 +20,13 @@
 | sahibamittal | <sahiba.mittal@citi.com> | <https://github.com/sahibamittal> |
 | VithikaS | <vithika.shukla@citi.com> | <https://github.com/VithikaS> |
 
+## Source Code
+
+* <https://github.com/DependencyTrack/helm-charts/tree/main/charts/hyades>
+* <https://github.com/DependencyTrack/hyades>
+* <https://github.com/DependencyTrack/hyades-apiserver>
+* <https://github.com/DependencyTrack/hyades-frontend>
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -20,12 +34,12 @@
 | apiServer.annotations | object | `{}` |  |
 | apiServer.args | list | `[]` |  |
 | apiServer.command | list | `[]` |  |
-| apiServer.enabled | bool | `false` |  |
+| apiServer.enabled | bool | `true` |  |
 | apiServer.extraEnv | object | `{}` |  |
 | apiServer.extraEnvFrom | list | `[]` |  |
 | apiServer.image.pullPolicy | string | `"Always"` |  |
 | apiServer.image.repository | string | `"dependencytrack/hyades-apiserver"` |  |
-| apiServer.image.tag | string | `"latest"` |  |
+| apiServer.image.tag | string | `"5.4.0"` |  |
 | apiServer.ingress.annotations | object | `{}` |  |
 | apiServer.ingress.enabled | bool | `false` |  |
 | apiServer.ingress.hostname | string | `"example.com"` |  |
@@ -62,11 +76,12 @@
 | common.nameOverride | string | `""` |  |
 | common.secretKey.createSecret | bool | `false` | Whether the chart should generate a secret key upon deployment. |
 | common.secretKey.existingSecretName | string | `""` | Use the secret key defined in an existing secret. |
+| extraObjects | list | `[]` |  |
 | frontend.annotations | object | `{}` |  |
 | frontend.apiBaseUrl | string | `""` |  |
 | frontend.args | list | `[]` |  |
 | frontend.command | list | `[]` |  |
-| frontend.enabled | bool | `false` |  |
+| frontend.enabled | bool | `true` |  |
 | frontend.extraEnv | object | `{}` |  |
 | frontend.extraEnvFrom | list | `[]` |  |
 | frontend.image.pullPolicy | string | `"Always"` |  |
@@ -100,7 +115,7 @@
 | mirrorService.extraEnvFrom | list | `[]` |  |
 | mirrorService.image.pullPolicy | string | `"Always"` |  |
 | mirrorService.image.repository | string | `"dependencytrack/hyades-mirror-service"` |  |
-| mirrorService.image.tag | string | `"latest-native"` |  |
+| mirrorService.image.tag | string | `"0.4.0-native"` |  |
 | mirrorService.probes.liveness.failureThreshold | int | `3` |  |
 | mirrorService.probes.liveness.initialDelaySeconds | int | `10` |  |
 | mirrorService.probes.liveness.periodSeconds | int | `15` |  |
@@ -124,7 +139,7 @@
 | notificationPublisher.extraEnvFrom | list | `[]` |  |
 | notificationPublisher.image.pullPolicy | string | `"Always"` |  |
 | notificationPublisher.image.repository | string | `"dependencytrack/hyades-notification-publisher"` |  |
-| notificationPublisher.image.tag | string | `"latest-native"` |  |
+| notificationPublisher.image.tag | string | `"0.4.0-native"` |  |
 | notificationPublisher.probes.liveness.failureThreshold | int | `3` |  |
 | notificationPublisher.probes.liveness.initialDelaySeconds | int | `10` |  |
 | notificationPublisher.probes.liveness.periodSeconds | int | `15` |  |
@@ -147,7 +162,7 @@
 | repoMetaAnalyzer.extraEnvFrom | list | `[]` |  |
 | repoMetaAnalyzer.image.pullPolicy | string | `"Always"` |  |
 | repoMetaAnalyzer.image.repository | string | `"dependencytrack/hyades-repository-meta-analyzer"` |  |
-| repoMetaAnalyzer.image.tag | string | `"latest-native"` |  |
+| repoMetaAnalyzer.image.tag | string | `"0.4.0-native"` |  |
 | repoMetaAnalyzer.probes.liveness.failureThreshold | int | `3` |  |
 | repoMetaAnalyzer.probes.liveness.initialDelaySeconds | int | `10` |  |
 | repoMetaAnalyzer.probes.liveness.periodSeconds | int | `15` |  |
@@ -170,7 +185,7 @@
 | vulnAnalyzer.extraEnvFrom | list | `[]` |  |
 | vulnAnalyzer.image.pullPolicy | string | `"Always"` |  |
 | vulnAnalyzer.image.repository | string | `"dependencytrack/hyades-vulnerability-analyzer"` |  |
-| vulnAnalyzer.image.tag | string | `"latest-native"` |  |
+| vulnAnalyzer.image.tag | string | `"0.4.0-native"` |  |
 | vulnAnalyzer.persistentVolume.className | string | `""` |  |
 | vulnAnalyzer.persistentVolume.enabled | bool | `false` |  |
 | vulnAnalyzer.persistentVolume.size | string | `"2Gi"` |  |
@@ -190,5 +205,3 @@
 | vulnAnalyzer.resources.requests.cpu | string | `"500m"` |  |
 | vulnAnalyzer.resources.requests.memory | string | `"512Mi"` |  |
 
-----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.13.1](https://github.com/norwoodj/helm-docs/releases/v1.13.1)

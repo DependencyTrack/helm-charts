@@ -1,0 +1,335 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Values",
+  "type": "object",
+  "properties": {
+    "common": {
+      "type": "object",
+      "properties": {
+        "nameOverride": {
+          "type": "string"
+        },
+        "fullnameOverride": {
+          "type": "string"
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "registry": {
+              "type": "string"
+            },
+            "pullSecrets": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "secretKey": {
+          "type": "object",
+          "properties": {
+            "createSecret": {
+              "type": "boolean"
+            },
+            "existingSecretName": {
+              "type": "string"
+            }
+          }
+        },
+        "serviceAccount": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "type": "boolean"
+            },
+            "annotations": {
+              "type": "object"
+            },
+            "name": {
+              "type": "string"
+            },
+            "automount": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "apiServer": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": "object"
+        },
+        "image": {
+          "$ref": "#/$defs/image"
+        },
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "resources": {
+          "$ref": "#/$defs/resources"
+        },
+        "persistentVolume": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "className": {
+              "type": "string"
+            },
+            "size": {
+              "type": "string"
+            }
+          }
+        },
+        "extraEnv": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "extraEnvFrom": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "extraContainers": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "tolerations": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "probes": {
+          "$ref": "#/$defs/probes"
+        },
+        "additionalVolumeMounts": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "additionalVolumes": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "service": {
+          "$ref": "#/$defs/service"
+        },
+        "serviceMonitor": {
+          "$ref": "#/$defs/serviceMonitor"
+        },
+        "initContainers": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "nodeSelector": {
+          "type": "object"
+        }
+      }
+    },
+    "frontend": {
+      "type": "object",
+      "properties": {
+        "replicaCount": {
+          "type": "number"
+        },
+        "annotations": {
+          "type": "object"
+        },
+        "image": {
+          "$ref": "#/$defs/image"
+        },
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "resources": {
+          "$ref": "#/$defs/resources"
+        },
+        "extraEnv": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "extraEnvFrom": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "extraContainers": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "tolerations": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "probes": {
+          "$ref": "#/$defs/probes"
+        },
+        "additionalVolumeMounts": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "additionalVolumes": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "service": {
+          "$ref": "#/$defs/service"
+        },
+        "apiBaseUrl": {
+          "type": "string"
+        },
+        "initContainers": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "nodeSelector": {
+          "type": "object"
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "annotations": {
+          "type": "object"
+        },
+        "hostname": {
+          "type": "string"
+        },
+        "ingressClassName": {
+          "type": "string"
+        },
+        "tls": {
+          "$ref": "#/$defs/objectArray"
+        }
+      }
+    },
+    "extraObjects": {
+      "$ref": "#/$defs/objectArray"
+    }
+  },
+  "$defs": {
+    "image": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string"
+        },
+        "tag": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "pullPolicy": {
+          "type": "string"
+        }
+      }
+    },
+    "objectArray": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "probe": {
+      "type": "object",
+      "properties": {
+        "failureThreshold": {
+          "type": "number"
+        },
+        "initialDelaySeconds": {
+          "type": "number"
+        },
+        "periodSeconds": {
+          "type": "number"
+        },
+        "successThreshold": {
+          "type": "number"
+        },
+        "timeoutSeconds": {
+          "type": "number"
+        }
+      }
+    },
+    "probes": {
+      "type": "object",
+      "properties": {
+        "readiness": {
+          "$ref": "#/$defs/probe"
+        },
+        "liveness": {
+          "$ref": "#/$defs/probe"
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "properties": {
+        "requests": {
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "type": "string"
+            },
+            "memory": {
+              "type": "string"
+            }
+          }
+        },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "type": "string"
+            },
+            "memory": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "nodePort": {
+          "type": [
+            "null",
+            "number"
+          ]
+        },
+        "annotations": {
+          "type": "object"
+        }
+      }
+    },
+    "serviceMonitor": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "scrapeInterval": {
+          "type": "string"
+        },
+        "scrapeTimeout": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

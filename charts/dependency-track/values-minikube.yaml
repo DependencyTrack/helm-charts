@@ -13,8 +13,10 @@ apiServer:
     type: NodePort
     nodePort: 30080
   extraEnv:
-    EXTRA_JAVA_OPTIONS: "-Xmx2g"
-    SYSTEM_REQUIREMENT_CHECK_ENABLED: "false"
+    - name: EXTRA_JAVA_OPTIONS
+      value: "-Xmx2g"
+    - name: SYSTEM_REQUIREMENT_CHECK_ENABLED
+      value: "false"
 
 frontend:
   service:

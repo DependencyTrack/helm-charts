@@ -14,4 +14,5 @@ apiServer:
     enabled: true
     size: "128Mi"
   extraEnv:
-    SYSTEM_REQUIREMENT_CHECK_ENABLED: "false"
+    - name: SYSTEM_REQUIREMENT_CHECK_ENABLED
+      value: "false"

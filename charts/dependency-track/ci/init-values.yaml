@@ -11,7 +11,8 @@ apiServer:
       cpu: "2"
       memory: "512Mi"
   extraEnv:
-    SYSTEM_REQUIREMENT_CHECK_ENABLED: "false"
+    - name: SYSTEM_REQUIREMENT_CHECK_ENABLED
+      value: "false"
   initContainers:
     - name: fix-permissions
       image: docker.io/library/busybox

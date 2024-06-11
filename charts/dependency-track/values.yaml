@@ -38,7 +38,14 @@ apiServer:
     enabled: false
     className: ""
     size: 5Gi
-  extraEnv: {}
+  extraEnv: []
+    # - name: "ALPINE_DATABASE_PASSWORD"
+    #   valueFrom:
+    #     secretKeyRef:
+    #       key: db-password
+    #       name: dependencytrack-secrets
+    # - name: ALPINE_DATABASE_MODE
+    #   value: "external"
   extraEnvFrom: []
   extraContainers: []
   tolerations: []
@@ -110,7 +117,7 @@ frontend:
     limits:
       cpu: 500m
       memory: 128Mi
-  extraEnv: {}
+  extraEnv: []
   extraEnvFrom: []
   extraContainers: []
   tolerations: []

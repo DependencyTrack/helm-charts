@@ -55,9 +55,8 @@ spec:
         - name: ALPINE_SECRET_KEY_PATH
           value: "/var/run/secrets/secret.key"
         {{- end }}
-        {{- range $k, $v := .Values.apiServer.extraEnv }}
-        - name: {{ $k }}
-          value: {{ $v | quote }}
+        {{- with .Values.apiServer.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.apiServer.extraEnvFrom }}
         envFrom: {{ toYaml . | nindent 8 }}

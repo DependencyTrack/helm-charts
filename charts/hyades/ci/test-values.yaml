@@ -117,7 +117,7 @@ extraObjects:
       spec:
         containers:
         - name: redpanda
-          image: docker.redpanda.com/vectorized/redpanda:v23.3.16
+          image: docker.redpanda.com/vectorized/redpanda:v24.1.7
           args:
           - redpanda
           - start
@@ -163,35 +163,6 @@ extraObjects:
     - name: redpanda-admin
       port: 9644
       targetPort: 9644
-- apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    name: redpanda-init-script
-  data:
-    create-topics.sh: |-
-      #!/usr/bin/env bash
-
-      set -euxo pipefail
-
-      # Wait for Redpanda to become available
-      rpk cluster health --watch --exit-when-healthy \
-        --api-urls "$(echo "$REDPANDA_BROKERS" | sed -E 's/:[[:digit:]]+/:9644/g')"
-
-      # Create required topics.
-      # Note that this is exclusively to allow for the service pods to come up.
-      # The topics are not created with recommended configs.
-      # Do not use this for production deployments!
-      rpk topic create 'dtrack.repo-meta-analysis.component'
-      rpk topic create 'dtrack.repo-meta-analysis.result'
-      rpk topic create 'dtrack.vuln-analysis.component'
-      rpk topic create 'dtrack.vuln-analysis.scanner.result'
-      rpk topic create 'dtrack.vuln-analysis.result'
-      rpk topic create 'dtrack.vuln-analysis.result.processed'
-      rpk topic create 'dtrack.vulnerability.mirror.command'
-      rpk topic create 'dtrack.vulnerability.mirror.state' --topic-config 'cleanup.policy=compact'
-      rpk topic create 'dtrack.vulnerability.digest' --topic-config 'cleanup.policy=compact'
-      rpk topic create 'dtrack.vulnerability' --topic-config 'cleanup.policy=compact'
-      rpk topic create 'dtrack.epss' --topic-config 'cleanup.policy=compact'
 - apiVersion: batch/v1
   kind: Job
   metadata:
@@ -202,22 +173,13 @@ extraObjects:
       spec:
         containers:
         - name: redpanda
-          image: docker.redpanda.com/vectorized/redpanda:v23.3.16
+          image: docker.redpanda.com/vectorized/redpanda:v24.1.7
           command:
           - /bin/bash
           args:
-          - /redpanda-init/create-topics.sh
+          - -c
+          - bash <(curl -s https://raw.githubusercontent.com/DependencyTrack/hyades/main/scripts/create-topics.sh)
           env:
           - name: REDPANDA_BROKERS
             value: "redpanda.{{ .Release.Namespace }}.svc.cluster.local:9092"
-          volumeMounts:
-          - name: init-script
-            mountPath: "/redpanda-init"
-        volumes:
-        - name: init-script
-          configMap:
-            name: redpanda-init-script
-            items:
-            - key: create-topics.sh
-              path: create-topics.sh
         restartPolicy: OnFailure

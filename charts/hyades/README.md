@@ -31,18 +31,20 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| apiServer.additionalVolumeMounts | list | `[]` |  |
+| apiServer.additionalVolumes | list | `[]` |  |
 | apiServer.annotations | object | `{}` |  |
 | apiServer.args | list | `[]` |  |
 | apiServer.command | list | `[]` |  |
-| apiServer.enabled | bool | `true` |  |
-| apiServer.extraEnv | object | `{}` |  |
+| apiServer.enabled | bool | `true` | Whether the API server shall be deployed. |
+| apiServer.extraContainers | list | `[]` |  |
+| apiServer.extraEnv | list | `[]` |  |
 | apiServer.extraEnvFrom | list | `[]` |  |
 | apiServer.image.pullPolicy | string | `"Always"` |  |
 | apiServer.image.repository | string | `"dependencytrack/hyades-apiserver"` |  |
-| apiServer.image.tag | string | `"5.4.0"` |  |
-| apiServer.ingress.annotations | object | `{}` |  |
-| apiServer.ingress.enabled | bool | `false` |  |
-| apiServer.ingress.hostname | string | `"example.com"` |  |
+| apiServer.image.tag | string | `"snapshot"` |  |
+| apiServer.initContainers | list | `[]` |  |
+| apiServer.nodeSelector | object | `{}` |  |
 | apiServer.probes.liveness.failureThreshold | int | `3` |  |
 | apiServer.probes.liveness.initialDelaySeconds | int | `10` |  |
 | apiServer.probes.liveness.periodSeconds | int | `15` |  |
@@ -58,6 +60,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | apiServer.resources.limits.memory | string | `"8Gi"` |  |
 | apiServer.resources.requests.cpu | string | `"2"` |  |
 | apiServer.resources.requests.memory | string | `"4Gi"` |  |
+| apiServer.service.annotations | object | `{}` |  |
 | apiServer.service.nodePort | string | `nil` |  |
 | apiServer.service.type | string | `"ClusterIP"` |  |
 | apiServer.serviceMonitor.enabled | bool | `false` |  |
@@ -65,6 +68,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | apiServer.serviceMonitor.scrapeInternal | string | `"15s"` |  |
 | apiServer.serviceMonitor.scrapeTimeout | string | `"30s"` |  |
 | apiServer.terminationGracePeriodSeconds | int | `60` | Grace period for pod termination in seconds. Should always be equal to or greater than the sum of `_DRAIN_TIMEOUT` configurations to ensure graceful shutdown. Refer to https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/ for details. |
+| apiServer.tolerations | object | `{}` |  |
 | common.database.jdbcUrl | string | `""` |  |
 | common.database.password | string | `""` |  |
 | common.database.username | string | `""` |  |
@@ -76,20 +80,26 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | common.nameOverride | string | `""` |  |
 | common.secretKey.createSecret | bool | `false` | Whether the chart should generate a secret key upon deployment. |
 | common.secretKey.existingSecretName | string | `""` | Use the secret key defined in an existing secret. |
+| common.serviceAccount.annotations | object | `{}` |  |
+| common.serviceAccount.automount | bool | `false` | Whether the serviceAccount should mount the token. |
+| common.serviceAccount.create | bool | `true` |  |
+| common.serviceAccount.name | string | `""` | Use the name of the name of the release by default, or specify a custom name. |
 | extraObjects | list | `[]` |  |
+| frontend.additionalVolumeMounts | list | `[]` |  |
+| frontend.additionalVolumes | list | `[]` |  |
 | frontend.annotations | object | `{}` |  |
 | frontend.apiBaseUrl | string | `""` |  |
 | frontend.args | list | `[]` |  |
 | frontend.command | list | `[]` |  |
-| frontend.enabled | bool | `true` |  |
+| frontend.enabled | bool | `true` | Whether the frontend shall be deployed. |
+| frontend.extraContainers | list | `[]` |  |
 | frontend.extraEnv | object | `{}` |  |
 | frontend.extraEnvFrom | list | `[]` |  |
 | frontend.image.pullPolicy | string | `"Always"` |  |
 | frontend.image.repository | string | `"dependencytrack/hyades-frontend"` |  |
-| frontend.image.tag | string | `"4.9.1"` |  |
-| frontend.ingress.annotations | object | `{}` |  |
-| frontend.ingress.enabled | bool | `false` |  |
-| frontend.ingress.hostname | string | `"example.com"` |  |
+| frontend.image.tag | string | `"snapshot"` |  |
+| frontend.initContainers | list | `[]` |  |
+| frontend.nodeSelector | object | `{}` |  |
 | frontend.probes.liveness.failureThreshold | int | `3` |  |
 | frontend.probes.liveness.initialDelaySeconds | int | `5` |  |
 | frontend.probes.liveness.periodSeconds | int | `15` |  |
@@ -105,17 +115,29 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | frontend.resources.limits.memory | string | `"128Mi"` |  |
 | frontend.resources.requests.cpu | string | `"150m"` |  |
 | frontend.resources.requests.memory | string | `"64Mi"` |  |
+| frontend.service.annotations | object | `{}` |  |
 | frontend.service.nodePort | string | `nil` |  |
 | frontend.service.type | string | `"ClusterIP"` |  |
+| frontend.tolerations | object | `{}` |  |
+| ingress.annotations | object | `{}` |  |
+| ingress.enabled | bool | `false` |  |
+| ingress.hostname | string | `"example.com"` |  |
+| ingress.ingressClassName | string | `""` |  |
+| ingress.tls | list | `[]` |  |
+| mirrorService.additionalVolumeMounts | list | `[]` |  |
+| mirrorService.additionalVolumes | list | `[]` |  |
 | mirrorService.annotations | object | `{}` |  |
 | mirrorService.args | list | `[]` |  |
 | mirrorService.command | list | `[]` |  |
-| mirrorService.enabled | bool | `true` |  |
+| mirrorService.enabled | bool | `true` | Whether the mirror service shall be deployed. |
+| mirrorService.extraContainers | list | `[]` |  |
 | mirrorService.extraEnv | object | `{}` |  |
 | mirrorService.extraEnvFrom | list | `[]` |  |
 | mirrorService.image.pullPolicy | string | `"Always"` |  |
 | mirrorService.image.repository | string | `"dependencytrack/hyades-mirror-service"` |  |
-| mirrorService.image.tag | string | `"0.4.0-native"` |  |
+| mirrorService.image.tag | string | `"snapshot-native"` |  |
+| mirrorService.initContainers | list | `[]` |  |
+| mirrorService.nodeSelector | object | `{}` |  |
 | mirrorService.probes.liveness.failureThreshold | int | `3` |  |
 | mirrorService.probes.liveness.initialDelaySeconds | int | `10` |  |
 | mirrorService.probes.liveness.periodSeconds | int | `15` |  |
@@ -131,15 +153,21 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | mirrorService.resources.limits.memory | string | `"2Gi"` |  |
 | mirrorService.resources.requests.cpu | string | `"500m"` |  |
 | mirrorService.resources.requests.memory | string | `"512Mi"` |  |
+| mirrorService.tolerations | object | `{}` |  |
+| notificationPublisher.additionalVolumeMounts | list | `[]` |  |
+| notificationPublisher.additionalVolumes | list | `[]` |  |
 | notificationPublisher.annotations | object | `{}` |  |
 | notificationPublisher.args | list | `[]` |  |
 | notificationPublisher.command | list | `[]` |  |
-| notificationPublisher.enabled | bool | `true` |  |
+| notificationPublisher.enabled | bool | `true` | Whether the notification publisher shall be deployed. |
+| notificationPublisher.extraContainers | list | `[]` |  |
 | notificationPublisher.extraEnv | object | `{}` |  |
 | notificationPublisher.extraEnvFrom | list | `[]` |  |
 | notificationPublisher.image.pullPolicy | string | `"Always"` |  |
 | notificationPublisher.image.repository | string | `"dependencytrack/hyades-notification-publisher"` |  |
-| notificationPublisher.image.tag | string | `"0.4.0-native"` |  |
+| notificationPublisher.image.tag | string | `"snapshot-native"` |  |
+| notificationPublisher.initContainers | list | `[]` |  |
+| notificationPublisher.nodeSelector | object | `{}` |  |
 | notificationPublisher.probes.liveness.failureThreshold | int | `3` |  |
 | notificationPublisher.probes.liveness.initialDelaySeconds | int | `10` |  |
 | notificationPublisher.probes.liveness.periodSeconds | int | `15` |  |
@@ -155,14 +183,21 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | notificationPublisher.resources.limits.memory | string | `"2Gi"` |  |
 | notificationPublisher.resources.requests.cpu | string | `"500m"` |  |
 | notificationPublisher.resources.requests.memory | string | `"512Mi"` |  |
+| notificationPublisher.tolerations | object | `{}` |  |
+| repoMetaAnalyzer.additionalVolumeMounts | list | `[]` |  |
+| repoMetaAnalyzer.additionalVolumes | list | `[]` |  |
 | repoMetaAnalyzer.annotations | object | `{}` |  |
 | repoMetaAnalyzer.args | list | `[]` |  |
 | repoMetaAnalyzer.command | list | `[]` |  |
+| repoMetaAnalyzer.enabled | bool | `true` | Whether the repository metadata analyzer shall be deployed. |
+| repoMetaAnalyzer.extraContainers | list | `[]` |  |
 | repoMetaAnalyzer.extraEnv | object | `{}` |  |
 | repoMetaAnalyzer.extraEnvFrom | list | `[]` |  |
 | repoMetaAnalyzer.image.pullPolicy | string | `"Always"` |  |
 | repoMetaAnalyzer.image.repository | string | `"dependencytrack/hyades-repository-meta-analyzer"` |  |
-| repoMetaAnalyzer.image.tag | string | `"0.4.0-native"` |  |
+| repoMetaAnalyzer.image.tag | string | `"snapshot-native"` |  |
+| repoMetaAnalyzer.initContainers | list | `[]` |  |
+| repoMetaAnalyzer.nodeSelector | object | `{}` |  |
 | repoMetaAnalyzer.probes.liveness.failureThreshold | int | `3` |  |
 | repoMetaAnalyzer.probes.liveness.initialDelaySeconds | int | `10` |  |
 | repoMetaAnalyzer.probes.liveness.periodSeconds | int | `15` |  |
@@ -178,14 +213,21 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | repoMetaAnalyzer.resources.limits.memory | string | `"2Gi"` |  |
 | repoMetaAnalyzer.resources.requests.cpu | string | `"500m"` |  |
 | repoMetaAnalyzer.resources.requests.memory | string | `"512Mi"` |  |
+| repoMetaAnalyzer.tolerations | object | `{}` |  |
+| vulnAnalyzer.additionalVolumeMounts | list | `[]` |  |
+| vulnAnalyzer.additionalVolumes | list | `[]` |  |
 | vulnAnalyzer.annotations | object | `{}` |  |
 | vulnAnalyzer.args | list | `[]` |  |
 | vulnAnalyzer.command | list | `[]` |  |
+| vulnAnalyzer.enabled | bool | `true` | Whether the vulnerability analyzer shall be deployed. |
+| vulnAnalyzer.extraContainers | list | `[]` |  |
 | vulnAnalyzer.extraEnv | object | `{}` |  |
 | vulnAnalyzer.extraEnvFrom | list | `[]` |  |
 | vulnAnalyzer.image.pullPolicy | string | `"Always"` |  |
 | vulnAnalyzer.image.repository | string | `"dependencytrack/hyades-vulnerability-analyzer"` |  |
-| vulnAnalyzer.image.tag | string | `"0.4.0-native"` |  |
+| vulnAnalyzer.image.tag | string | `"snapshot-native"` |  |
+| vulnAnalyzer.initContainers | list | `[]` |  |
+| vulnAnalyzer.nodeSelector | object | `{}` |  |
 | vulnAnalyzer.persistentVolume.className | string | `""` |  |
 | vulnAnalyzer.persistentVolume.enabled | bool | `false` |  |
 | vulnAnalyzer.persistentVolume.size | string | `"2Gi"` |  |
@@ -204,4 +246,6 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | vulnAnalyzer.resources.limits.memory | string | `"2Gi"` |  |
 | vulnAnalyzer.resources.requests.cpu | string | `"500m"` |  |
 | vulnAnalyzer.resources.requests.memory | string | `"512Mi"` |  |
+| vulnAnalyzer.service.annotations | object | `{}` |  |
+| vulnAnalyzer.tolerations | object | `{}` |  |
 

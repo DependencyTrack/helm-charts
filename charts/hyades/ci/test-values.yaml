@@ -1,8 +1,8 @@
 common:
   database:
     jdbcUrl: "jdbc:postgresql://postgres.{{ .Release.Namespace }}.svc.cluster.local:5432/dtrack"
-    username: dtrack
-    password: dtrack
+    username: "dtrack"
+    password: "dtrack"
   kafka:
     bootstrapServers: "redpanda.{{ .Release.Namespace }}.svc.cluster.local:9092"
   secretKey:

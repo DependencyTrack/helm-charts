@@ -48,7 +48,7 @@ spec:
         env:
         - name: API_BASE_URL
           value: {{ .Values.frontend.apiBaseUrl | quote }}
-        {{- with .Values.apiServer.extraEnv }}
+        {{- with .Values.frontend.extraEnv }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.frontend.extraEnvFrom }}

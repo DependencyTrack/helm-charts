@@ -3,6 +3,25 @@ entries:
   dependency-track:
   - apiVersion: v2
     appVersion: 4.11.3
+    created: "2024-06-12T08:51:41.742222129Z"
+    description: Dependency-Track is an intelligent Component Analysis platform that
+      allows organizations to identify and reduce risk in the software supply chain.
+    digest: 6b1024c37e61e64a2fbb39c11aa9a9c7173522cecf8f455f4b77c126589f09f3
+    home: https://github.com/DependencyTrack/dependency-track
+    icon: https://avatars.githubusercontent.com/u/40258585
+    maintainers:
+    - email: nscuro@protonmail.com
+      name: nscuro
+      url: https://github.com/nscuro
+    name: dependency-track
+    sources:
+    - https://github.com/DependencyTrack/helm-charts/tree/main/charts/dependency-track
+    type: application
+    urls:
+    - https://github.com/DependencyTrack/helm-charts/releases/download/dependency-track-0.9.1/dependency-track-0.9.1.tgz
+    version: 0.9.1
+  - apiVersion: v2
+    appVersion: 4.11.3
     created: "2024-06-11T15:38:56.048255524Z"
     description: Dependency-Track is an intelligent Component Analysis platform that
       allows organizations to identify and reduce risk in the software supply chain.
@@ -295,4 +314,4 @@ entries:
     urls:
     - https://github.com/DependencyTrack/helm-charts/releases/download/dependency-track-0.1.0/dependency-track-0.1.0.tgz
     version: 0.1.0
-generated: "2024-06-11T15:38:56.048373545Z"
+generated: "2024-06-12T08:51:41.742363605Z"

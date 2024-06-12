@@ -1,0 +1,32 @@
+apiVersion: v2
+name: hyades
+version: 0.2.0
+type: application
+appVersion: 1.0.0-SNAPSHOT
+description: |-
+  Hyades is an incubating project for decoupling responsibilities from Dependency-Track's
+  monolithic API server into separate, scalable services. It will eventually become
+  Dependency-Track version 5. HYADES IS NOT CONSIDERED GENERALLY AVAILABLE YET,
+  and breaking changes may be introduced without prior notice. Use this chart
+  locally or in test environments, but don't rely on it in production yet.
+  The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hyades/issues/860
+home: https://github.com/DependencyTrack/hyades
+sources:
+- https://github.com/DependencyTrack/helm-charts/tree/main/charts/hyades
+- https://github.com/DependencyTrack/hyades
+- https://github.com/DependencyTrack/hyades-apiserver
+- https://github.com/DependencyTrack/hyades-frontend
+icon: https://avatars.githubusercontent.com/u/40258585
+maintainers:
+- name: nscuro
+  email: nscuro@protonmail.com
+  url: https://github.com/nscuro
+- name: mehab
+  email: meha.bhargava@citi.com
+  url: https://github.com/mehab
+- name: sahibamittal
+  email: sahiba.mittal@citi.com
+  url: https://github.com/sahibamittal
+- name: VithikaS
+  email: vithika.shukla@citi.com
+  url: https://github.com/VithikaS

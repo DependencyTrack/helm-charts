@@ -6,6 +6,9 @@ metadata:
   name: {{ include "hyades.frontendFullname" . }}
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.frontendLabels" . | nindent 4 }}
+  {{- with .Values.frontend.service.annotations }}
+  annotations: {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.frontend.service.type | quote }}
   ports:

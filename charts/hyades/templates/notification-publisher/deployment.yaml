@@ -17,12 +17,17 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/path: /q/metrics
         {{- with .Values.notificationPublisher.annotations }}
-          {{ toYaml . | nindent 8 }}
+        {{ toYaml . | nindent 8 }}
         {{- end }}
     spec:
       {{- with .Values.common.image.pullSecrets }}
       imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
+      initContainers:
+      {{- with .Values.notificationPublisher.initContainers }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      serviceAccountName: {{ include "hyades.serviceAccountName" . }}
       containers:
       - name: {{ include "hyades.notificationPublisherName" . }}
         image: {{ include "hyades.notificationPublisherImage" . }}
@@ -42,8 +47,7 @@ spec:
         {{- with .Values.notificationPublisher.args }}
         args: {{ toYaml . | nindent 8 }}
         {{- end }}
-        resources:
-          {{- toYaml .Values.notificationPublisher.resources | nindent 10 }}
+        resources: {{- toYaml .Values.notificationPublisher.resources | nindent 10 }}
         env:
         {{- if (include "hyades.secretKeySecretName" .) }}
         - name: SECRET_KEY_PATH
@@ -67,9 +71,8 @@ spec:
         - name: KAFKA_TOPIC_PREFIX
           value: {{ . | quote }}
         {{- end }}
-        {{- range $k, $v := .Values.notificationPublisher.extraEnv }}
-        - name: {{ $k }}
-          value: {{ $v | quote }}
+        {{- with .Values.notificationPublisher.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.notificationPublisher.extraEnvFrom }}
         envFrom: {{ toYaml . | nindent 8 }}
@@ -86,6 +89,9 @@ spec:
           subPath: secret.key
           mountPath: /var/run/secrets/secret.key
           readOnly: true
+        {{- end }}
+        {{- with .Values.notificationPublisher.additionalVolumeMounts }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         livenessProbe:
           httpGet:
@@ -107,6 +113,15 @@ spec:
           periodSeconds: {{ .Values.notificationPublisher.probes.readiness.periodSeconds }}
           successThreshold: {{ .Values.notificationPublisher.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.notificationPublisher.probes.readiness.timeoutSeconds }}
+      {{- with .Values.notificationPublisher.extraContainers }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.notificationPublisher.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.notificationPublisher.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
       - name: tmp
         emptyDir: {}
@@ -114,5 +129,8 @@ spec:
       - name: secret-key
         secret:
           secretName: {{ . }}
+      {{- end }}
+      {{- with .Values.notificationPublisher.additionalVolumes }}
+      {{- toYaml . | nindent 6 }}
       {{- end }}
 {{- end }}

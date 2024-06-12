@@ -6,6 +6,9 @@ metadata:
   name: {{ include "hyades.apiServerFullname" . }}
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.apiServerLabels" . | nindent 4 }}
+  {{- with .Values.apiServer.service.annotations }}
+  annotations: {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.apiServer.service.type | quote }}
   ports:

@@ -1,3 +1,4 @@
+{{- if .Values.vulnAnalyzer.enabled }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -6,7 +7,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.vulnAnalyzerLabels" . | nindent 4 }}
 spec:
-  serviceName: {{ include "hyades.vulnAnalyzerFullname" . }}
+  serviceName: {{ include "hyades.vulnAnalyzerFullname" . }}-headless
   replicas: {{ .Values.vulnAnalyzer.replicaCount }}
   selector:
     matchLabels: {{- include "hyades.vulnAnalyzerSelectorLabels" . | nindent 6 }}
@@ -23,6 +24,11 @@ spec:
       {{- with .Values.common.image.pullSecrets }}
       imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
+      initContainers:
+      {{- with .Values.notificationPublisher.initContainers }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      serviceAccountName: {{ include "hyades.serviceAccountName" . }}
       containers:
       - name: {{ include "hyades.vulnAnalyzerName" . }}
         image: {{ include "hyades.vulnAnalyzerImage" . }}
@@ -68,9 +74,8 @@ spec:
         - name: KAFKA_TOPIC_PREFIX
           value: {{ . | quote }}
         {{- end }}
-        {{- range $k, $v := .Values.vulnAnalyzer.extraEnv }}
-        - name: {{ $k }}
-          value: {{ $v | quote }}
+        {{- with .Values.vulnAnalyzer.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.vulnAnalyzer.extraEnvFrom }}
         envFrom: {{ toYaml . | nindent 8 }}
@@ -84,6 +89,9 @@ spec:
           mountPath: /tmp
         - name: kafka-streams-state
           mountPath: /var/lib/kafka-streams
+        {{- with .Values.vulnAnalyzer.additionalVolumeMounts }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         livenessProbe:
           httpGet:
             scheme: HTTP
@@ -104,12 +112,24 @@ spec:
           periodSeconds: {{ .Values.vulnAnalyzer.probes.readiness.periodSeconds }}
           successThreshold: {{ .Values.vulnAnalyzer.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.vulnAnalyzer.probes.readiness.timeoutSeconds }}
+      {{- with .Values.vulnAnalyzer.extraContainers }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.vulnAnalyzer.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.vulnAnalyzer.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
       - name: tmp
         emptyDir: {}
       {{- if not .Values.vulnAnalyzer.persistentVolume.enabled }}
       - name: kafka-streams-state
         emptyDir: {}
+      {{- end }}
+      {{- with .Values.vulnAnalyzer.additionalVolumes }}
+      {{- toYaml . | nindent 6 }}
       {{- end }}
   {{- if .Values.vulnAnalyzer.persistentVolume.enabled }}
   volumeClaimTemplates:
@@ -123,3 +143,4 @@ spec:
       accessModes:
       - ReadWriteOnce
   {{- end }}
+{{- end }}

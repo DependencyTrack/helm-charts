@@ -35,7 +35,6 @@ Common labels
 */}}
 {{- define "hyades.commonLabels" -}}
 helm.sh/chart: {{ include "hyades.chart" . }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/part-of: {{ include "hyades.name" . }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
@@ -54,6 +53,7 @@ API server labels
 {{- define "hyades.apiServerLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.apiServerSelectorLabels" . }}
+app.kubernetes.io/version: {{ (.Values.apiServer.image.tag | default .Chart.AppVersion) | quote }}
 {{- end -}}
 
 {{/*
@@ -93,6 +93,7 @@ Frontend labels
 {{- define "hyades.frontendLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.frontendSelectorLabels" . }}
+app.kubernetes.io/version: {{ (.Values.frontend.image.tag | default .Chart.AppVersion) | quote }}
 {{- end -}}
 
 {{/*
@@ -132,6 +133,7 @@ Mirror service labels
 {{- define "hyades.mirrorServiceLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.mirrorServiceSelectorLabels" . }}
+app.kubernetes.io/version: {{ (.Values.mirrorService.image.tag | default .Chart.AppVersion) | quote }}
 {{- end -}}
 
 {{/*
@@ -171,6 +173,7 @@ Notification publisher labels
 {{- define "hyades.notificationPublisherLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.notificationPublisherSelectorLabels" . }}
+app.kubernetes.io/version: {{ (.Values.notificationPublisher.image.tag | default .Chart.AppVersion) | quote }}
 {{- end -}}
 
 {{/*
@@ -210,6 +213,7 @@ Repository metadata analyzer labels
 {{- define "hyades.repoMetaAnalyzerLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.repoMetaAnalyzerSelectorLabels" . }}
+app.kubernetes.io/version: {{ (.Values.repoMetaAnalyzer.image.tag | default .Chart.AppVersion) | quote }}
 {{- end -}}
 
 {{/*
@@ -249,6 +253,7 @@ Vulnerability analyzer labels
 {{- define "hyades.vulnAnalyzerLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.vulnAnalyzerSelectorLabels" . }}
+app.kubernetes.io/version: {{ (.Values.vulnAnalyzer.image.tag | default .Chart.AppVersion) | quote }}
 {{- end -}}
 
 {{/*
@@ -290,3 +295,14 @@ Vulnerability analyzer image
 {{- printf "%s-secret-key" (include "hyades.fullname" .) -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account
+*/}}
+{{- define "hyades.serviceAccountName" -}}
+{{- if .Values.common.serviceAccount.create }}
+{{- default (include "hyades.fullname" .) .Values.common.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.common.serviceAccount.name }}
+{{- end }}
+{{- end }}

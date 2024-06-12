@@ -1,3 +1,4 @@
+{{- if .Values.repoMetaAnalyzer.enabled }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -16,12 +17,17 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/path: /q/metrics
         {{- with .Values.repoMetaAnalyzer.annotations }}
-          {{ toYaml . | nindent 8 }}
+        {{ toYaml . | nindent 8 }}
         {{- end }}
     spec:
       {{- with .Values.common.image.pullSecrets }}
       imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
+      initContainers:
+      {{- with .Values.repoMetaAnalyzer.initContainers }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      serviceAccountName: {{ include "hyades.serviceAccountName" . }}
       containers:
       - name: {{ include "hyades.repoMetaAnalyzerName" . }}
         image: {{ include "hyades.repoMetaAnalyzerImage" . }}
@@ -66,9 +72,8 @@ spec:
         - name: KAFKA_TOPIC_PREFIX
           value: {{ . | quote }}
         {{- end }}
-        {{- range $k, $v := .Values.repoMetaAnalyzer.extraEnv }}
-        - name: {{ $k }}
-          value: {{ $v | quote }}
+        {{- with .Values.repoMetaAnalyzer.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.repoMetaAnalyzer.extraEnvFrom }}
         envFrom: {{ toYaml . | nindent 8 }}
@@ -85,6 +90,9 @@ spec:
           subPath: secret.key
           mountPath: /var/run/secrets/secret.key
           readOnly: true
+        {{- end }}
+        {{- with .Values.repoMetaAnalyzer.additionalVolumeMounts }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         livenessProbe:
           httpGet:
@@ -106,6 +114,15 @@ spec:
           periodSeconds: {{ .Values.repoMetaAnalyzer.probes.readiness.periodSeconds }}
           successThreshold: {{ .Values.repoMetaAnalyzer.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.repoMetaAnalyzer.probes.readiness.timeoutSeconds }}
+      {{- with .Values.repoMetaAnalyzer.extraContainers }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.repoMetaAnalyzer.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.repoMetaAnalyzer.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
       - name: tmp
         emptyDir: {}
@@ -114,3 +131,7 @@ spec:
         secret:
           secretName: {{ . }}
       {{- end }}
+      {{- with .Values.repoMetaAnalyzer.additionalVolumes }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+{{- end }}

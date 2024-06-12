@@ -10,7 +10,6 @@ common:
     createSecret: true
 
 apiServer:
-  replicaCount: 1
   resources:
     requests:
       cpu: "2"
@@ -22,11 +21,10 @@ apiServer:
     type: NodePort
     nodePort: 30080
   extraEnv:
-    EXTRA_JAVA_OPTIONS: "-Xmx2g"
+  - name: EXTRA_JAVA_OPTIONS
+    value: "-Xmx2g"
 
 frontend:
-  enabled: true
-  replicaCount: 1
   service:
     type: NodePort
     nodePort: 30081

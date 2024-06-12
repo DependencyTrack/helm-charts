@@ -20,6 +20,11 @@ spec:
       {{- with .Values.common.image.pullSecrets }}
       imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
+      initContainers:
+      {{- if .Values.frontend.initContainers }}
+      {{- toYaml .Values.frontend.initContainers | nindent 6 }}
+      {{- end }}
+      serviceAccountName: {{ include "hyades.serviceAccountName" . }}
       containers:
       - name: {{ include "hyades.frontendName" . }}
         image: {{ include "hyades.frontendImage" . }}
@@ -39,14 +44,12 @@ spec:
         {{- with .Values.frontend.args }}
         args: {{ toYaml . | nindent 8 }}
         {{- end }}
-        resources:
-          {{- toYaml .Values.frontend.resources | nindent 10 }}
+        resources: {{- toYaml .Values.frontend.resources | nindent 10 }}
         env:
         - name: API_BASE_URL
           value: {{ .Values.frontend.apiBaseUrl | quote }}
-        {{- range $k, $v := .Values.frontend.extraEnv }}
-        - name: {{ $k }}
-          value: {{ $v | quote }}
+        {{- with .Values.frontend.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.frontend.extraEnvFrom }}
         envFrom: {{ toYaml . | nindent 8 }}
@@ -55,6 +58,12 @@ spec:
         - name: web
           containerPort: 8080
           protocol: TCP
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        {{- with .Values.frontend.additionalVolumeMounts }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         livenessProbe:
           httpGet:
             scheme: HTTP
@@ -75,4 +84,21 @@ spec:
           periodSeconds: {{ .Values.frontend.probes.readiness.periodSeconds }}
           successThreshold: {{ .Values.frontend.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.frontend.probes.readiness.timeoutSeconds }}
+      {{- with .Values.frontend.extraContainers }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.frontend.tolerations }}
+      tolerations:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.frontend.nodeSelector }}
+      nodeSelector:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      {{- with .Values.frontend.additionalVolumes }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
   {{- end }}

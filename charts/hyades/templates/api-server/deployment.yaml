@@ -23,6 +23,11 @@ spec:
       {{- with .Values.common.image.pullSecrets }}
       imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
+      initContainers:
+      {{- with .Values.apiServer.initContainers }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      serviceAccountName: {{ include "hyades.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ .Values.apiServer.terminationGracePeriodSeconds }}
       containers:
       - name: {{ include "hyades.apiServerName" . }}
@@ -73,9 +78,8 @@ spec:
         - name: KAFKA_TOPIC_PREFIX
           value: {{ . | quote }}
         {{- end }}
-        {{- range $k, $v := .Values.apiServer.extraEnv }}
-        - name: {{ $k }}
-          value: {{ $v | quote }}
+        {{- with .Values.apiServer.extraEnv }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         {{- with .Values.apiServer.extraEnvFrom }}
         envFrom: {{ toYaml . | nindent 8 }}
@@ -94,6 +98,9 @@ spec:
           subPath: secret.key
           mountPath: /var/run/secrets/secret.key
           readOnly: true
+        {{- end }}
+        {{- with .Values.apiServer.additionalVolumeMounts }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
         livenessProbe:
           httpGet:
@@ -115,6 +122,15 @@ spec:
           periodSeconds: {{ .Values.apiServer.probes.readiness.periodSeconds }}
           successThreshold: {{ .Values.apiServer.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.apiServer.probes.readiness.timeoutSeconds }}
+      {{- with .Values.apiServer.extraContainers }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.apiServer.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.apiServer.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
       - name: data
         emptyDir: {}
@@ -124,5 +140,8 @@ spec:
       - name: secret-key
         secret:
           secretName: {{ . }}
+      {{- end }}
+      {{- with .Values.apiServer.additionalVolumes }}
+      {{- toYaml . | nindent 6 }}
       {{- end }}
 {{- end }}

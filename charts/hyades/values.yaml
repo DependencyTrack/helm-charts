@@ -17,14 +17,22 @@ common:
     createSecret: false
     # -- Use the secret key defined in an existing secret.
     existingSecretName: ""
+  serviceAccount:
+    create: true
+    annotations: {}
+    # -- Use the name of the name of the release by default, or specify a custom name.
+    name: ""
+    # -- Whether the serviceAccount should mount the token.
+    automount: false
 
 apiServer:
+  # -- Whether the API server shall be deployed.
   enabled: true
   replicaCount: 1
   annotations: {}
   image:
     repository: dependencytrack/hyades-apiserver
-    tag: 5.4.0
+    tag: snapshot
     pullPolicy: Always
   command: []
   args: []
@@ -35,7 +43,7 @@ apiServer:
     limits:
       cpu: "4"
       memory: 8Gi
-  extraEnv: {}
+  extraEnv: []
   extraEnvFrom: []
   probes:
     liveness:
@@ -53,6 +61,7 @@ apiServer:
   service:
     type: ClusterIP
     nodePort: ~
+    annotations: {}
   serviceMonitor:
     enabled: false
     namespace: monitoring
@@ -62,18 +71,41 @@ apiServer:
   # Should always be equal to or greater than the sum of `_DRAIN_TIMEOUT` configurations to ensure graceful shutdown.
   # Refer to https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/ for details.
   terminationGracePeriodSeconds: 60
-  ingress:
-    enabled: false
-    annotations: {}
-    hostname: "example.com"
+  initContainers: []
+  # Use the following to fix permissions on the /data volume.
+  # initContainers:
+  #   - name: fix-permissions
+  #     image: docker.io/library/busybox
+  #     command:
+  #       - sh
+  #       - -c
+  #       - |
+  #         chown -R 1000:1000 /data
+  #     volumeMounts:
+  #       - name: data
+  #         mountPath: /data
+  #     securityContext:
+  #       capabilities:
+  #         add:
+  #         - CHOWN
+  #       runAsNonRoot: false
+  #       runAsUser: 0
+  #       seccompProfile:
+  #         type: RuntimeDefault
+  extraContainers: []
+  additionalVolumes: []
+  additionalVolumeMounts: []
+  tolerations: {}
+  nodeSelector: {}
 
 frontend:
+  # -- Whether the frontend shall be deployed.
   enabled: true
   replicaCount: 1
   annotations: {}
   image:
     repository: dependencytrack/hyades-frontend
-    tag: 4.9.1
+    tag: snapshot
     pullPolicy: Always
   command: []
   args: []
@@ -102,20 +134,24 @@ frontend:
   service:
     type: ClusterIP
     nodePort: ~
-  ingress:
-    enabled: false
     annotations: {}
-    hostname: "example.com"
   apiBaseUrl: ""
+  initContainers: []
+  extraContainers: []
+  additionalVolumes: []
+  additionalVolumeMounts: []
+  tolerations: {}
+  nodeSelector: {}
 
 mirrorService:
+  # -- Whether the mirror service shall be deployed.
   enabled: true
   # -- Number of replicas. Should be <= 1.
   replicaCount: 1
   annotations: {}
   image:
     repository: dependencytrack/hyades-mirror-service
-    tag: 0.4.0-native
+    tag: snapshot-native
     pullPolicy: Always
   command: []
   args: []
@@ -141,14 +177,21 @@ mirrorService:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+  initContainers: []
+  extraContainers: []
+  additionalVolumes: []
+  additionalVolumeMounts: []
+  tolerations: {}
+  nodeSelector: {}
 
 notificationPublisher:
+  # -- Whether the notification publisher shall be deployed.
   enabled: true
   replicaCount: 1
   annotations: {}
   image:
     repository: dependencytrack/hyades-notification-publisher
-    tag: 0.4.0-native
+    tag: snapshot-native
     pullPolicy: Always
   command: []
   args: []
@@ -174,13 +217,21 @@ notificationPublisher:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+  initContainers: []
+  extraContainers: []
+  additionalVolumes: []
+  additionalVolumeMounts: []
+  tolerations: {}
+  nodeSelector: {}
 
 repoMetaAnalyzer:
+  # -- Whether the repository metadata analyzer shall be deployed.
+  enabled: true
   annotations: {}
   replicaCount: 1
   image:
     repository: dependencytrack/hyades-repository-meta-analyzer
-    tag: 0.4.0-native
+    tag: snapshot-native
     pullPolicy: Always
   command: []
   args: []
@@ -206,13 +257,21 @@ repoMetaAnalyzer:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+  initContainers: []
+  extraContainers: []
+  additionalVolumes: []
+  additionalVolumeMounts: []
+  tolerations: {}
+  nodeSelector: {}
 
 vulnAnalyzer:
+  # -- Whether the vulnerability analyzer shall be deployed.
+  enabled: true
   annotations: {}
   replicaCount: 1
   image:
     repository: dependencytrack/hyades-vulnerability-analyzer
-    tag: 0.4.0-native
+    tag: snapshot-native
     pullPolicy: Always
   command: []
   args: []
@@ -242,14 +301,32 @@ vulnAnalyzer:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+  service:
+    annotations: {}
+  initContainers: []
+  extraContainers: []
+  additionalVolumes: []
+  additionalVolumeMounts: []
+  tolerations: {}
+  nodeSelector: {}
+
+ingress:
+  enabled: false
+  annotations: {}
+  hostname: "example.com"
+  ingressClassName: ""
+  tls: []
+  #  - secretName: dt-tls
+  #    hosts:
+  #    - example.com
 
 extraObjects: []
-  # - apiVersion: "kubernetes-client.io/v1"
-  #   kind: ExternalSecret
-  #   metadata:
-  #     name: tempo-secrets
-  #   spec:
-  #     backendType: aws
-  #     data:
-  #       - key: secret-access-key
-  #         name: awssm-secret
+# - apiVersion: "kubernetes-client.io/v1"
+#   kind: ExternalSecret
+#   metadata:
+#     name: tempo-secrets
+#   spec:
+#     backendType: aws
+#     data:
+#       - key: secret-access-key
+#         name: awssm-secret

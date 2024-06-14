@@ -65,6 +65,9 @@
         "image": {
           "$ref": "#/$defs/image"
         },
+        "securityContext": {
+          "$ref": "#/$defs/securityContext"
+        },
         "command": {
           "type": "array",
           "items": {
@@ -140,6 +143,9 @@
         },
         "image": {
           "$ref": "#/$defs/image"
+        },
+        "securityContext": {
+          "$ref": "#/$defs/securityContext"
         },
         "command": {
           "type": "array",
@@ -232,6 +238,50 @@
           "type": "string"
         }
       }
+    },
+    "securityContext": {
+      "type": "object",
+      "properties": {
+        "allowPrivilegeEscalation": {
+          "type": "boolean"
+        },
+        "capabilities": {
+          "type": "object",
+          "properties": {
+            "add": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "drop": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "runAsNonRoot": {
+          "type": "boolean"
+        },
+        "readOnlyRootFilesystem": {
+          "type": "boolean"
+        },
+        "seccompProfile": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "RuntimeDefault",
+                "Unconfined",
+                "Localhost"
+              ]
+            }
+          }
+        }
+      },
+      "additionalProperties": true
     },
     "objectArray": {
       "type": "array",

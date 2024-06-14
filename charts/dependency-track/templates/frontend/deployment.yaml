@@ -28,15 +28,7 @@ spec:
       - name: {{ include "dependencytrack.frontendName" . }}
         image: {{ include "dependencytrack.frontendImage" . }}
         imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-          runAsNonRoot: true
-          readOnlyRootFilesystem: false # RO filesystems are not supported by the frontend
-          seccompProfile:
-            type: RuntimeDefault
+        securityContext: {{- toYaml .Values.frontend.securityContext | nindent 10 }}
         {{- with .Values.frontend.command }}
         command: {{ toYaml . | nindent 8 }}
         {{- end }}

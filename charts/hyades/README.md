@@ -1,6 +1,6 @@
 # hyades
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0-SNAPSHOT](https://img.shields.io/badge/AppVersion-1.0.0--SNAPSHOT-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0-SNAPSHOT](https://img.shields.io/badge/AppVersion-1.0.0--SNAPSHOT-informational?style=flat-square)
 
 Hyades is an incubating project for decoupling responsibilities from Dependency-Track's
 monolithic API server into separate, scalable services. It will eventually become
@@ -68,7 +68,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | apiServer.serviceMonitor.scrapeInternal | string | `"15s"` |  |
 | apiServer.serviceMonitor.scrapeTimeout | string | `"30s"` |  |
 | apiServer.terminationGracePeriodSeconds | int | `60` | Grace period for pod termination in seconds. Should always be equal to or greater than the sum of `_DRAIN_TIMEOUT` configurations to ensure graceful shutdown. Refer to https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/ for details. |
-| apiServer.tolerations | object | `{}` |  |
+| apiServer.tolerations | list | `[]` |  |
 | common.database.jdbcUrl | string | `""` |  |
 | common.database.password | string | `""` |  |
 | common.database.username | string | `""` |  |
@@ -93,7 +93,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | frontend.command | list | `[]` |  |
 | frontend.enabled | bool | `true` | Whether the frontend shall be deployed. |
 | frontend.extraContainers | list | `[]` |  |
-| frontend.extraEnv | object | `{}` |  |
+| frontend.extraEnv | list | `[]` |  |
 | frontend.extraEnvFrom | list | `[]` |  |
 | frontend.image.pullPolicy | string | `"Always"` |  |
 | frontend.image.repository | string | `"dependencytrack/hyades-frontend"` |  |
@@ -118,7 +118,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | frontend.service.annotations | object | `{}` |  |
 | frontend.service.nodePort | string | `nil` |  |
 | frontend.service.type | string | `"ClusterIP"` |  |
-| frontend.tolerations | object | `{}` |  |
+| frontend.tolerations | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.enabled | bool | `false` |  |
 | ingress.hostname | string | `"example.com"` |  |
@@ -131,7 +131,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | mirrorService.command | list | `[]` |  |
 | mirrorService.enabled | bool | `true` | Whether the mirror service shall be deployed. |
 | mirrorService.extraContainers | list | `[]` |  |
-| mirrorService.extraEnv | object | `{}` |  |
+| mirrorService.extraEnv | list | `[]` |  |
 | mirrorService.extraEnvFrom | list | `[]` |  |
 | mirrorService.image.pullPolicy | string | `"Always"` |  |
 | mirrorService.image.repository | string | `"dependencytrack/hyades-mirror-service"` |  |
@@ -153,7 +153,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | mirrorService.resources.limits.memory | string | `"2Gi"` |  |
 | mirrorService.resources.requests.cpu | string | `"500m"` |  |
 | mirrorService.resources.requests.memory | string | `"512Mi"` |  |
-| mirrorService.tolerations | object | `{}` |  |
+| mirrorService.tolerations | list | `[]` |  |
 | notificationPublisher.additionalVolumeMounts | list | `[]` |  |
 | notificationPublisher.additionalVolumes | list | `[]` |  |
 | notificationPublisher.annotations | object | `{}` |  |
@@ -161,7 +161,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | notificationPublisher.command | list | `[]` |  |
 | notificationPublisher.enabled | bool | `true` | Whether the notification publisher shall be deployed. |
 | notificationPublisher.extraContainers | list | `[]` |  |
-| notificationPublisher.extraEnv | object | `{}` |  |
+| notificationPublisher.extraEnv | list | `[]` |  |
 | notificationPublisher.extraEnvFrom | list | `[]` |  |
 | notificationPublisher.image.pullPolicy | string | `"Always"` |  |
 | notificationPublisher.image.repository | string | `"dependencytrack/hyades-notification-publisher"` |  |
@@ -183,7 +183,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | notificationPublisher.resources.limits.memory | string | `"2Gi"` |  |
 | notificationPublisher.resources.requests.cpu | string | `"500m"` |  |
 | notificationPublisher.resources.requests.memory | string | `"512Mi"` |  |
-| notificationPublisher.tolerations | object | `{}` |  |
+| notificationPublisher.tolerations | list | `[]` |  |
 | repoMetaAnalyzer.additionalVolumeMounts | list | `[]` |  |
 | repoMetaAnalyzer.additionalVolumes | list | `[]` |  |
 | repoMetaAnalyzer.annotations | object | `{}` |  |
@@ -191,7 +191,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | repoMetaAnalyzer.command | list | `[]` |  |
 | repoMetaAnalyzer.enabled | bool | `true` | Whether the repository metadata analyzer shall be deployed. |
 | repoMetaAnalyzer.extraContainers | list | `[]` |  |
-| repoMetaAnalyzer.extraEnv | object | `{}` |  |
+| repoMetaAnalyzer.extraEnv | list | `[]` |  |
 | repoMetaAnalyzer.extraEnvFrom | list | `[]` |  |
 | repoMetaAnalyzer.image.pullPolicy | string | `"Always"` |  |
 | repoMetaAnalyzer.image.repository | string | `"dependencytrack/hyades-repository-meta-analyzer"` |  |
@@ -213,7 +213,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | repoMetaAnalyzer.resources.limits.memory | string | `"2Gi"` |  |
 | repoMetaAnalyzer.resources.requests.cpu | string | `"500m"` |  |
 | repoMetaAnalyzer.resources.requests.memory | string | `"512Mi"` |  |
-| repoMetaAnalyzer.tolerations | object | `{}` |  |
+| repoMetaAnalyzer.tolerations | list | `[]` |  |
 | vulnAnalyzer.additionalVolumeMounts | list | `[]` |  |
 | vulnAnalyzer.additionalVolumes | list | `[]` |  |
 | vulnAnalyzer.annotations | object | `{}` |  |
@@ -221,7 +221,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | vulnAnalyzer.command | list | `[]` |  |
 | vulnAnalyzer.enabled | bool | `true` | Whether the vulnerability analyzer shall be deployed. |
 | vulnAnalyzer.extraContainers | list | `[]` |  |
-| vulnAnalyzer.extraEnv | object | `{}` |  |
+| vulnAnalyzer.extraEnv | list | `[]` |  |
 | vulnAnalyzer.extraEnvFrom | list | `[]` |  |
 | vulnAnalyzer.image.pullPolicy | string | `"Always"` |  |
 | vulnAnalyzer.image.repository | string | `"dependencytrack/hyades-vulnerability-analyzer"` |  |
@@ -247,5 +247,5 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | vulnAnalyzer.resources.requests.cpu | string | `"500m"` |  |
 | vulnAnalyzer.resources.requests.memory | string | `"512Mi"` |  |
 | vulnAnalyzer.service.annotations | object | `{}` |  |
-| vulnAnalyzer.tolerations | object | `{}` |  |
+| vulnAnalyzer.tolerations | list | `[]` |  |
 

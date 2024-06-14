@@ -95,7 +95,7 @@ apiServer:
   extraContainers: []
   additionalVolumes: []
   additionalVolumeMounts: []
-  tolerations: {}
+  tolerations: []
   nodeSelector: {}
 
 frontend:
@@ -116,7 +116,7 @@ frontend:
     limits:
       cpu: 500m
       memory: 128Mi
-  extraEnv: {}
+  extraEnv: []
   extraEnvFrom: []
   probes:
     liveness:
@@ -140,7 +140,7 @@ frontend:
   extraContainers: []
   additionalVolumes: []
   additionalVolumeMounts: []
-  tolerations: {}
+  tolerations: []
   nodeSelector: {}
 
 mirrorService:
@@ -162,7 +162,7 @@ mirrorService:
     limits:
       cpu: "2"
       memory: 2Gi
-  extraEnv: {}
+  extraEnv: []
   extraEnvFrom: []
   probes:
     liveness:
@@ -181,7 +181,7 @@ mirrorService:
   extraContainers: []
   additionalVolumes: []
   additionalVolumeMounts: []
-  tolerations: {}
+  tolerations: []
   nodeSelector: {}
 
 notificationPublisher:
@@ -202,7 +202,7 @@ notificationPublisher:
     limits:
       cpu: "2"
       memory: 2Gi
-  extraEnv: {}
+  extraEnv: []
   extraEnvFrom: []
   probes:
     liveness:
@@ -221,7 +221,7 @@ notificationPublisher:
   extraContainers: []
   additionalVolumes: []
   additionalVolumeMounts: []
-  tolerations: {}
+  tolerations: []
   nodeSelector: {}
 
 repoMetaAnalyzer:
@@ -242,7 +242,7 @@ repoMetaAnalyzer:
     limits:
       cpu: "2"
       memory: 2Gi
-  extraEnv: {}
+  extraEnv: []
   extraEnvFrom: []
   probes:
     liveness:
@@ -261,7 +261,7 @@ repoMetaAnalyzer:
   extraContainers: []
   additionalVolumes: []
   additionalVolumeMounts: []
-  tolerations: {}
+  tolerations: []
   nodeSelector: {}
 
 vulnAnalyzer:
@@ -286,7 +286,7 @@ vulnAnalyzer:
     enabled: false
     className: ""
     size: 2Gi
-  extraEnv: {}
+  extraEnv: []
   extraEnvFrom: []
   probes:
     liveness:
@@ -307,7 +307,7 @@ vulnAnalyzer:
   extraContainers: []
   additionalVolumes: []
   additionalVolumeMounts: []
-  tolerations: {}
+  tolerations: []
   nodeSelector: {}
 
 ingress:

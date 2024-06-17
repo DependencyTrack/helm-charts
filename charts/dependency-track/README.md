@@ -1,6 +1,6 @@
 # dependency-track
 
-![Version: 0.9.1](https://img.shields.io/badge/Version-0.9.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.11.3](https://img.shields.io/badge/AppVersion-4.11.3-informational?style=flat-square)
+![Version: 0.10.0](https://img.shields.io/badge/Version-0.10.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.11.3](https://img.shields.io/badge/AppVersion-4.11.3-informational?style=flat-square)
 
 Dependency-Track is an intelligent Component Analysis platform
 that allows organizations to identify and reduce risk in the software supply chain.
@@ -51,6 +51,11 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.resources.limits.memory | string | `"5Gi"` |  |
 | apiServer.resources.requests.cpu | string | `"2"` |  |
 | apiServer.resources.requests.memory | string | `"5Gi"` |  |
+| apiServer.securityContext.allowPrivilegeEscalation | bool | `false` |  |
+| apiServer.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| apiServer.securityContext.readOnlyRootFilesystem | bool | `true` |  |
+| apiServer.securityContext.runAsNonRoot | bool | `true` |  |
+| apiServer.securityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | apiServer.service.annotations | object | `{}` |  |
 | apiServer.service.nodePort | string | `nil` |  |
 | apiServer.service.type | string | `"ClusterIP"` |  |
@@ -99,6 +104,11 @@ that allows organizations to identify and reduce risk in the software supply cha
 | frontend.resources.limits.memory | string | `"128Mi"` |  |
 | frontend.resources.requests.cpu | string | `"150m"` |  |
 | frontend.resources.requests.memory | string | `"64Mi"` |  |
+| frontend.securityContext.allowPrivilegeEscalation | bool | `false` |  |
+| frontend.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| frontend.securityContext.readOnlyRootFilesystem | bool | `false` |  |
+| frontend.securityContext.runAsNonRoot | bool | `true` |  |
+| frontend.securityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | frontend.service.annotations | object | `{}` |  |
 | frontend.service.nodePort | string | `nil` |  |
 | frontend.service.type | string | `"ClusterIP"` |  |

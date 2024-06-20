@@ -1,0 +1,148 @@
+{{- if eq .Values.apiServer.deploymentType "deployment" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dependencytrack.apiServerFullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "dependencytrack.apiServerLabels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {{- include "dependencytrack.apiServerSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "dependencytrack.apiServerSelectorLabels" . | nindent 8 }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        {{- with .Values.apiServer.annotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.common.image.pullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 6 }}
+      {{- end }}
+      initContainers:
+      {{- if .Values.frontend.initContainers }}
+      {{- toYaml .Values.frontend.initContainers | nindent 6 }}
+      {{- end }}
+      serviceAccount: {{ include "dependencytrack.serviceAccountName" . }}
+      containers:
+      - name: {{ include "dependencytrack.apiServerName" . }}
+        image: {{ include "dependencytrack.apiServerImage" . }}
+        imagePullPolicy: {{ .Values.apiServer.image.pullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
+        {{- with .Values.apiServer.command }}
+        command: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.apiServer.args }}
+        args: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        resources: {{- toYaml .Values.apiServer.resources | nindent 10 }}
+        env:
+        - name: ALPINE_DATA_DIRECTORY
+          value: "/data"
+        - name: ALPINE_METRICS_ENABLED
+          value: "true"
+        {{- if .Values.postgresql.enabled }}
+        - name: ALPINE_DATABASE_MODE
+          value: "external"
+        - name: ALPINE_DATABASE_DRIVER
+          value: "org.postgresql.Driver"
+        - name: ALPINE_DATABASE_URL
+          value: jdbc:postgresql://{{ .Release.Name }}-postgresql/{{ .Values.postgresql.postgresqlDatabase }}
+        - name: ALPINE_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-postgresql
+              key: postgresql-password
+        - name: ALPINE_DATABASE_USERNAME
+          value: {{ .Values.postgresql.postgresqlUsername }}
+        {{- end }}
+        {{- if (include "dependencytrack.secretKeySecretName" .) }}
+        - name: ALPINE_SECRET_KEY_PATH
+          value: "/var/run/secrets/secret.key"
+        {{- end }}
+        {{- range $k, $v := .Values.apiServer.extraEnv }}
+        - name: {{ $k }}
+          value: {{ $v | quote }}
+        {{- end }}
+        {{- with .Values.apiServer.extraEnvFrom }}
+        envFrom: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        ports:
+        - name: api
+          containerPort: 8080
+          protocol: TCP
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: tmp
+          mountPath: /tmp
+        {{- if (include "dependencytrack.secretKeySecretName" .) }}
+        - name: secret-key
+          subPath: secret.key
+          mountPath: /var/run/secrets/secret.key
+          readOnly: true
+        {{- end }}
+        {{- if .Values.apiServer.additionalVolumeMounts }}
+          {{- toYaml .Values.apiServer.additionalVolumeMounts | nindent 8 }}
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            port: web
+            path: /health/live
+          failureThreshold: {{ .Values.apiServer.probes.liveness.failureThreshold }}
+          initialDelaySeconds: {{ .Values.apiServer.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.apiServer.probes.liveness.periodSeconds }}
+          successThreshold: {{ .Values.apiServer.probes.liveness.successThreshold }}
+          timeoutSeconds: {{ .Values.apiServer.probes.liveness.timeoutSeconds }}
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            port: web
+            path: /health/ready
+          failureThreshold: {{ .Values.apiServer.probes.readiness.failureThreshold }}
+          initialDelaySeconds: {{ .Values.apiServer.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.apiServer.probes.readiness.periodSeconds }}
+          successThreshold: {{ .Values.apiServer.probes.readiness.successThreshold }}
+          timeoutSeconds: {{ .Values.apiServer.probes.readiness.timeoutSeconds }}
+      {{- if .Values.apiServer.extraContainers }}
+      {{- toYaml .Values.apiServer.extraContainers | nindent 6 }}
+      {{- end }}
+      {{- if .Values.apiServer.tolerations }}
+      tolerations:
+      {{- toYaml .Values.apiServer.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.apiServer.nodeSelector }}
+      nodeSelector:
+      {{- toYaml .Values.apiServer.nodeSelector | nindent 8 }}
+      {{- end }}
+      volumes:
+      {{- if not .Values.apiServer.persistentVolume.enabled }}
+      - name: data
+        {{- if .Values.apiServer.persistentVolume.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.apiServer.persistentVolume.existingClaim }}{{ .Values.apiServer.persistentVolume.existingClaim }}{{- else }}{{ include "common.names.fullname" . }}-apiserver{{- end }}
+        {{- else }}
+        emptyDir: { }
+        {{- end }}
+      {{- end }}
+      - name: tmp
+        emptyDir: { }
+      {{- with (include "dependencytrack.secretKeySecretName" .) }}
+      - name: secret-key
+        secret:
+          secretName: {{ . }}
+      {{- end }}
+  {{- end }}

@@ -20,6 +20,8 @@ common:
     automount: false
 
 apiServer:
+# -- The type of deployment. Can be either deployment or statefulSet.
+  deploymentType: statefulSet
   annotations: {}
   image:
     repository: dependencytrack/apiserver

@@ -1,3 +1,4 @@
+{{- if eq .Values.apiServer.deploymentType "statefulSet" }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet

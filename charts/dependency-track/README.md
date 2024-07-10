@@ -30,6 +30,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.extraEnv | list | `[]` |  |
 | apiServer.extraEnvFrom | list | `[]` |  |
 | apiServer.image.pullPolicy | string | `"IfNotPresent"` |  |
+| apiServer.image.registry | string | `""` | Override common registry |
 | apiServer.image.repository | string | `"dependencytrack/apiserver"` |  |
 | apiServer.image.tag | string | `nil` |  |
 | apiServer.initContainers | list | `[]` |  |
@@ -80,6 +81,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | frontend.extraEnv | list | `[]` |  |
 | frontend.extraEnvFrom | list | `[]` |  |
 | frontend.image.pullPolicy | string | `"IfNotPresent"` |  |
+| frontend.image.registry  | string | `""` | Override common registry |
 | frontend.image.repository | string | `"dependencytrack/frontend"` |  |
 | frontend.image.tag | string | `nil` |  |
 | frontend.initContainers | list | `[]` |  |

@@ -53,21 +53,6 @@ spec:
           value: "/data"
         - name: ALPINE_METRICS_ENABLED
           value: "true"
-        {{- if .Values.postgresql.enabled }}
-        - name: ALPINE_DATABASE_MODE
-          value: "external"
-        - name: ALPINE_DATABASE_DRIVER
-          value: "org.postgresql.Driver"
-        - name: ALPINE_DATABASE_URL
-          value: jdbc:postgresql://{{ .Release.Name }}-postgresql/{{ .Values.postgresql.postgresqlDatabase }}
-        - name: ALPINE_DATABASE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Release.Name }}-postgresql
-              key: postgresql-password
-        - name: ALPINE_DATABASE_USERNAME
-          value: {{ .Values.postgresql.postgresqlUsername }}
-        {{- end }}
         {{- if (include "dependencytrack.secretKeySecretName" .) }}
         - name: ALPINE_SECRET_KEY_PATH
           value: "/var/run/secrets/secret.key"

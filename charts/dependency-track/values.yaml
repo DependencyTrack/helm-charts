@@ -22,6 +22,7 @@ common:
 apiServer:
   annotations: {}
   image:
+    registry: ''
     repository: dependencytrack/apiserver
     tag: ~
     pullPolicy: IfNotPresent
@@ -105,6 +106,7 @@ frontend:
   replicaCount: 1
   annotations: {}
   image:
+    registry: ''
     repository: dependencytrack/frontend
     tag: ~
     pullPolicy: IfNotPresent

@@ -83,7 +83,7 @@ API server fully qualified name
 API server image
 */}}
 {{- define "dependencytrack.apiServerImage" -}}
-{{- printf "%s/%s:%s" .Values.common.image.registry .Values.apiServer.image.repository (.Values.apiServer.image.tag | default .Chart.AppVersion) -}}
+{{- printf "%s/%s:%s" (.Values.apiServer.image.registry | default .Values.common.image.registry) .Values.apiServer.image.repository (.Values.apiServer.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
 
 
@@ -123,7 +123,7 @@ Frontend fully qualified name
 Frontend image
 */}}
 {{- define "dependencytrack.frontendImage" -}}
-{{- printf "%s/%s:%s" .Values.common.image.registry .Values.frontend.image.repository (.Values.frontend.image.tag | default .Chart.AppVersion) -}}
+{{- printf "%s/%s:%s" (.Values.frontend.image.registry | default .Values.common.image.registry) .Values.frontend.image.repository (.Values.frontend.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
 
 {{/*

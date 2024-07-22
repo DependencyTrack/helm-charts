@@ -22,6 +22,7 @@ common:
 apiServer:
   annotations: {}
   image:
+    # -- Override common.image.registry for the API server.
     registry: ''
     repository: dependencytrack/apiserver
     tag: ~
@@ -106,6 +107,7 @@ frontend:
   replicaCount: 1
   annotations: {}
   image:
+    # -- Override common.image.registry for the frontend.
     registry: ''
     repository: dependencytrack/frontend
     tag: ~

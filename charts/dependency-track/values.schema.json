@@ -219,6 +219,9 @@
     "image": {
       "type": "object",
       "properties": {
+        "registry": {
+          "type": "string"
+        },
         "repository": {
           "type": "string"
         },

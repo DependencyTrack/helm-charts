@@ -1,6 +1,6 @@
 # dependency-track
 
-![Version: 0.11.0](https://img.shields.io/badge/Version-0.11.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.11.5](https://img.shields.io/badge/AppVersion-4.11.5-informational?style=flat-square)
+![Version: 0.12.0](https://img.shields.io/badge/Version-0.12.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.11.5](https://img.shields.io/badge/AppVersion-4.11.5-informational?style=flat-square)
 
 Dependency-Track is an intelligent Component Analysis platform
 that allows organizations to identify and reduce risk in the software supply chain.
@@ -30,7 +30,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.extraEnv | list | `[]` |  |
 | apiServer.extraEnvFrom | list | `[]` |  |
 | apiServer.image.pullPolicy | string | `"IfNotPresent"` |  |
-| apiServer.image.registry | string | `""` | Override common registry |
+| apiServer.image.registry | string | `""` | Override common.image.registry for the API server. |
 | apiServer.image.repository | string | `"dependencytrack/apiserver"` |  |
 | apiServer.image.tag | string | `nil` |  |
 | apiServer.initContainers | list | `[]` |  |
@@ -81,7 +81,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | frontend.extraEnv | list | `[]` |  |
 | frontend.extraEnvFrom | list | `[]` |  |
 | frontend.image.pullPolicy | string | `"IfNotPresent"` |  |
-| frontend.image.registry  | string | `""` | Override common registry |
+| frontend.image.registry | string | `""` | Override common.image.registry for the frontend. |
 | frontend.image.repository | string | `"dependencytrack/frontend"` |  |
 | frontend.image.tag | string | `nil` |  |
 | frontend.initContainers | list | `[]` |  |

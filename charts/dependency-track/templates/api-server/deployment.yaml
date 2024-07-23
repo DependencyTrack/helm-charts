@@ -64,7 +64,7 @@ spec:
         envFrom: {{ toYaml . | nindent 8 }}
         {{- end }}
         ports:
-        - name: api
+        - name: web
           containerPort: 8080
           protocol: TCP
         volumeMounts:

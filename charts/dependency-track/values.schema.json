@@ -59,6 +59,10 @@
     "apiServer": {
       "type": "object",
       "properties": {
+        "deploymentType": {
+          "enum": ["Deployment", "StatefulSet"]
+          }
+        },
         "annotations": {
           "type": "object"
         },

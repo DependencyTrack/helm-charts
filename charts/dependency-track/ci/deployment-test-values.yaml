@@ -1,0 +1,16 @@
+common:
+  secretKey:
+    createSecret: true
+
+apiServer:
+  deploymentType: Deployment
+  resources:
+    requests:
+      cpu: "1"
+      memory: "512Mi"
+    limits:
+      cpu: "2"
+      memory: "512Mi"
+  extraEnv:
+    - name: SYSTEM_REQUIREMENT_CHECK_ENABLED
+      value: "false"

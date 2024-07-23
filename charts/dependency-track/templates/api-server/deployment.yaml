@@ -1,13 +1,12 @@
-{{- if eq .Values.apiServer.deploymentType "StatefulSet" }}
+{{- if eq .Values.apiServer.deploymentType "Deployment" }}
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ include "dependencytrack.apiServerFullname" . }}
   namespace: {{ .Release.Namespace }}
   labels: {{- include "dependencytrack.apiServerLabels" . | nindent 4 }}
 spec:
-  serviceName: {{ include "dependencytrack.apiServerFullname" . }}
   replicas: 1
   selector:
     matchLabels: {{- include "dependencytrack.apiServerSelectorLabels" . | nindent 6 }}
@@ -114,7 +113,12 @@ spec:
       volumes:
       {{- if not .Values.apiServer.persistentVolume.enabled }}
       - name: data
+        {{- if .Values.apiServer.persistentVolume.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.apiServer.persistentVolume.existingClaim }}{{ .Values.apiServer.persistentVolume.existingClaim }}{{- else }}{{ include "common.names.fullname" . }}-apiserver{{- end }}
+        {{- else }}
         emptyDir: { }
+        {{- end }}
       {{- end }}
       - name: tmp
         emptyDir: { }
@@ -123,19 +127,4 @@ spec:
         secret:
           secretName: {{ . }}
       {{- end }}
-      {{- if .Values.apiServer.additionalVolumes }}
-        {{- toYaml .Values.apiServer.additionalVolumes | nindent 6 }}
-      {{- end }}
-  {{- if .Values.apiServer.persistentVolume.enabled }}
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      storageClassName: {{ .Values.apiServer.persistentVolume.className }}
-      resources:
-        requests:
-          storage: {{ .Values.apiServer.persistentVolume.size }}
-      accessModes:
-      - ReadWriteOnce
   {{- end }}
-{{- end }}

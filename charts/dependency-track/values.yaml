@@ -20,6 +20,8 @@ common:
     automount: false
 
 apiServer:
+# -- The type of deployment. Can be either Deployment or StatefulSet.
+  deploymentType: StatefulSet
   annotations: {}
   image:
     # -- Override common.image.registry for the API server.

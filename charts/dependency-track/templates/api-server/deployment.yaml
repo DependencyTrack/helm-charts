@@ -12,20 +12,20 @@ spec:
     matchLabels: {{- include "dependencytrack.apiServerSelectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels: {{- include "dependencytrack.apiServerSelectorLabels" . | nindent 8 }}
+      labels: {{ include "dependencytrack.apiServerSelectorLabels" . | nindent 8 }}
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: /metrics
         {{- with .Values.apiServer.annotations }}
-        {{- toYaml . | nindent 8 }}
+        {{ toYaml . | nindent 8 }}
         {{- end }}
     spec:
       {{- with .Values.common.image.pullSecrets }}
       imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
       initContainers:
-      {{- if .Values.frontend.initContainers }}
-      {{- toYaml .Values.frontend.initContainers | nindent 6 }}
+      {{- if .Values.apiServer.initContainers }}
+      {{- toYaml .Values.apiServer.initContainers | nindent 6 }}
       {{- end }}
       serviceAccount: {{ include "dependencytrack.serviceAccountName" . }}
       containers:
@@ -49,8 +49,6 @@ spec:
         {{- end }}
         resources: {{- toYaml .Values.apiServer.resources | nindent 10 }}
         env:
-        - name: ALPINE_DATA_DIRECTORY
-          value: "/data"
         - name: ALPINE_METRICS_ENABLED
           value: "true"
         {{- if (include "dependencytrack.secretKeySecretName" .) }}

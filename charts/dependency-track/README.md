@@ -1,6 +1,6 @@
 # dependency-track
 
-![Version: 0.12.0](https://img.shields.io/badge/Version-0.12.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.11.5](https://img.shields.io/badge/AppVersion-4.11.5-informational?style=flat-square)
+![Version: 0.13.0](https://img.shields.io/badge/Version-0.13.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.11.5](https://img.shields.io/badge/AppVersion-4.11.5-informational?style=flat-square)
 
 Dependency-Track is an intelligent Component Analysis platform
 that allows organizations to identify and reduce risk in the software supply chain.
@@ -26,6 +26,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.annotations | object | `{}` |  |
 | apiServer.args | list | `[]` |  |
 | apiServer.command | list | `[]` |  |
+| apiServer.deploymentType | string | `"StatefulSet"` | The type of deployment. Can be either Deployment or StatefulSet. |
 | apiServer.extraContainers | list | `[]` |  |
 | apiServer.extraEnv | list | `[]` |  |
 | apiServer.extraEnvFrom | list | `[]` |  |

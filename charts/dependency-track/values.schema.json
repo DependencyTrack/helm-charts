@@ -60,8 +60,10 @@
       "type": "object",
       "properties": {
         "deploymentType": {
-          "enum": ["Deployment", "StatefulSet"]
-          }
+          "enum": [
+            "Deployment",
+            "StatefulSet"
+          ]
         },
         "annotations": {
           "type": "object"

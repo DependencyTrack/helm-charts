@@ -71,7 +71,7 @@ spec:
         - name: KAFKA_STREAMS_STATE_DIR
           value: /var/lib/kafka-streams
         {{- with .Values.common.kafka.topicPrefix }}
-        - name: KAFKA_TOPIC_PREFIX
+        - name: DT_KAFKA_TOPIC_PREFIX
           value: {{ . | quote }}
         {{- end }}
         {{- with .Values.vulnAnalyzer.extraEnv }}

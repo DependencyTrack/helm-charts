@@ -132,6 +132,9 @@
         },
         "nodeSelector": {
           "type": "object"
+        },
+        "podSecurityContext": {
+          "type": "object"
         }
       }
     },

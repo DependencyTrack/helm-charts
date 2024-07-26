@@ -31,6 +31,8 @@ apiServer:
   replicaCount: 1
   annotations: {}
   image:
+    # -- Override common.image.registry for the API server.
+    registry: ""
     repository: dependencytrack/hyades-apiserver
     tag: snapshot
     pullPolicy: Always
@@ -104,6 +106,8 @@ frontend:
   replicaCount: 1
   annotations: {}
   image:
+    # -- Override common.image.registry for the API frontend.
+    registry: ""
     repository: dependencytrack/hyades-frontend
     tag: snapshot
     pullPolicy: Always
@@ -150,6 +154,8 @@ mirrorService:
   replicaCount: 1
   annotations: {}
   image:
+    # -- Override common.image.registry for the mirror service.
+    registry: ""
     repository: dependencytrack/hyades-mirror-service
     tag: snapshot-native
     pullPolicy: Always
@@ -190,6 +196,8 @@ notificationPublisher:
   replicaCount: 1
   annotations: {}
   image:
+    # -- Override common.image.registry for the notification publisher.
+    registry: ""
     repository: dependencytrack/hyades-notification-publisher
     tag: snapshot-native
     pullPolicy: Always
@@ -230,6 +238,8 @@ repoMetaAnalyzer:
   annotations: {}
   replicaCount: 1
   image:
+    # -- Override common.image.registry for the repository metadata analyzer.
+    registry: ""
     repository: dependencytrack/hyades-repository-meta-analyzer
     tag: snapshot-native
     pullPolicy: Always
@@ -270,6 +280,8 @@ vulnAnalyzer:
   annotations: {}
   replicaCount: 1
   image:
+    # -- Override common.image.registry for the vulnerability analyzer.
+    registry: ""
     repository: dependencytrack/hyades-vulnerability-analyzer
     tag: snapshot-native
     pullPolicy: Always

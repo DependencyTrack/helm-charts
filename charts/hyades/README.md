@@ -1,6 +1,6 @@
 # hyades
 
-![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0-SNAPSHOT](https://img.shields.io/badge/AppVersion-1.0.0--SNAPSHOT-informational?style=flat-square)
+![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0-SNAPSHOT](https://img.shields.io/badge/AppVersion-1.0.0--SNAPSHOT-informational?style=flat-square)
 
 Hyades is an incubating project for decoupling responsibilities from Dependency-Track's
 monolithic API server into separate, scalable services. It will eventually become
@@ -41,6 +41,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | apiServer.extraEnv | list | `[]` |  |
 | apiServer.extraEnvFrom | list | `[]` |  |
 | apiServer.image.pullPolicy | string | `"Always"` |  |
+| apiServer.image.registry | string | `""` | Override common.image.registry for the API server. |
 | apiServer.image.repository | string | `"dependencytrack/hyades-apiserver"` |  |
 | apiServer.image.tag | string | `"snapshot"` |  |
 | apiServer.initContainers | list | `[]` |  |
@@ -96,6 +97,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | frontend.extraEnv | list | `[]` |  |
 | frontend.extraEnvFrom | list | `[]` |  |
 | frontend.image.pullPolicy | string | `"Always"` |  |
+| frontend.image.registry | string | `""` | Override common.image.registry for the API frontend. |
 | frontend.image.repository | string | `"dependencytrack/hyades-frontend"` |  |
 | frontend.image.tag | string | `"snapshot"` |  |
 | frontend.initContainers | list | `[]` |  |
@@ -134,6 +136,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | mirrorService.extraEnv | list | `[]` |  |
 | mirrorService.extraEnvFrom | list | `[]` |  |
 | mirrorService.image.pullPolicy | string | `"Always"` |  |
+| mirrorService.image.registry | string | `""` | Override common.image.registry for the mirror service. |
 | mirrorService.image.repository | string | `"dependencytrack/hyades-mirror-service"` |  |
 | mirrorService.image.tag | string | `"snapshot-native"` |  |
 | mirrorService.initContainers | list | `[]` |  |
@@ -164,6 +167,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | notificationPublisher.extraEnv | list | `[]` |  |
 | notificationPublisher.extraEnvFrom | list | `[]` |  |
 | notificationPublisher.image.pullPolicy | string | `"Always"` |  |
+| notificationPublisher.image.registry | string | `""` | Override common.image.registry for the notification publisher. |
 | notificationPublisher.image.repository | string | `"dependencytrack/hyades-notification-publisher"` |  |
 | notificationPublisher.image.tag | string | `"snapshot-native"` |  |
 | notificationPublisher.initContainers | list | `[]` |  |
@@ -194,6 +198,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | repoMetaAnalyzer.extraEnv | list | `[]` |  |
 | repoMetaAnalyzer.extraEnvFrom | list | `[]` |  |
 | repoMetaAnalyzer.image.pullPolicy | string | `"Always"` |  |
+| repoMetaAnalyzer.image.registry | string | `""` | Override common.image.registry for the repository metadata analyzer. |
 | repoMetaAnalyzer.image.repository | string | `"dependencytrack/hyades-repository-meta-analyzer"` |  |
 | repoMetaAnalyzer.image.tag | string | `"snapshot-native"` |  |
 | repoMetaAnalyzer.initContainers | list | `[]` |  |
@@ -224,6 +229,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | vulnAnalyzer.extraEnv | list | `[]` |  |
 | vulnAnalyzer.extraEnvFrom | list | `[]` |  |
 | vulnAnalyzer.image.pullPolicy | string | `"Always"` |  |
+| vulnAnalyzer.image.registry | string | `""` | Override common.image.registry for the vulnerability analyzer. |
 | vulnAnalyzer.image.repository | string | `"dependencytrack/hyades-vulnerability-analyzer"` |  |
 | vulnAnalyzer.image.tag | string | `"snapshot-native"` |  |
 | vulnAnalyzer.initContainers | list | `[]` |  |

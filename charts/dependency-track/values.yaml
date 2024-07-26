@@ -84,6 +84,7 @@ apiServer:
     scrapeTimeout: 30s
   initContainers: []
   nodeSelector: {}
+  # deactivate this for openshift
   podSecurityContext:
     fsGroup: 1000
 

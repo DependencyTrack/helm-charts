@@ -29,7 +29,9 @@ spec:
       {{- toYaml .Values.apiServer.initContainers | nindent 6 }}
       {{- end }}
       serviceAccount: {{ include "dependencytrack.serviceAccountName" . }}
-      securityContext: {{- toYaml .Values.apiServer.podSecurityContext | nindent 8 }}
+      {{- with .Values.apiServer.podSecurityContext }}
+      securityContext: {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: {{ include "dependencytrack.apiServerName" . }}
         image: {{ include "dependencytrack.apiServerImage" . }}

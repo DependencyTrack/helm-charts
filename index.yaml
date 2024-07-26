@@ -393,6 +393,41 @@ entries:
   hyades:
   - apiVersion: v2
     appVersion: 1.0.0-SNAPSHOT
+    created: "2024-07-26T10:43:41.648320512Z"
+    description: 'Hyades is an incubating project for decoupling responsibilities
+      from Dependency-Track''s monolithic API server into separate, scalable services.
+      It will eventually become Dependency-Track version 5. HYADES IS NOT CONSIDERED
+      GENERALLY AVAILABLE YET, and breaking changes may be introduced without prior
+      notice. Use this chart locally or in test environments, but don''t rely on it
+      in production yet. The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hyades/issues/860'
+    digest: c715a3b09fb1c672f2b3a8049c48a63169727197ea6778f9b6b6bd40fd5d9969
+    home: https://github.com/DependencyTrack/hyades
+    icon: https://avatars.githubusercontent.com/u/40258585
+    maintainers:
+    - email: nscuro@protonmail.com
+      name: nscuro
+      url: https://github.com/nscuro
+    - email: meha.bhargava@citi.com
+      name: mehab
+      url: https://github.com/mehab
+    - email: sahiba.mittal@citi.com
+      name: sahibamittal
+      url: https://github.com/sahibamittal
+    - email: vithika.shukla@citi.com
+      name: VithikaS
+      url: https://github.com/VithikaS
+    name: hyades
+    sources:
+    - https://github.com/DependencyTrack/helm-charts/tree/main/charts/hyades
+    - https://github.com/DependencyTrack/hyades
+    - https://github.com/DependencyTrack/hyades-apiserver
+    - https://github.com/DependencyTrack/hyades-frontend
+    type: application
+    urls:
+    - https://github.com/DependencyTrack/helm-charts/releases/download/hyades-0.5.0/hyades-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
+    appVersion: 1.0.0-SNAPSHOT
     created: "2024-06-24T09:57:28.262697489Z"
     description: 'Hyades is an incubating project for decoupling responsibilities
       from Dependency-Track''s monolithic API server into separate, scalable services.
@@ -496,4 +531,4 @@ entries:
     urls:
     - https://github.com/DependencyTrack/helm-charts/releases/download/hyades-0.2.0/hyades-0.2.0.tgz
     version: 0.2.0
-generated: "2024-07-25T14:35:47.741148069Z"
+generated: "2024-07-26T10:43:41.648403547Z"

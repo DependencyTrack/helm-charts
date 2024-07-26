@@ -83,7 +83,7 @@ API server fully qualified name
 API server image
 */}}
 {{- define "hyades.apiServerImage" -}}
-{{- printf "%s/%s:%s" .Values.common.image.registry .Values.apiServer.image.repository (.Values.apiServer.image.tag | default .Chart.AppVersion) -}}
+{{- printf "%s/%s:%s" (.Values.apiServer.image.registry | default .Values.common.image.registry) .Values.apiServer.image.repository (.Values.apiServer.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
 
 
@@ -123,7 +123,7 @@ Frontend fully qualified name
 Frontend image
 */}}
 {{- define "hyades.frontendImage" -}}
-{{- printf "%s/%s:%s" .Values.common.image.registry .Values.frontend.image.repository (.Values.frontend.image.tag | default .Chart.AppVersion) -}}
+{{- printf "%s/%s:%s" (.Values.frontend.image.registry | default .Values.common.image.registry) .Values.frontend.image.repository (.Values.frontend.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
 
 
@@ -163,7 +163,7 @@ Mirror service fully qualified name
 Mirror service image
 */}}
 {{- define "hyades.mirrorServiceImage" -}}
-{{- printf "%s/%s:%s" .Values.common.image.registry .Values.mirrorService.image.repository (.Values.mirrorService.image.tag | default .Chart.AppVersion) -}}
+{{- printf "%s/%s:%s" (.Values.mirrorService.image.registry | default .Values.common.image.registry) .Values.mirrorService.image.repository (.Values.mirrorService.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
 
 
@@ -203,7 +203,7 @@ Notification publisher fully qualified name
 Notification publisher image
 */}}
 {{- define "hyades.notificationPublisherImage" -}}
-{{- printf "%s/%s:%s" .Values.common.image.registry .Values.notificationPublisher.image.repository (.Values.notificationPublisher.image.tag | default .Chart.AppVersion) -}}
+{{- printf "%s/%s:%s" (.Values.notificationPublisher.image.registry | default .Values.common.image.registry) .Values.notificationPublisher.image.repository (.Values.notificationPublisher.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
 
 
@@ -243,7 +243,7 @@ Repository metadata analyzer fully qualified name
 Repository metadata analyzer image
 */}}
 {{- define "hyades.repoMetaAnalyzerImage" -}}
-{{- printf "%s/%s:%s" .Values.common.image.registry .Values.repoMetaAnalyzer.image.repository (.Values.repoMetaAnalyzer.image.tag | default .Chart.AppVersion) -}}
+{{- printf "%s/%s:%s" (.Values.repoMetaAnalyzer.image.registry | default .Values.common.image.registry) .Values.repoMetaAnalyzer.image.repository (.Values.repoMetaAnalyzer.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
 
 
@@ -283,7 +283,7 @@ Vulnerability analyzer fully qualified name
 Vulnerability analyzer image
 */}}
 {{- define "hyades.vulnAnalyzerImage" -}}
-{{- printf "%s/%s:%s" .Values.common.image.registry .Values.vulnAnalyzer.image.repository (.Values.vulnAnalyzer.image.tag | default .Chart.AppVersion) -}}
+{{- printf "%s/%s:%s" (.Values.vulnAnalyzer.image.registry | default .Values.common.image.registry) .Values.vulnAnalyzer.image.repository (.Values.vulnAnalyzer.image.tag | default .Chart.AppVersion) -}}
 {{- end -}}
 
 {{/*

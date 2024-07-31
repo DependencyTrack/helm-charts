@@ -84,26 +84,9 @@ apiServer:
     scrapeTimeout: 30s
   initContainers: []
   nodeSelector: {}
-  # Use the following to fix permissions on the /data volume.
-  # initContainers:
-  #   - name: fix-permissions
-  #     image: docker.io/library/busybox
-  #     command:
-  #       - sh
-  #       - -c
-  #       - |
-  #         chown -R 1000:1000 /data
-  #     volumeMounts:
-  #       - name: data
-  #         mountPath: /data
-  #     securityContext:
-  #       capabilities:
-  #         add:
-  #         - CHOWN
-  #       runAsNonRoot: false
-  #       runAsUser: 0
-  #       seccompProfile:
-  #         type: RuntimeDefault
+  # deactivate this for openshift
+  podSecurityContext:
+    fsGroup: 1000
 
 frontend:
   replicaCount: 1

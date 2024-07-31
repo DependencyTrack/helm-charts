@@ -39,6 +39,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.persistentVolume.className | string | `""` |  |
 | apiServer.persistentVolume.enabled | bool | `false` |  |
 | apiServer.persistentVolume.size | string | `"5Gi"` |  |
+| apiServer.podSecurityContext.fsGroup | int | `1000` |  |
 | apiServer.probes.liveness.failureThreshold | int | `3` |  |
 | apiServer.probes.liveness.initialDelaySeconds | int | `10` |  |
 | apiServer.probes.liveness.periodSeconds | int | `15` |  |

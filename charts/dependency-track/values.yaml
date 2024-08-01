@@ -38,6 +38,11 @@ apiServer:
     limits:
       cpu: "4"
       memory: 5Gi
+  # -- Security context of the Pod.
+  # Aids in preventing permission issues with persistent volumes.
+  # For OpenShift, explicitly set this to null.
+  podSecurityContext:
+    fsGroup: 1000
   persistentVolume:
     enabled: false
     className: ""
@@ -83,10 +88,29 @@ apiServer:
     scrapeInternal: 15s
     scrapeTimeout: 30s
   initContainers: []
+  # Use the following to fix permissions on the /data volume,
+  # IF USING podSecurityContext IS NOT POSSIBLE (i.e. for OpenShift).
+  #
+  # initContainers:
+  # - name: fix-permissions
+  #   image: docker.io/library/busybox
+  #   command:
+  #   - sh
+  #   - -c
+  #   - |
+  #     chown -R 1000:1000 /data
+  #   volumeMounts:
+  #   - name: data
+  #     mountPath: /data
+  #   securityContext:
+  #     capabilities:
+  #       add:
+  #       - CHOWN
+  #     runAsNonRoot: false
+  #     runAsUser: 0
+  #     seccompProfile:
+  #       type: RuntimeDefault
   nodeSelector: {}
-  # deactivate this for openshift
-  podSecurityContext:
-    fsGroup: 1000
 
 frontend:
   replicaCount: 1

@@ -39,7 +39,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.persistentVolume.className | string | `""` |  |
 | apiServer.persistentVolume.enabled | bool | `false` |  |
 | apiServer.persistentVolume.size | string | `"5Gi"` |  |
-| apiServer.podSecurityContext.fsGroup | int | `1000` |  |
+| apiServer.podSecurityContext | object | `{"fsGroup":1000}` | Security context of the Pod. Aids in preventing permission issues with persistent volumes. For OpenShift, explicitly set this to null. |
 | apiServer.probes.liveness.failureThreshold | int | `3` |  |
 | apiServer.probes.liveness.initialDelaySeconds | int | `10` |  |
 | apiServer.probes.liveness.periodSeconds | int | `15` |  |

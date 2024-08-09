@@ -1,13 +1,12 @@
-{{- if and .Values.vulnAnalyzer.enabled .Values.vulnAnalyzer.useStatefulSet }}
+{{- if and .Values.vulnAnalyzer.enabled (not .Values.vulnAnalyzer.useStatefulSet) }}
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ include "hyades.vulnAnalyzerFullname" . }}
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.vulnAnalyzerLabels" . | nindent 4 }}
 spec:
-  serviceName: {{ include "hyades.vulnAnalyzerFullname" . }}-headless
   replicas: {{ .Values.vulnAnalyzer.replicaCount }}
   selector:
     matchLabels: {{- include "hyades.vulnAnalyzerSelectorLabels" . | nindent 6 }}
@@ -64,12 +63,6 @@ spec:
         {{- end }}
         - name: KAFKA_BOOTSTRAP_SERVERS
           value: {{ tpl .Values.common.kafka.bootstrapServers $ | quote }}
-        - name: KAFKA_STREAMS_GROUP_INSTANCE_ID
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: KAFKA_STREAMS_STATE_DIR
-          value: /var/lib/kafka-streams
         {{- with .Values.common.kafka.topicPrefix }}
         - name: DT_KAFKA_TOPIC_PREFIX
           value: {{ . | quote }}
@@ -87,8 +80,6 @@ spec:
         volumeMounts:
         - name: tmp
           mountPath: /tmp
-        - name: kafka-streams-state
-          mountPath: /var/lib/kafka-streams
         {{- with .Values.vulnAnalyzer.additionalVolumeMounts }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -124,23 +115,7 @@ spec:
       volumes:
       - name: tmp
         emptyDir: {}
-      {{- if not .Values.vulnAnalyzer.persistentVolume.enabled }}
-      - name: kafka-streams-state
-        emptyDir: {}
-      {{- end }}
       {{- with .Values.vulnAnalyzer.additionalVolumes }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
-  {{- if .Values.vulnAnalyzer.persistentVolume.enabled }}
-  volumeClaimTemplates:
-  - metadata:
-      name: kafka-streams-state
-    spec:
-      storageClassName: {{ .Values.vulnAnalyzer.persistentVolume.className }}
-      resources:
-        requests:
-          storage: {{ .Values.vulnAnalyzer.persistentVolume.size }}
-      accessModes:
-      - ReadWriteOnce
-  {{- end }}
 {{- end }}

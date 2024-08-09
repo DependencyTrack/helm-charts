@@ -277,6 +277,11 @@ repoMetaAnalyzer:
 vulnAnalyzer:
   # -- Whether the vulnerability analyzer shall be deployed.
   enabled: true
+  # -- Whether to deploy the vulnerability analyzer as StatefulSet.
+  # Should be enabled when the STATE_STORE_TYPE environment variable
+  # is set to "rocks_db", to allow for reliable storage of application
+  # state to disk. Should be used in combination with persistentVolume.enabled.
+  useStatefulSet: false
   annotations: {}
   replicaCount: 1
   image:
@@ -295,6 +300,12 @@ vulnAnalyzer:
       cpu: "2"
       memory: 2Gi
   persistentVolume:
+    # -- Whether to use a persistent volume to store application state.
+    # Has no effect unless useStatefulSet is true. Is pointless unless
+    # the STATE_STORE_TYPE environment variable is set to "rocks_db",
+    # since state is kept in memory per default. A volume will be created
+    # for each Pod, via volumeClaimTemplates, since state must not be shared
+    # between multiple replicas.
     enabled: false
     className: ""
     size: 2Gi

@@ -235,7 +235,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | vulnAnalyzer.initContainers | list | `[]` |  |
 | vulnAnalyzer.nodeSelector | object | `{}` |  |
 | vulnAnalyzer.persistentVolume.className | string | `""` |  |
-| vulnAnalyzer.persistentVolume.enabled | bool | `false` |  |
+| vulnAnalyzer.persistentVolume.enabled | bool | `false` | Whether to use a persistent volume to store application state. Has no effect unless useStatefulSet is true. Is pointless unless the STATE_STORE_TYPE environment variable is set to "rocks_db", since state is kept in memory per default. A volume will be created for each Pod, via volumeClaimTemplates, since state must not be shared between multiple replicas. |
 | vulnAnalyzer.persistentVolume.size | string | `"2Gi"` |  |
 | vulnAnalyzer.probes.liveness.failureThreshold | int | `3` |  |
 | vulnAnalyzer.probes.liveness.initialDelaySeconds | int | `10` |  |
@@ -254,4 +254,5 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | vulnAnalyzer.resources.requests.memory | string | `"512Mi"` |  |
 | vulnAnalyzer.service.annotations | object | `{}` |  |
 | vulnAnalyzer.tolerations | list | `[]` |  |
+| vulnAnalyzer.useStatefulSet | bool | `false` | Whether to deploy the vulnerability analyzer as StatefulSet. Should be enabled when the STATE_STORE_TYPE environment variable is set to "rocks_db", to allow for reliable storage of application state to disk. Should be used in combination with persistentVolume.enabled. |
 

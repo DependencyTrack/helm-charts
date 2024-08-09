@@ -1,8 +1,4 @@
-{{- if .Values.vulnAnalyzer.enabled }}
-{{/*
-TODO: The headless service is only required when vulnAnalyzer is a StatefulSet.
-  Make this conditional when implementing https://github.com/DependencyTrack/helm-charts/issues/90
-*/}}
+{{- if and .Values.vulnAnalyzer.enabled .Values.vulnAnalyzer.useStatefulSet }}
 ---
 apiVersion: v1
 kind: Service

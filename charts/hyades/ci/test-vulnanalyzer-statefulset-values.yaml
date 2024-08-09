@@ -36,6 +36,7 @@ repoMetaAnalyzer:
       memory: 256Mi
 
 vulnAnalyzer:
+  useStatefulSet: true
   resources:
     requests:
       cpu: 500m
@@ -43,6 +44,11 @@ vulnAnalyzer:
     limits:
       cpu: 500m
       memory: 256Mi
+  persistentVolume:
+    enabled: true
+  extraEnv:
+    - name: STATE_STORE_TYPE
+      value: rocks_db
 
 extraObjects:
 - apiVersion: apps/v1

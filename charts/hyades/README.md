@@ -58,9 +58,9 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | apiServer.probes.readiness.timeoutSeconds | int | `5` |  |
 | apiServer.replicaCount | int | `1` |  |
 | apiServer.resources.limits.cpu | string | `"4"` |  |
-| apiServer.resources.limits.memory | string | `"8Gi"` |  |
+| apiServer.resources.limits.memory | string | `"2Gi"` |  |
 | apiServer.resources.requests.cpu | string | `"2"` |  |
-| apiServer.resources.requests.memory | string | `"4Gi"` |  |
+| apiServer.resources.requests.memory | string | `"2Gi"` |  |
 | apiServer.service.annotations | object | `{}` |  |
 | apiServer.service.nodePort | string | `nil` |  |
 | apiServer.service.type | string | `"ClusterIP"` |  |

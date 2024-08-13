@@ -396,6 +396,9 @@
         "enabled": {
           "type": "boolean"
         },
+        "useStatefulSet": {
+          "type": "boolean"
+        },
         "replicaCount": {
           "type": "integer"
         },

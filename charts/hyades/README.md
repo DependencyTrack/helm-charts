@@ -1,6 +1,6 @@
 # hyades
 
-![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0-SNAPSHOT](https://img.shields.io/badge/AppVersion-1.0.0--SNAPSHOT-informational?style=flat-square)
+![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.6.0-SNAPSHOT](https://img.shields.io/badge/AppVersion-0.6.0--SNAPSHOT-informational?style=flat-square)
 
 Hyades is an incubating project for decoupling responsibilities from Dependency-Track's
 monolithic API server into separate, scalable services. It will eventually become
@@ -43,7 +43,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | apiServer.image.pullPolicy | string | `"Always"` |  |
 | apiServer.image.registry | string | `""` | Override common.image.registry for the API server. |
 | apiServer.image.repository | string | `"dependencytrack/hyades-apiserver"` |  |
-| apiServer.image.tag | string | `"snapshot"` |  |
+| apiServer.image.tag | string | `"snapshot"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | apiServer.initContainers | list | `[]` |  |
 | apiServer.nodeSelector | object | `{}` |  |
 | apiServer.probes.liveness.failureThreshold | int | `3` |  |
@@ -99,7 +99,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | frontend.image.pullPolicy | string | `"Always"` |  |
 | frontend.image.registry | string | `""` | Override common.image.registry for the API frontend. |
 | frontend.image.repository | string | `"dependencytrack/hyades-frontend"` |  |
-| frontend.image.tag | string | `"snapshot"` |  |
+| frontend.image.tag | string | `"snapshot"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | frontend.initContainers | list | `[]` |  |
 | frontend.nodeSelector | object | `{}` |  |
 | frontend.probes.liveness.failureThreshold | int | `3` |  |
@@ -138,7 +138,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | mirrorService.image.pullPolicy | string | `"Always"` |  |
 | mirrorService.image.registry | string | `""` | Override common.image.registry for the mirror service. |
 | mirrorService.image.repository | string | `"dependencytrack/hyades-mirror-service"` |  |
-| mirrorService.image.tag | string | `"snapshot-native"` |  |
+| mirrorService.image.tag | string | `"snapshot-native"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | mirrorService.initContainers | list | `[]` |  |
 | mirrorService.nodeSelector | object | `{}` |  |
 | mirrorService.probes.liveness.failureThreshold | int | `3` |  |
@@ -169,7 +169,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | notificationPublisher.image.pullPolicy | string | `"Always"` |  |
 | notificationPublisher.image.registry | string | `""` | Override common.image.registry for the notification publisher. |
 | notificationPublisher.image.repository | string | `"dependencytrack/hyades-notification-publisher"` |  |
-| notificationPublisher.image.tag | string | `"snapshot-native"` |  |
+| notificationPublisher.image.tag | string | `"snapshot-native"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | notificationPublisher.initContainers | list | `[]` |  |
 | notificationPublisher.nodeSelector | object | `{}` |  |
 | notificationPublisher.probes.liveness.failureThreshold | int | `3` |  |
@@ -200,7 +200,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | repoMetaAnalyzer.image.pullPolicy | string | `"Always"` |  |
 | repoMetaAnalyzer.image.registry | string | `""` | Override common.image.registry for the repository metadata analyzer. |
 | repoMetaAnalyzer.image.repository | string | `"dependencytrack/hyades-repository-meta-analyzer"` |  |
-| repoMetaAnalyzer.image.tag | string | `"snapshot-native"` |  |
+| repoMetaAnalyzer.image.tag | string | `"snapshot-native"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | repoMetaAnalyzer.initContainers | list | `[]` |  |
 | repoMetaAnalyzer.nodeSelector | object | `{}` |  |
 | repoMetaAnalyzer.probes.liveness.failureThreshold | int | `3` |  |
@@ -231,7 +231,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | vulnAnalyzer.image.pullPolicy | string | `"Always"` |  |
 | vulnAnalyzer.image.registry | string | `""` | Override common.image.registry for the vulnerability analyzer. |
 | vulnAnalyzer.image.repository | string | `"dependencytrack/hyades-vulnerability-analyzer"` |  |
-| vulnAnalyzer.image.tag | string | `"snapshot-native"` |  |
+| vulnAnalyzer.image.tag | string | `"snapshot-native"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | vulnAnalyzer.initContainers | list | `[]` |  |
 | vulnAnalyzer.nodeSelector | object | `{}` |  |
 | vulnAnalyzer.persistentVolume.className | string | `""` |  |

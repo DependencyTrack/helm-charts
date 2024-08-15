@@ -1,6 +1,6 @@
 # dependency-track
 
-![Version: 0.16.0](https://img.shields.io/badge/Version-0.16.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.11.7](https://img.shields.io/badge/AppVersion-4.11.7-informational?style=flat-square)
+![Version: 0.17.0](https://img.shields.io/badge/Version-0.17.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.11.7](https://img.shields.io/badge/AppVersion-4.11.7-informational?style=flat-square)
 
 Dependency-Track is an intelligent Component Analysis platform
 that allows organizations to identify and reduce risk in the software supply chain.
@@ -33,7 +33,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.image.pullPolicy | string | `"IfNotPresent"` |  |
 | apiServer.image.registry | string | `""` | Override common.image.registry for the API server. |
 | apiServer.image.repository | string | `"dependencytrack/apiserver"` |  |
-| apiServer.image.tag | string | `nil` |  |
+| apiServer.image.tag | string | `""` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". Defaults to AppVersion of the chart. |
 | apiServer.initContainers | list | `[]` |  |
 | apiServer.nodeSelector | object | `{}` |  |
 | apiServer.persistentVolume.className | string | `""` |  |
@@ -85,7 +85,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | frontend.image.pullPolicy | string | `"IfNotPresent"` |  |
 | frontend.image.registry | string | `""` | Override common.image.registry for the frontend. |
 | frontend.image.repository | string | `"dependencytrack/frontend"` |  |
-| frontend.image.tag | string | `nil` |  |
+| frontend.image.tag | string | `""` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". Defaults to AppVersion of the chart. |
 | frontend.initContainers | list | `[]` |  |
 | frontend.nodeSelector | object | `{}` |  |
 | frontend.probes.liveness.failureThreshold | int | `3` |  |

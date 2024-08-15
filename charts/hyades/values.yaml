@@ -34,6 +34,8 @@ apiServer:
     # -- Override common.image.registry for the API server.
     registry: ""
     repository: dependencytrack/hyades-apiserver
+    # -- Can be a tag name such as "latest", or an image digest
+    # prefixed with "sha256:".
     tag: snapshot
     pullPolicy: Always
   command: []
@@ -109,6 +111,8 @@ frontend:
     # -- Override common.image.registry for the API frontend.
     registry: ""
     repository: dependencytrack/hyades-frontend
+    # -- Can be a tag name such as "latest", or an image digest
+    # prefixed with "sha256:".
     tag: snapshot
     pullPolicy: Always
   command: []
@@ -157,6 +161,8 @@ mirrorService:
     # -- Override common.image.registry for the mirror service.
     registry: ""
     repository: dependencytrack/hyades-mirror-service
+    # -- Can be a tag name such as "latest", or an image digest
+    # prefixed with "sha256:".
     tag: snapshot-native
     pullPolicy: Always
   command: []
@@ -199,6 +205,8 @@ notificationPublisher:
     # -- Override common.image.registry for the notification publisher.
     registry: ""
     repository: dependencytrack/hyades-notification-publisher
+    # -- Can be a tag name such as "latest", or an image digest
+    # prefixed with "sha256:".
     tag: snapshot-native
     pullPolicy: Always
   command: []
@@ -241,6 +249,8 @@ repoMetaAnalyzer:
     # -- Override common.image.registry for the repository metadata analyzer.
     registry: ""
     repository: dependencytrack/hyades-repository-meta-analyzer
+    # -- Can be a tag name such as "latest", or an image digest
+    # prefixed with "sha256:".
     tag: snapshot-native
     pullPolicy: Always
   command: []
@@ -288,6 +298,8 @@ vulnAnalyzer:
     # -- Override common.image.registry for the vulnerability analyzer.
     registry: ""
     repository: dependencytrack/hyades-vulnerability-analyzer
+    # -- Can be a tag name such as "latest", or an image digest
+    # prefixed with "sha256:".
     tag: snapshot-native
     pullPolicy: Always
   command: []

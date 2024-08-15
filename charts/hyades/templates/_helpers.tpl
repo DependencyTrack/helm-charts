@@ -53,7 +53,7 @@ API server labels
 {{- define "hyades.apiServerLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.apiServerSelectorLabels" . }}
-app.kubernetes.io/version: {{ (.Values.apiServer.image.tag | default .Chart.AppVersion) | quote }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
 {{- end -}}
 
 {{/*
@@ -83,7 +83,11 @@ API server fully qualified name
 API server image
 */}}
 {{- define "hyades.apiServerImage" -}}
+{{- if eq (substr 0 7 .Values.apiServer.image.tag) "sha256:" -}}
+{{- printf "%s/%s@%s" (.Values.apiServer.image.registry | default .Values.common.image.registry) .Values.apiServer.image.repository .Values.apiServer.image.tag -}}
+{{- else -}}
 {{- printf "%s/%s:%s" (.Values.apiServer.image.registry | default .Values.common.image.registry) .Values.apiServer.image.repository (.Values.apiServer.image.tag | default .Chart.AppVersion) -}}
+{{- end -}}
 {{- end -}}
 
 
@@ -93,7 +97,7 @@ Frontend labels
 {{- define "hyades.frontendLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.frontendSelectorLabels" . }}
-app.kubernetes.io/version: {{ (.Values.frontend.image.tag | default .Chart.AppVersion) | quote }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
 {{- end -}}
 
 {{/*
@@ -123,7 +127,11 @@ Frontend fully qualified name
 Frontend image
 */}}
 {{- define "hyades.frontendImage" -}}
+{{- if eq (substr 0 7 .Values.frontend.image.tag) "sha256:" -}}
+{{- printf "%s/%s@%s" (.Values.frontend.image.registry | default .Values.common.image.registry) .Values.frontend.image.repository .Values.frontend.image.tag -}}
+{{- else -}}
 {{- printf "%s/%s:%s" (.Values.frontend.image.registry | default .Values.common.image.registry) .Values.frontend.image.repository (.Values.frontend.image.tag | default .Chart.AppVersion) -}}
+{{- end -}}
 {{- end -}}
 
 
@@ -133,7 +141,7 @@ Mirror service labels
 {{- define "hyades.mirrorServiceLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.mirrorServiceSelectorLabels" . }}
-app.kubernetes.io/version: {{ (.Values.mirrorService.image.tag | default .Chart.AppVersion) | quote }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
 {{- end -}}
 
 {{/*
@@ -163,7 +171,11 @@ Mirror service fully qualified name
 Mirror service image
 */}}
 {{- define "hyades.mirrorServiceImage" -}}
+{{- if eq (substr 0 7 .Values.mirrorService.image.tag) "sha256:" -}}
+{{- printf "%s/%s@%s" (.Values.mirrorService.image.registry | default .Values.common.image.registry) .Values.mirrorService.image.repository .Values.mirrorService.image.tag -}}
+{{- else -}}
 {{- printf "%s/%s:%s" (.Values.mirrorService.image.registry | default .Values.common.image.registry) .Values.mirrorService.image.repository (.Values.mirrorService.image.tag | default .Chart.AppVersion) -}}
+{{- end -}}
 {{- end -}}
 
 
@@ -173,7 +185,7 @@ Notification publisher labels
 {{- define "hyades.notificationPublisherLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.notificationPublisherSelectorLabels" . }}
-app.kubernetes.io/version: {{ (.Values.notificationPublisher.image.tag | default .Chart.AppVersion) | quote }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
 {{- end -}}
 
 {{/*
@@ -203,7 +215,11 @@ Notification publisher fully qualified name
 Notification publisher image
 */}}
 {{- define "hyades.notificationPublisherImage" -}}
+{{- if eq (substr 0 7 .Values.notificationPublisher.image.tag) "sha256:" -}}
+{{- printf "%s/%s@%s" (.Values.notificationPublisher.image.registry | default .Values.common.image.registry) .Values.notificationPublisher.image.repository .Values.notificationPublisher.image.tag -}}
+{{- else -}}
 {{- printf "%s/%s:%s" (.Values.notificationPublisher.image.registry | default .Values.common.image.registry) .Values.notificationPublisher.image.repository (.Values.notificationPublisher.image.tag | default .Chart.AppVersion) -}}
+{{- end -}}
 {{- end -}}
 
 
@@ -213,7 +229,7 @@ Repository metadata analyzer labels
 {{- define "hyades.repoMetaAnalyzerLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.repoMetaAnalyzerSelectorLabels" . }}
-app.kubernetes.io/version: {{ (.Values.repoMetaAnalyzer.image.tag | default .Chart.AppVersion) | quote }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
 {{- end -}}
 
 {{/*
@@ -243,7 +259,11 @@ Repository metadata analyzer fully qualified name
 Repository metadata analyzer image
 */}}
 {{- define "hyades.repoMetaAnalyzerImage" -}}
+{{- if eq (substr 0 7 .Values.repoMetaAnalyzer.image.tag) "sha256:" -}}
+{{- printf "%s/%s@%s" (.Values.repoMetaAnalyzer.image.registry | default .Values.common.image.registry) .Values.repoMetaAnalyzer.image.repository .Values.repoMetaAnalyzer.image.tag -}}
+{{- else -}}
 {{- printf "%s/%s:%s" (.Values.repoMetaAnalyzer.image.registry | default .Values.common.image.registry) .Values.repoMetaAnalyzer.image.repository (.Values.repoMetaAnalyzer.image.tag | default .Chart.AppVersion) -}}
+{{- end -}}
 {{- end -}}
 
 
@@ -253,7 +273,7 @@ Vulnerability analyzer labels
 {{- define "hyades.vulnAnalyzerLabels" -}}
 {{ include "hyades.commonLabels" . }}
 {{ include "hyades.vulnAnalyzerSelectorLabels" . }}
-app.kubernetes.io/version: {{ (.Values.vulnAnalyzer.image.tag | default .Chart.AppVersion) | quote }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
 {{- end -}}
 
 {{/*
@@ -283,7 +303,11 @@ Vulnerability analyzer fully qualified name
 Vulnerability analyzer image
 */}}
 {{- define "hyades.vulnAnalyzerImage" -}}
+{{- if eq (substr 0 7 .Values.vulnAnalyzer.image.tag) "sha256:" -}}
+{{- printf "%s/%s@%s" (.Values.vulnAnalyzer.image.registry | default .Values.common.image.registry) .Values.vulnAnalyzer.image.repository .Values.vulnAnalyzer.image.tag -}}
+{{- else -}}
 {{- printf "%s/%s:%s" (.Values.vulnAnalyzer.image.registry | default .Values.common.image.registry) .Values.vulnAnalyzer.image.repository (.Values.vulnAnalyzer.image.tag | default .Chart.AppVersion) -}}
+{{- end -}}
 {{- end -}}
 
 {{/*

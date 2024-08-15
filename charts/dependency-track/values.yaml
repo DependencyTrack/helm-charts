@@ -27,7 +27,9 @@ apiServer:
     # -- Override common.image.registry for the API server.
     registry: ''
     repository: dependencytrack/apiserver
-    tag: ~
+    # -- Can be a tag name such as "latest", or an image digest
+    # prefixed with "sha256:". Defaults to AppVersion of the chart.
+    tag: ""
     pullPolicy: IfNotPresent
   command: []
   args: []
@@ -119,7 +121,9 @@ frontend:
     # -- Override common.image.registry for the frontend.
     registry: ''
     repository: dependencytrack/frontend
-    tag: ~
+    # -- Can be a tag name such as "latest", or an image digest
+    # prefixed with "sha256:". Defaults to AppVersion of the chart.
+    tag: ""
     pullPolicy: IfNotPresent
   command: []
   args: []

@@ -53,7 +53,7 @@ API server labels
 {{- define "dependencytrack.apiServerLabels" -}}
 {{ include "dependencytrack.commonLabels" . }}
 {{ include "dependencytrack.apiServerSelectorLabels" . }}
-app.kubernetes.io/version: {{ (.Values.apiServer.image.tag | default .Chart.AppVersion) | quote }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
 {{- end -}}
 
 {{/*
@@ -83,7 +83,11 @@ API server fully qualified name
 API server image
 */}}
 {{- define "dependencytrack.apiServerImage" -}}
+{{- if eq (substr 0 7 .Values.apiServer.image.tag) "sha256:" -}}
+{{- printf "%s/%s@%s" (.Values.apiServer.image.registry | default .Values.common.image.registry) .Values.apiServer.image.repository .Values.apiServer.image.tag -}}
+{{- else -}}
 {{- printf "%s/%s:%s" (.Values.apiServer.image.registry | default .Values.common.image.registry) .Values.apiServer.image.repository (.Values.apiServer.image.tag | default .Chart.AppVersion) -}}
+{{- end -}}
 {{- end -}}
 
 
@@ -93,7 +97,7 @@ Frontend labels
 {{- define "dependencytrack.frontendLabels" -}}
 {{ include "dependencytrack.commonLabels" . }}
 {{ include "dependencytrack.frontendSelectorLabels" . }}
-app.kubernetes.io/version: {{ (.Values.frontend.image.tag | default .Chart.AppVersion) | quote }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
 {{- end -}}
 
 {{/*
@@ -123,7 +127,11 @@ Frontend fully qualified name
 Frontend image
 */}}
 {{- define "dependencytrack.frontendImage" -}}
+{{- if eq (substr 0 7 .Values.frontend.image.tag) "sha256:" -}}
+{{- printf "%s/%s@%s" (.Values.frontend.image.registry | default .Values.common.image.registry) .Values.frontend.image.repository .Values.frontend.image.tag -}}
+{{- else -}}
 {{- printf "%s/%s:%s" (.Values.frontend.image.registry | default .Values.common.image.registry) .Values.frontend.image.repository (.Values.frontend.image.tag | default .Chart.AppVersion) -}}
+{{- end -}}
 {{- end -}}
 
 {{/*

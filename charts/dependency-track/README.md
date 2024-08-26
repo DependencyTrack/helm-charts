@@ -1,6 +1,6 @@
 # dependency-track
 
-![Version: 0.17.0](https://img.shields.io/badge/Version-0.17.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.11.7](https://img.shields.io/badge/AppVersion-4.11.7-informational?style=flat-square)
+![Version: 0.18.0](https://img.shields.io/badge/Version-0.18.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.11.7](https://img.shields.io/badge/AppVersion-4.11.7-informational?style=flat-square)
 
 Dependency-Track is an intelligent Component Analysis platform
 that allows organizations to identify and reduce risk in the software supply chain.
@@ -27,14 +27,14 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.args | list | `[]` |  |
 | apiServer.command | list | `[]` |  |
 | apiServer.deploymentType | string | `"StatefulSet"` | The type of deployment. Can be either Deployment or StatefulSet. |
-| apiServer.extraContainers | list | `[]` |  |
+| apiServer.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | apiServer.extraEnv | list | `[]` |  |
 | apiServer.extraEnvFrom | list | `[]` |  |
 | apiServer.image.pullPolicy | string | `"IfNotPresent"` |  |
 | apiServer.image.registry | string | `""` | Override common.image.registry for the API server. |
 | apiServer.image.repository | string | `"dependencytrack/apiserver"` |  |
 | apiServer.image.tag | string | `""` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". Defaults to AppVersion of the chart. |
-| apiServer.initContainers | list | `[]` |  |
+| apiServer.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
 | apiServer.nodeSelector | object | `{}` |  |
 | apiServer.persistentVolume.className | string | `""` |  |
 | apiServer.persistentVolume.enabled | bool | `false` |  |
@@ -54,6 +54,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.resources.limits.memory | string | `"5Gi"` |  |
 | apiServer.resources.requests.cpu | string | `"2"` |  |
 | apiServer.resources.requests.memory | string | `"5Gi"` |  |
+| apiServer.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context of the Container. |
 | apiServer.service.annotations | object | `{}` |  |
 | apiServer.service.nodePort | string | `nil` |  |
 | apiServer.service.type | string | `"ClusterIP"` |  |
@@ -79,14 +80,14 @@ that allows organizations to identify and reduce risk in the software supply cha
 | frontend.apiBaseUrl | string | `""` |  |
 | frontend.args | list | `[]` |  |
 | frontend.command | list | `[]` |  |
-| frontend.extraContainers | list | `[]` |  |
+| frontend.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | frontend.extraEnv | list | `[]` |  |
 | frontend.extraEnvFrom | list | `[]` |  |
 | frontend.image.pullPolicy | string | `"IfNotPresent"` |  |
 | frontend.image.registry | string | `""` | Override common.image.registry for the frontend. |
 | frontend.image.repository | string | `"dependencytrack/frontend"` |  |
 | frontend.image.tag | string | `""` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". Defaults to AppVersion of the chart. |
-| frontend.initContainers | list | `[]` |  |
+| frontend.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
 | frontend.nodeSelector | object | `{}` |  |
 | frontend.probes.liveness.failureThreshold | int | `3` |  |
 | frontend.probes.liveness.initialDelaySeconds | int | `5` |  |
@@ -103,6 +104,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | frontend.resources.limits.memory | string | `"128Mi"` |  |
 | frontend.resources.requests.cpu | string | `"150m"` |  |
 | frontend.resources.requests.memory | string | `"64Mi"` |  |
+| frontend.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":false,"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context of the Container. |
 | frontend.service.annotations | object | `{}` |  |
 | frontend.service.nodePort | string | `nil` |  |
 | frontend.service.type | string | `"ClusterIP"` |  |

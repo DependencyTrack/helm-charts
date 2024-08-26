@@ -92,6 +92,92 @@ API server image
 
 
 {{/*
+Initializer labels
+*/}}
+{{- define "hyades.initializerLabels" -}}
+{{ include "hyades.commonLabels" . }}
+{{ include "hyades.initializerSelectorLabels" . }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
+{{- end -}}
+
+{{/*
+Initializer selector labels
+*/}}
+{{- define "hyades.initializerSelectorLabels" -}}
+{{ include "hyades.commonSelectorLabels" . }}
+app.kubernetes.io/name: {{ printf "%s-initializer" (include "hyades.name" .) }}
+app.kubernetes.io/component: initializer
+{{- end -}}
+
+{{/*
+Initializer name
+*/}}
+{{- define "hyades.initializerName" -}}
+{{- printf "%s-initializer" (include "hyades.name" .) -}}
+{{- end -}}
+
+{{/*
+Initializer fully qualified name
+*/}}
+{{- define "hyades.initializerFullname" -}}
+{{- printf "%s-initializer" (include "hyades.fullname" .) -}}
+{{- end -}}
+
+{{/*
+Initializer image
+*/}}
+{{- define "hyades.initializerImage" -}}
+{{- if eq (substr 0 7 .Values.initializer.image.tag) "sha256:" -}}
+{{- printf "%s/%s@%s" (.Values.initializer.image.registry | default .Values.common.image.registry) .Values.initializer.image.repository .Values.initializer.image.tag -}}
+{{- else -}}
+{{- printf "%s/%s:%s" (.Values.initializer.image.registry | default .Values.common.image.registry) .Values.initializer.image.repository (.Values.initializer.image.tag | default .Chart.AppVersion) -}}
+{{- end -}}
+{{- end -}}
+
+
+{{/*
+Initializer waiter name
+*/}}
+{{- define "hyades.initializerWaiterName" -}}
+{{- printf "%s-waiter" (include "hyades.initializerName" .) -}}
+{{- end -}}
+
+{{/*
+Initializer waiter fully qualified name
+*/}}
+{{- define "hyades.initializerWaiterFullname" -}}
+{{- printf "%s-waiter" (include "hyades.initializerFullname" .) -}}
+{{- end -}}
+
+{{/*
+Initializer waiter image
+*/}}
+{{- define "hyades.initializerWaiterImage" -}}
+{{- if eq (substr 0 7 .Values.initializer.waiter.image.tag) "sha256:" -}}
+{{- printf "%s/%s@%s" (.Values.initializer.waiter.image.registry | default .Values.common.image.registry) .Values.initializer.waiter.image.repository .Values.initializer.waiter.image.tag -}}
+{{- else -}}
+{{- printf "%s/%s:%s" (.Values.initializer.waiter.image.registry | default .Values.common.image.registry) .Values.initializer.waiter.image.repository (.Values.initializer.waiter.image.tag | default .Chart.AppVersion) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Initializer waiter container
+*/}}
+{{- define "hyades.initializerWaiterContainer" -}}
+name: {{ include "hyades.initializerWaiterName" . }}
+image: {{ include "hyades.initializerWaiterImage" . }}
+imagePullPolicy: {{ .Values.initializer.waiter.image.pullPolicy }}
+args:
+- wait
+- --for
+- condition=complete
+- --timeout
+- "5m"
+- job/{{ include "hyades.initializerFullname" . }}
+{{- end -}}
+
+
+{{/*
 Frontend labels
 */}}
 {{- define "hyades.frontendLabels" -}}

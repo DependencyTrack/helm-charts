@@ -24,6 +24,9 @@ spec:
       imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
       initContainers:
+      {{- if .Values.initializer.enabled }}
+      - {{ include "hyades.initializerWaiterContainer" . | nindent 8 }}
+      {{- end }}
       {{- with .Values.mirrorService.initContainers }}
       {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}

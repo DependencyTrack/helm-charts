@@ -30,7 +30,7 @@ apiServer:
   enabled: true
   replicaCount: 1
   annotations: {}
-  image:
+  image: &apiServerImage
     # -- Override common.image.registry for the API server.
     registry: ""
     repository: dependencytrack/hyades-apiserver
@@ -113,6 +113,45 @@ apiServer:
   additionalVolumeMounts: []
   tolerations: []
   nodeSelector: {}
+
+initializer:
+  # -- Whether to enable the initializer Job.
+  # When enabled, an init container will be added to all
+  # deployments that require database access.
+  # The init container will wait for the initializer Job to complete.
+  # Requires the service account token to be mounted.
+  enabled: false
+  # -- Whether to NOT deploy the initializer Job as `post-install` and `post-upgrade`
+  # Helm hook. Deploying as Helm hook can create deadlock situations when `helm install`
+  # and `helm upgrade` are executed with `--wait` flag. See <https://github.com/helm/helm/issues/10555>.
+  # Note that without hooks, `helm upgrade` may fail due to Job fields being immutable.
+  noHelmHook: false
+  annotations: {}
+  image: *apiServerImage
+  command: []
+  args: []
+  resources:
+    requests:
+      cpu: 150m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  # -- Security context of the Container.
+  securityContext: *hyadesSecurityContext
+  extraEnv: []
+  extraEnvFrom: []
+  tolerations: []
+  nodeSelector: {}
+  waiter:
+    image:
+      registry: "docker.io"
+      repository: bitnami/kubectl
+      tag: latest
+      pullPolicy: Always
+    # -- Whether to create a Role with permissions to
+    # wait for Job completion, and bind it to the ServiceAccount.
+    createRole: true
 
 frontend:
   # -- Whether the frontend shall be deployed.

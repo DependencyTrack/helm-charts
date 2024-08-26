@@ -1,6 +1,6 @@
 # hyades
 
-![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.6.0-SNAPSHOT](https://img.shields.io/badge/AppVersion-0.6.0--SNAPSHOT-informational?style=flat-square)
+![Version: 0.7.0](https://img.shields.io/badge/Version-0.7.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.6.0-SNAPSHOT](https://img.shields.io/badge/AppVersion-0.6.0--SNAPSHOT-informational?style=flat-square)
 
 Hyades is an incubating project for decoupling responsibilities from Dependency-Track's
 monolithic API server into separate, scalable services. It will eventually become
@@ -37,14 +37,14 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | apiServer.args | list | `[]` |  |
 | apiServer.command | list | `[]` |  |
 | apiServer.enabled | bool | `true` | Whether the API server shall be deployed. |
-| apiServer.extraContainers | list | `[]` |  |
+| apiServer.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | apiServer.extraEnv | list | `[]` |  |
 | apiServer.extraEnvFrom | list | `[]` |  |
 | apiServer.image.pullPolicy | string | `"Always"` |  |
 | apiServer.image.registry | string | `""` | Override common.image.registry for the API server. |
 | apiServer.image.repository | string | `"dependencytrack/hyades-apiserver"` |  |
 | apiServer.image.tag | string | `"snapshot"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
-| apiServer.initContainers | list | `[]` |  |
+| apiServer.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
 | apiServer.nodeSelector | object | `{}` |  |
 | apiServer.probes.liveness.failureThreshold | int | `3` |  |
 | apiServer.probes.liveness.initialDelaySeconds | int | `10` |  |
@@ -61,6 +61,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | apiServer.resources.limits.memory | string | `"2Gi"` |  |
 | apiServer.resources.requests.cpu | string | `"2"` |  |
 | apiServer.resources.requests.memory | string | `"2Gi"` |  |
+| apiServer.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context of the Container. |
 | apiServer.service.annotations | object | `{}` |  |
 | apiServer.service.nodePort | string | `nil` |  |
 | apiServer.service.type | string | `"ClusterIP"` |  |
@@ -93,14 +94,14 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | frontend.args | list | `[]` |  |
 | frontend.command | list | `[]` |  |
 | frontend.enabled | bool | `true` | Whether the frontend shall be deployed. |
-| frontend.extraContainers | list | `[]` |  |
+| frontend.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | frontend.extraEnv | list | `[]` |  |
 | frontend.extraEnvFrom | list | `[]` |  |
 | frontend.image.pullPolicy | string | `"Always"` |  |
 | frontend.image.registry | string | `""` | Override common.image.registry for the API frontend. |
 | frontend.image.repository | string | `"dependencytrack/hyades-frontend"` |  |
 | frontend.image.tag | string | `"snapshot"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
-| frontend.initContainers | list | `[]` |  |
+| frontend.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
 | frontend.nodeSelector | object | `{}` |  |
 | frontend.probes.liveness.failureThreshold | int | `3` |  |
 | frontend.probes.liveness.initialDelaySeconds | int | `5` |  |
@@ -117,6 +118,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | frontend.resources.limits.memory | string | `"128Mi"` |  |
 | frontend.resources.requests.cpu | string | `"150m"` |  |
 | frontend.resources.requests.memory | string | `"64Mi"` |  |
+| frontend.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":false,"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context of the Container. |
 | frontend.service.annotations | object | `{}` |  |
 | frontend.service.nodePort | string | `nil` |  |
 | frontend.service.type | string | `"ClusterIP"` |  |
@@ -132,14 +134,14 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | mirrorService.args | list | `[]` |  |
 | mirrorService.command | list | `[]` |  |
 | mirrorService.enabled | bool | `true` | Whether the mirror service shall be deployed. |
-| mirrorService.extraContainers | list | `[]` |  |
+| mirrorService.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | mirrorService.extraEnv | list | `[]` |  |
 | mirrorService.extraEnvFrom | list | `[]` |  |
 | mirrorService.image.pullPolicy | string | `"Always"` |  |
 | mirrorService.image.registry | string | `""` | Override common.image.registry for the mirror service. |
 | mirrorService.image.repository | string | `"dependencytrack/hyades-mirror-service"` |  |
 | mirrorService.image.tag | string | `"snapshot-native"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
-| mirrorService.initContainers | list | `[]` |  |
+| mirrorService.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
 | mirrorService.nodeSelector | object | `{}` |  |
 | mirrorService.probes.liveness.failureThreshold | int | `3` |  |
 | mirrorService.probes.liveness.initialDelaySeconds | int | `10` |  |
@@ -156,6 +158,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | mirrorService.resources.limits.memory | string | `"2Gi"` |  |
 | mirrorService.resources.requests.cpu | string | `"500m"` |  |
 | mirrorService.resources.requests.memory | string | `"512Mi"` |  |
+| mirrorService.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context of the container. |
 | mirrorService.tolerations | list | `[]` |  |
 | notificationPublisher.additionalVolumeMounts | list | `[]` |  |
 | notificationPublisher.additionalVolumes | list | `[]` |  |
@@ -163,14 +166,14 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | notificationPublisher.args | list | `[]` |  |
 | notificationPublisher.command | list | `[]` |  |
 | notificationPublisher.enabled | bool | `true` | Whether the notification publisher shall be deployed. |
-| notificationPublisher.extraContainers | list | `[]` |  |
+| notificationPublisher.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | notificationPublisher.extraEnv | list | `[]` |  |
 | notificationPublisher.extraEnvFrom | list | `[]` |  |
 | notificationPublisher.image.pullPolicy | string | `"Always"` |  |
 | notificationPublisher.image.registry | string | `""` | Override common.image.registry for the notification publisher. |
 | notificationPublisher.image.repository | string | `"dependencytrack/hyades-notification-publisher"` |  |
 | notificationPublisher.image.tag | string | `"snapshot-native"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
-| notificationPublisher.initContainers | list | `[]` |  |
+| notificationPublisher.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
 | notificationPublisher.nodeSelector | object | `{}` |  |
 | notificationPublisher.probes.liveness.failureThreshold | int | `3` |  |
 | notificationPublisher.probes.liveness.initialDelaySeconds | int | `10` |  |
@@ -187,6 +190,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | notificationPublisher.resources.limits.memory | string | `"2Gi"` |  |
 | notificationPublisher.resources.requests.cpu | string | `"500m"` |  |
 | notificationPublisher.resources.requests.memory | string | `"512Mi"` |  |
+| notificationPublisher.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context of the container. |
 | notificationPublisher.tolerations | list | `[]` |  |
 | repoMetaAnalyzer.additionalVolumeMounts | list | `[]` |  |
 | repoMetaAnalyzer.additionalVolumes | list | `[]` |  |
@@ -194,14 +198,14 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | repoMetaAnalyzer.args | list | `[]` |  |
 | repoMetaAnalyzer.command | list | `[]` |  |
 | repoMetaAnalyzer.enabled | bool | `true` | Whether the repository metadata analyzer shall be deployed. |
-| repoMetaAnalyzer.extraContainers | list | `[]` |  |
+| repoMetaAnalyzer.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | repoMetaAnalyzer.extraEnv | list | `[]` |  |
 | repoMetaAnalyzer.extraEnvFrom | list | `[]` |  |
 | repoMetaAnalyzer.image.pullPolicy | string | `"Always"` |  |
 | repoMetaAnalyzer.image.registry | string | `""` | Override common.image.registry for the repository metadata analyzer. |
 | repoMetaAnalyzer.image.repository | string | `"dependencytrack/hyades-repository-meta-analyzer"` |  |
 | repoMetaAnalyzer.image.tag | string | `"snapshot-native"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
-| repoMetaAnalyzer.initContainers | list | `[]` |  |
+| repoMetaAnalyzer.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
 | repoMetaAnalyzer.nodeSelector | object | `{}` |  |
 | repoMetaAnalyzer.probes.liveness.failureThreshold | int | `3` |  |
 | repoMetaAnalyzer.probes.liveness.initialDelaySeconds | int | `10` |  |
@@ -218,6 +222,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | repoMetaAnalyzer.resources.limits.memory | string | `"2Gi"` |  |
 | repoMetaAnalyzer.resources.requests.cpu | string | `"500m"` |  |
 | repoMetaAnalyzer.resources.requests.memory | string | `"512Mi"` |  |
+| repoMetaAnalyzer.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context of the container. |
 | repoMetaAnalyzer.tolerations | list | `[]` |  |
 | vulnAnalyzer.additionalVolumeMounts | list | `[]` |  |
 | vulnAnalyzer.additionalVolumes | list | `[]` |  |
@@ -225,14 +230,14 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | vulnAnalyzer.args | list | `[]` |  |
 | vulnAnalyzer.command | list | `[]` |  |
 | vulnAnalyzer.enabled | bool | `true` | Whether the vulnerability analyzer shall be deployed. |
-| vulnAnalyzer.extraContainers | list | `[]` |  |
+| vulnAnalyzer.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | vulnAnalyzer.extraEnv | list | `[]` |  |
 | vulnAnalyzer.extraEnvFrom | list | `[]` |  |
 | vulnAnalyzer.image.pullPolicy | string | `"Always"` |  |
 | vulnAnalyzer.image.registry | string | `""` | Override common.image.registry for the vulnerability analyzer. |
 | vulnAnalyzer.image.repository | string | `"dependencytrack/hyades-vulnerability-analyzer"` |  |
 | vulnAnalyzer.image.tag | string | `"snapshot-native"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
-| vulnAnalyzer.initContainers | list | `[]` |  |
+| vulnAnalyzer.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
 | vulnAnalyzer.nodeSelector | object | `{}` |  |
 | vulnAnalyzer.persistentVolume.className | string | `""` |  |
 | vulnAnalyzer.persistentVolume.enabled | bool | `false` | Whether to use a persistent volume to store application state. Has no effect unless useStatefulSet is true. Is pointless unless the STATE_STORE_TYPE environment variable is set to "rocks_db", since state is kept in memory per default. A volume will be created for each Pod, via volumeClaimTemplates, since state must not be shared between multiple replicas. |
@@ -252,6 +257,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | vulnAnalyzer.resources.limits.memory | string | `"2Gi"` |  |
 | vulnAnalyzer.resources.requests.cpu | string | `"500m"` |  |
 | vulnAnalyzer.resources.requests.memory | string | `"512Mi"` |  |
+| vulnAnalyzer.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context of the container. |
 | vulnAnalyzer.service.annotations | object | `{}` |  |
 | vulnAnalyzer.tolerations | list | `[]` |  |
 | vulnAnalyzer.useStatefulSet | bool | `false` | Whether to deploy the vulnerability analyzer as StatefulSet. Should be enabled when the STATE_STORE_TYPE environment variable is set to "rocks_db", to allow for reliable storage of application state to disk. Should be used in combination with persistentVolume.enabled. |

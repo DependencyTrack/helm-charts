@@ -21,8 +21,8 @@ spec:
       imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
       initContainers:
-      {{- if .Values.frontend.initContainers }}
-      {{- toYaml .Values.frontend.initContainers | nindent 6 }}
+      {{- with .Values.frontend.initContainers }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
       serviceAccountName: {{ include "hyades.serviceAccountName" . }}
       containers:
@@ -77,7 +77,7 @@ spec:
           successThreshold: {{ .Values.frontend.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.frontend.probes.readiness.timeoutSeconds }}
       {{- with .Values.frontend.extraContainers }}
-      {{- toYaml . | nindent 6 }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
       {{- with .Values.frontend.tolerations }}
       tolerations:

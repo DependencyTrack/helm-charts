@@ -85,6 +85,7 @@ apiServer:
   # Should always be equal to or greater than the sum of `_DRAIN_TIMEOUT` configurations to ensure graceful shutdown.
   # Refer to https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/ for details.
   terminationGracePeriodSeconds: 60
+  # -- Additional init containers to deploy. Supports templating.
   initContainers: []
   # Use the following to fix permissions on the /data volume.
   # initContainers:
@@ -106,6 +107,7 @@ apiServer:
   #       runAsUser: 0
   #       seccompProfile:
   #         type: RuntimeDefault
+  # -- Additional containers to deploy. Supports templating.
   extraContainers: []
   additionalVolumes: []
   additionalVolumeMounts: []
@@ -165,7 +167,9 @@ frontend:
     nodePort: ~
     annotations: {}
   apiBaseUrl: ""
+  # -- Additional init containers to deploy. Supports templating.
   initContainers: []
+  # -- Additional containers to deploy. Supports templating.
   extraContainers: []
   additionalVolumes: []
   additionalVolumeMounts: []
@@ -212,7 +216,9 @@ mirrorService:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+  # -- Additional init containers to deploy. Supports templating.
   initContainers: []
+  # -- Additional containers to deploy. Supports templating.
   extraContainers: []
   additionalVolumes: []
   additionalVolumeMounts: []
@@ -258,7 +264,9 @@ notificationPublisher:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+  # -- Additional init containers to deploy. Supports templating.
   initContainers: []
+  # -- Additional containers to deploy. Supports templating.
   extraContainers: []
   additionalVolumes: []
   additionalVolumeMounts: []
@@ -304,7 +312,9 @@ repoMetaAnalyzer:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
+  # -- Additional init containers to deploy. Supports templating.
   initContainers: []
+  # -- Additional containers to deploy. Supports templating.
   extraContainers: []
   additionalVolumes: []
   additionalVolumeMounts: []
@@ -367,7 +377,9 @@ vulnAnalyzer:
       timeoutSeconds: 5
   service:
     annotations: {}
+  # -- Additional init containers to deploy. Supports templating.
   initContainers: []
+  # -- Additional containers to deploy. Supports templating.
   extraContainers: []
   additionalVolumes: []
   additionalVolumeMounts: []

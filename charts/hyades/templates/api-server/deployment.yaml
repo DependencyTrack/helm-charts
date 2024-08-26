@@ -25,7 +25,7 @@ spec:
       {{- end }}
       initContainers:
       {{- with .Values.apiServer.initContainers }}
-      {{- toYaml . | nindent 6 }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
       serviceAccountName: {{ include "hyades.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ .Values.apiServer.terminationGracePeriodSeconds }}
@@ -115,7 +115,7 @@ spec:
           successThreshold: {{ .Values.apiServer.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.apiServer.probes.readiness.timeoutSeconds }}
       {{- with .Values.apiServer.extraContainers }}
-      {{- toYaml . | nindent 6 }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
       {{- with .Values.apiServer.tolerations }}
       tolerations: {{- toYaml . | nindent 8 }}

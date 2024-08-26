@@ -20,8 +20,8 @@ spec:
       imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
       initContainers:
-      {{- if .Values.frontend.initContainers }}
-      {{- toYaml .Values.frontend.initContainers | nindent 6 }}
+      {{- with .Values.frontend.initContainers }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
       serviceAccount: {{ include "dependencytrack.serviceAccountName" . }}
       containers:
@@ -76,8 +76,8 @@ spec:
           periodSeconds: {{ .Values.frontend.probes.readiness.periodSeconds }}
           successThreshold: {{ .Values.frontend.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.frontend.probes.readiness.timeoutSeconds }}
-      {{- if .Values.frontend.extraContainers }}
-      {{- toYaml .Values.frontend.extraContainers | nindent 6 }}
+      {{- with .Values.frontend.extraContainers }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
       {{- if .Values.frontend.tolerations }}
       tolerations:

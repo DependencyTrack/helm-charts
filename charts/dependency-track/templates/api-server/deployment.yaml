@@ -24,8 +24,8 @@ spec:
       imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
       initContainers:
-      {{- if .Values.apiServer.initContainers }}
-      {{- toYaml .Values.apiServer.initContainers | nindent 6 }}
+      {{- with .Values.apiServer.initContainers }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
       serviceAccount: {{ include "dependencytrack.serviceAccountName" . }}
       {{- with .Values.apiServer.podSecurityContext }}
@@ -94,8 +94,8 @@ spec:
           periodSeconds: {{ .Values.apiServer.probes.readiness.periodSeconds }}
           successThreshold: {{ .Values.apiServer.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.apiServer.probes.readiness.timeoutSeconds }}
-      {{- if .Values.apiServer.extraContainers }}
-      {{- toYaml .Values.apiServer.extraContainers | nindent 6 }}
+      {{- with .Values.apiServer.extraContainers }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
       {{- if .Values.apiServer.tolerations }}
       tolerations:

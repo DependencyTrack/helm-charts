@@ -68,6 +68,7 @@ apiServer:
     # - name: ALPINE_DATABASE_MODE
     #   value: "external"
   extraEnvFrom: []
+  # -- Additional containers to deploy. Supports templating.
   extraContainers: []
   tolerations: []
   probes:
@@ -99,6 +100,7 @@ apiServer:
     namespace: monitoring
     scrapeInternal: 15s
     scrapeTimeout: 30s
+  # -- Additional init containers to deploy. Supports templating.
   initContainers: []
   # Use the following to fix permissions on the /data volume,
   # IF USING podSecurityContext IS NOT POSSIBLE (i.e. for OpenShift).
@@ -157,6 +159,7 @@ frontend:
       type: RuntimeDefault
   extraEnv: []
   extraEnvFrom: []
+  # -- Additional containers to deploy. Supports templating.
   extraContainers: []
   tolerations: []
   probes:
@@ -185,6 +188,7 @@ frontend:
     nodePort: ~
     annotations: {}
   apiBaseUrl: ""
+  # -- Additional init containers to deploy. Supports templating.
   initContainers: []
   nodeSelector: {}
 

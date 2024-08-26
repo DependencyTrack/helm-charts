@@ -25,7 +25,7 @@ spec:
       {{- end }}
       initContainers:
       {{- with .Values.repoMetaAnalyzer.initContainers }}
-      {{- toYaml . | nindent 6 }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
       serviceAccountName: {{ include "hyades.serviceAccountName" . }}
       containers:
@@ -107,7 +107,7 @@ spec:
           successThreshold: {{ .Values.repoMetaAnalyzer.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.repoMetaAnalyzer.probes.readiness.timeoutSeconds }}
       {{- with .Values.repoMetaAnalyzer.extraContainers }}
-      {{- toYaml . | nindent 6 }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
       {{- with .Values.repoMetaAnalyzer.tolerations }}
       tolerations: {{- toYaml . | nindent 8 }}

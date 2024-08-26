@@ -45,6 +45,16 @@ apiServer:
   # For OpenShift, explicitly set this to null.
   podSecurityContext:
     fsGroup: 1000
+  # -- Security context of the Container.
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    seccompProfile:
+      type: RuntimeDefault
   persistentVolume:
     enabled: false
     className: ""
@@ -134,6 +144,17 @@ frontend:
     limits:
       cpu: 500m
       memory: 128Mi
+  # -- Security context of the Container.
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    runAsNonRoot: true
+    # RO filesystems are not supported by the frontend
+    readOnlyRootFilesystem: false
+    seccompProfile:
+      type: RuntimeDefault
   extraEnv: []
   extraEnvFrom: []
   extraContainers: []

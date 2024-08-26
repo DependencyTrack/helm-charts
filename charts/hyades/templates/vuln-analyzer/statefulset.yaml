@@ -26,7 +26,7 @@ spec:
       {{- end }}
       initContainers:
       {{- with .Values.notificationPublisher.initContainers }}
-      {{- toYaml . | nindent 6 }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
       serviceAccountName: {{ include "hyades.serviceAccountName" . }}
       containers:
@@ -105,7 +105,7 @@ spec:
           successThreshold: {{ .Values.vulnAnalyzer.probes.readiness.successThreshold }}
           timeoutSeconds: {{ .Values.vulnAnalyzer.probes.readiness.timeoutSeconds }}
       {{- with .Values.vulnAnalyzer.extraContainers }}
-      {{- toYaml . | nindent 6 }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
       {{- with .Values.vulnAnalyzer.tolerations }}
       tolerations: {{- toYaml . | nindent 8 }}

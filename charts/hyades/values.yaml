@@ -47,6 +47,16 @@ apiServer:
     limits:
       cpu: "4"
       memory: 2Gi
+  # -- Security context of the Container.
+  securityContext: &hyadesSecurityContext
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    seccompProfile:
+      type: RuntimeDefault
   extraEnv: []
   extraEnvFrom: []
   probes:
@@ -124,6 +134,17 @@ frontend:
     limits:
       cpu: 500m
       memory: 128Mi
+  # -- Security context of the Container.
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    runAsNonRoot: true
+    # RO filesystems are not supported by the frontend
+    readOnlyRootFilesystem: false
+    seccompProfile:
+      type: RuntimeDefault
   extraEnv: []
   extraEnvFrom: []
   probes:
@@ -174,6 +195,8 @@ mirrorService:
     limits:
       cpu: "2"
       memory: 2Gi
+  # -- Security context of the container.
+  securityContext: *hyadesSecurityContext
   extraEnv: []
   extraEnvFrom: []
   probes:
@@ -218,6 +241,8 @@ notificationPublisher:
     limits:
       cpu: "2"
       memory: 2Gi
+  # -- Security context of the container.
+  securityContext: *hyadesSecurityContext
   extraEnv: []
   extraEnvFrom: []
   probes:
@@ -262,6 +287,8 @@ repoMetaAnalyzer:
     limits:
       cpu: "2"
       memory: 2Gi
+  # -- Security context of the container.
+  securityContext: *hyadesSecurityContext
   extraEnv: []
   extraEnvFrom: []
   probes:
@@ -311,6 +338,8 @@ vulnAnalyzer:
     limits:
       cpu: "2"
       memory: 2Gi
+  # -- Security context of the container.
+  securityContext: *hyadesSecurityContext
   persistentVolume:
     # -- Whether to use a persistent volume to store application state.
     # Has no effect unless useStatefulSet is true. Is pointless unless

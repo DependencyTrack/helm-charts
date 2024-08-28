@@ -24,6 +24,9 @@ spec:
       imagePullSecrets: {{- toYaml . | nindent 6 }}
       {{- end }}
       initContainers:
+      {{- if .Values.initializer.enabled }}
+      - {{ include "hyades.initializerWaiterContainer" . | nindent 8 }}
+      {{- end }}
       {{- with .Values.apiServer.initContainers }}
       {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
@@ -48,10 +51,6 @@ spec:
         - name: ALPINE_SECRET_KEY_PATH
           value: "/var/run/secrets/secret.key"
         {{- end }}
-        - name: ALPINE_DATABASE_MODE
-          value: "external"
-        - name: ALPINE_DATABASE_DRIVER
-          value: "org.postgresql.Driver"
         {{- with .Values.common.database.jdbcUrl }}
         - name: ALPINE_DATABASE_URL
           value: {{ tpl . $ | quote }}
@@ -63,6 +62,10 @@ spec:
         {{- with .Values.common.database.password }}
         - name: ALPINE_DATABASE_PASSWORD
           value: {{ . | quote }}
+        {{- end }}
+        {{- if .Values.initializer.enabled }}
+        - name: INIT_TASKS_ENABLED
+          value: "false"
         {{- end }}
         - name: KAFKA_BOOTSTRAP_SERVERS
           value: {{ tpl .Values.common.kafka.bootstrapServers $ | quote }}

@@ -111,6 +111,9 @@
         "resources": {
           "$ref": "#/$defs/resources"
         },
+        "securityContext": {
+          "type": "object"
+        },
         "extraEnv": {
           "$ref": "#/$defs/objectArray"
         },
@@ -146,6 +149,61 @@
         }
       }
     },
+    "initializer": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "annotations": {
+          "type": "object"
+        },
+        "image": {
+          "$ref": "#/$defs/image"
+        },
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "resources": {
+          "$ref": "#/$defs/resources"
+        },
+        "securityContext": {
+          "type": "object"
+        },
+        "extraEnv": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "extraEnvFrom": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "tolerations": {
+          "$ref": "#/$defs/objectArray"
+        },
+        "nodeSelector": {
+          "type": "object"
+        },
+        "waiter": {
+          "type": "object",
+          "properties": {
+            "image": {
+              "$ref": "#/$defs/image"
+            },
+            "createRole": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
     "frontend": {
       "type": "object",
       "properties": {
@@ -175,6 +233,9 @@
         },
         "resources": {
           "$ref": "#/$defs/resources"
+        },
+        "securityContext": {
+          "type": "object"
         },
         "extraEnv": {
           "$ref": "#/$defs/objectArray"
@@ -243,6 +304,9 @@
         "resources": {
           "$ref": "#/$defs/resources"
         },
+        "securityContext": {
+          "type": "object"
+        },
         "extraEnv": {
           "$ref": "#/$defs/objectArray"
         },
@@ -302,6 +366,9 @@
         "resources": {
           "$ref": "#/$defs/resources"
         },
+        "securityContext": {
+          "type": "object"
+        },
         "extraEnv": {
           "$ref": "#/$defs/objectArray"
         },
@@ -360,6 +427,9 @@
         },
         "resources": {
           "$ref": "#/$defs/resources"
+        },
+        "securityContext": {
+          "type": "object"
         },
         "extraEnv": {
           "$ref": "#/$defs/objectArray"
@@ -422,6 +492,9 @@
         },
         "resources": {
           "$ref": "#/$defs/resources"
+        },
+        "securityContext": {
+          "type": "object"
         },
         "persistentVolume":{
           "type": "object",

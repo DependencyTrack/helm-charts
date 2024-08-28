@@ -1,0 +1,81 @@
+{{- if .Values.initializer.enabled }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "hyades.initializerFullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "hyades.initializerLabels" . | nindent 4 }}
+  {{- if not .Values.initializer.noHelmHook }}
+  annotations:
+    "helm.sh/hook": "post-install, post-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+  {{- end }}
+spec:
+  template:
+    metadata:
+      labels: {{- include "hyades.initializerSelectorLabels" . | nindent 8 }}
+      {{- with .Values.initializer.annotations }}
+      annotations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{ include "hyades.serviceAccountName" . }}
+      containers:
+      - name: {{ include "hyades.initializerName" . }}
+        image: {{ include "hyades.initializerImage" . }}
+        imagePullPolicy: {{ .Values.initializer.image.pullPolicy }}
+        securityContext: {{ toYaml .Values.initializer.securityContext | nindent 10 }}
+        {{- with .Values.initializer.command }}
+        command: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.initializer.args }}
+        args: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        resources: {{- toYaml .Values.initializer.resources | nindent 10 }}
+        env:
+        # Clear the defaults for garbage collector and heap size that we set in the API server's Dockerfile.
+        # Let the JVM deal with configuring itself appropriately for the available resources.
+        - name: JAVA_OPTIONS
+          value: ""
+        - name: INIT_TASKS_ENABLED
+          value: "true"
+        - name: INIT_AND_EXIT
+          value: "true"
+        - name: ALPINE_DATABASE_POOL_ENABLED
+          value: "false"
+        {{- with .Values.common.database.jdbcUrl }}
+        - name: ALPINE_DATABASE_URL
+          value: {{ tpl . $ | quote }}
+        {{- end}}
+        {{- with .Values.common.database.username }}
+        - name: ALPINE_DATABASE_USERNAME
+          value: {{ . | quote }}
+        {{- end }}
+        {{- with .Values.common.database.password }}
+        - name: ALPINE_DATABASE_PASSWORD
+          value: {{ . | quote }}
+        {{- end }}
+        {{- with .Values.initializer.extraEnv }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.initializer.extraEnvFrom }}
+        envFrom: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        volumeMounts:
+        - name: tmp
+          subPath: data
+          mountPath: /data
+        - name: tmp
+          subPath: tmp
+          mountPath: /tmp
+      {{- with .Values.initializer.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.initializer.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: tmp
+        emptyDir: {}
+{{- end }}

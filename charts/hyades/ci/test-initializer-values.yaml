@@ -7,6 +7,8 @@ common:
     bootstrapServers: "redpanda.{{ .Release.Namespace }}.svc.cluster.local:9092"
   secretKey:
     createSecret: true
+  serviceAccount:
+    automount: true
 
 apiServer:
   resources:
@@ -16,6 +18,13 @@ apiServer:
     limits:
       cpu: "2"
       memory: 512Mi
+
+initializer:
+  enabled: true
+  # chart-testing executes `helm install` with `--wait` flag,
+  # causing post-install hooks to never run.
+  # See https://github.com/helm/chart-testing/issues/202.
+  noHelmHook: true
 
 mirrorService:
   resources: &hyadesResources

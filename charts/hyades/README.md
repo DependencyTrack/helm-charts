@@ -128,6 +128,29 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | ingress.hostname | string | `"example.com"` |  |
 | ingress.ingressClassName | string | `""` |  |
 | ingress.tls | list | `[]` |  |
+| initializer.annotations | object | `{}` |  |
+| initializer.args | list | `[]` |  |
+| initializer.command | list | `[]` |  |
+| initializer.enabled | bool | `false` | Whether to enable the initializer Job. When enabled, an init container will be added to all deployments that require database access. The init container will wait for the initializer Job to complete. Requires the service account token to be mounted. |
+| initializer.extraEnv | list | `[]` |  |
+| initializer.extraEnvFrom | list | `[]` |  |
+| initializer.image.pullPolicy | string | `"Always"` |  |
+| initializer.image.registry | string | `""` | Override common.image.registry for the API server. |
+| initializer.image.repository | string | `"dependencytrack/hyades-apiserver"` |  |
+| initializer.image.tag | string | `"snapshot"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
+| initializer.noHelmHook | bool | `false` | Whether to NOT deploy the initializer Job as `post-install` and `post-upgrade` Helm hook. Deploying as Helm hook can create deadlock situations when `helm install` and `helm upgrade` are executed with `--wait` flag. See <https://github.com/helm/helm/issues/10555>. Note that without hooks, `helm upgrade` may fail due to Job fields being immutable. |
+| initializer.nodeSelector | object | `{}` |  |
+| initializer.resources.limits.cpu | string | `"500m"` |  |
+| initializer.resources.limits.memory | string | `"256Mi"` |  |
+| initializer.resources.requests.cpu | string | `"150m"` |  |
+| initializer.resources.requests.memory | string | `"256Mi"` |  |
+| initializer.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context of the Container. |
+| initializer.tolerations | list | `[]` |  |
+| initializer.waiter.createRole | bool | `true` | Whether to create a Role with permissions to wait for Job completion, and bind it to the ServiceAccount. |
+| initializer.waiter.image.pullPolicy | string | `"Always"` |  |
+| initializer.waiter.image.registry | string | `"docker.io"` |  |
+| initializer.waiter.image.repository | string | `"bitnami/kubectl"` |  |
+| initializer.waiter.image.tag | string | `"latest"` |  |
 | mirrorService.additionalVolumeMounts | list | `[]` |  |
 | mirrorService.additionalVolumes | list | `[]` |  |
 | mirrorService.annotations | object | `{}` |  |

@@ -32,6 +32,13 @@ spec:
             name: {{ include "dependencytrack.apiServerFullname" . }}
             port:
               name: web
+      - path: /health
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "dependencytrack.apiServerFullname" . }}
+            port:
+              name: web
       - path: /
         pathType: Prefix
         backend:

@@ -13,7 +13,7 @@ spec:
   type: {{ .Values.apiServer.service.type | quote }}
   ports:
   - name: web
-    port: 8080
+    port: {{ .Values.apiServer.service.port }}
     targetPort: web
     {{- with .Values.apiServer.service.nodePort }}
     nodePort: {{ . }}

@@ -13,7 +13,7 @@ spec:
   type: {{ .Values.frontend.service.type | quote }}
   ports:
   - name: web
-    port: 8080
+    port: {{ .Values.frontend.service.port }}
     targetPort: web
     {{- with .Values.frontend.service.nodePort }}
     nodePort: {{ . }}

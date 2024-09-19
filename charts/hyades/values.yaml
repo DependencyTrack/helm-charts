@@ -75,6 +75,7 @@ apiServer:
   service:
     type: ClusterIP
     nodePort: ~
+    port: 8080
     annotations: {}
   serviceMonitor:
     enabled: false
@@ -204,6 +205,7 @@ frontend:
   service:
     type: ClusterIP
     nodePort: ~
+    port: 8080
     annotations: {}
   apiBaseUrl: ""
   # -- Additional init containers to deploy. Supports templating.

@@ -668,6 +668,11 @@
             "number"
           ]
         },
+        "port": {
+          "type": [
+            "number"
+          ]
+        },
         "annotations": {
           "type": "object"
         }

@@ -8,6 +8,7 @@ metadata:
   labels: {{- include "hyades.notificationPublisherLabels" .  | nindent 4 }}
 spec:
   replicas: {{ .Values.notificationPublisher.replicaCount }}
+  strategy: {{- toYaml .Values.notificationPublisher.deployment.strategy | nindent 4 }}
   selector:
     matchLabels: {{- include "hyades.notificationPublisherSelectorLabels" . | nindent 6 }}
   template:

@@ -8,6 +8,7 @@ metadata:
   labels: {{- include "hyades.frontendLabels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.frontend.replicaCount }}
+  strategy: {{- toYaml .Values.frontend.deployment.strategy | nindent 4 }}
   selector:
     matchLabels: {{- include "hyades.frontendSelectorLabels" . | nindent 6 }}
   template:

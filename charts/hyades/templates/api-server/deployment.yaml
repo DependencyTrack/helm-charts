@@ -8,6 +8,7 @@ metadata:
   labels: {{- include "hyades.apiServerLabels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.apiServer.replicaCount }}
+  strategy: {{- toYaml .Values.apiServer.deployment.strategy | nindent 4 }}
   selector:
     matchLabels: {{- include "hyades.apiServerSelectorLabels" . | nindent 6 }}
   template:

@@ -8,6 +8,7 @@ metadata:
   labels: {{- include "hyades.repoMetaAnalyzerLabels" .  | nindent 4 }}
 spec:
   replicas: {{ .Values.repoMetaAnalyzer.replicaCount }}
+  strategy: {{- toYaml .Values.repoMetaAnalyzer.deployment.strategy | nindent 4 }}
   selector:
     matchLabels: {{- include "hyades.repoMetaAnalyzerSelectorLabels" . | nindent 6 }}
   template:

@@ -8,6 +8,7 @@ metadata:
   labels: {{- include "hyades.mirrorServiceLabels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.mirrorService.replicaCount }}
+  strategy: {{- toYaml .Values.mirrorService.deployment.strategy | nindent 4 }}
   selector:
     matchLabels: {{- include "hyades.mirrorServiceSelectorLabels" . | nindent 6 }}
   template:

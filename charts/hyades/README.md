@@ -36,6 +36,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | apiServer.annotations | object | `{}` |  |
 | apiServer.args | list | `[]` |  |
 | apiServer.command | list | `[]` |  |
+| apiServer.deployment.strategy | object | `{"type":"RollingUpdate"}` | The deployment strategy to use. |
 | apiServer.enabled | bool | `true` | Whether the API server shall be deployed. |
 | apiServer.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | apiServer.extraEnv | list | `[]` |  |
@@ -94,6 +95,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | frontend.apiBaseUrl | string | `""` |  |
 | frontend.args | list | `[]` |  |
 | frontend.command | list | `[]` |  |
+| frontend.deployment.strategy | object | `{"type":"RollingUpdate"}` | The deployment strategy to use. |
 | frontend.enabled | bool | `true` | Whether the frontend shall be deployed. |
 | frontend.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | frontend.extraEnv | list | `[]` |  |
@@ -158,6 +160,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | mirrorService.annotations | object | `{}` |  |
 | mirrorService.args | list | `[]` |  |
 | mirrorService.command | list | `[]` |  |
+| mirrorService.deployment.strategy | object | `{"type":"Recreate"}` | The deployment strategy to use. `Recreate` is recommended because the service does not serve user-traffic, and `RollingUpdate` will cause undesired Kafka consumer rebalances. |
 | mirrorService.enabled | bool | `true` | Whether the mirror service shall be deployed. |
 | mirrorService.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | mirrorService.extraEnv | list | `[]` |  |
@@ -190,6 +193,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | notificationPublisher.annotations | object | `{}` |  |
 | notificationPublisher.args | list | `[]` |  |
 | notificationPublisher.command | list | `[]` |  |
+| notificationPublisher.deployment.strategy | object | `{"type":"Recreate"}` | The deployment strategy to use. `Recreate` is recommended because the service does not serve user-traffic, and `RollingUpdate` will cause undesired Kafka consumer rebalances. |
 | notificationPublisher.enabled | bool | `true` | Whether the notification publisher shall be deployed. |
 | notificationPublisher.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | notificationPublisher.extraEnv | list | `[]` |  |
@@ -222,6 +226,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | repoMetaAnalyzer.annotations | object | `{}` |  |
 | repoMetaAnalyzer.args | list | `[]` |  |
 | repoMetaAnalyzer.command | list | `[]` |  |
+| repoMetaAnalyzer.deployment.strategy | object | `{"type":"Recreate"}` | The deployment strategy to use. `Recreate` is recommended because the service does not serve user-traffic, and `RollingUpdate` will cause undesired Kafka consumer rebalances. |
 | repoMetaAnalyzer.enabled | bool | `true` | Whether the repository metadata analyzer shall be deployed. |
 | repoMetaAnalyzer.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | repoMetaAnalyzer.extraEnv | list | `[]` |  |
@@ -254,6 +259,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | vulnAnalyzer.annotations | object | `{}` |  |
 | vulnAnalyzer.args | list | `[]` |  |
 | vulnAnalyzer.command | list | `[]` |  |
+| vulnAnalyzer.deployment.strategy | object | `{"type":"Recreate"}` | The deployment strategy to use. `Recreate` is recommended because the service does not serve user-traffic, and `RollingUpdate` will cause undesired Kafka consumer rebalances. |
 | vulnAnalyzer.enabled | bool | `true` | Whether the vulnerability analyzer shall be deployed. |
 | vulnAnalyzer.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | vulnAnalyzer.extraEnv | list | `[]` |  |

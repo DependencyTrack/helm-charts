@@ -8,6 +8,7 @@ metadata:
   labels: {{- include "hyades.vulnAnalyzerLabels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.vulnAnalyzer.replicaCount }}
+  strategy: {{- toYaml .Values.vulnAnalyzer.deployment.strategy | nindent 4 }}
   selector:
     matchLabels: {{- include "hyades.vulnAnalyzerSelectorLabels" . | nindent 6 }}
   template:

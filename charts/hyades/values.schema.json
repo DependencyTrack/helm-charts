@@ -90,6 +90,14 @@
         "replicaCount": {
           "type": "integer"
         },
+        "deployment": {
+          "type": "object",
+          "properties": {
+            "strategy": {
+              "type": "object"
+            }
+          }
+        },
         "annotations": {
           "type": "object"
         },
@@ -213,6 +221,14 @@
         "replicaCount": {
           "type": "number"
         },
+        "deployment": {
+          "type": "object",
+          "properties": {
+            "strategy": {
+              "type": "object"
+            }
+          }
+        },
         "annotations": {
           "type": "object"
         },
@@ -283,6 +299,14 @@
           "minimum": 0,
           "maximum": 1
         },
+        "deployment": {
+          "type": "object",
+          "properties": {
+            "strategy": {
+              "type": "object"
+            }
+          }
+        },
         "annotations": {
           "type": "object"
         },
@@ -345,6 +369,14 @@
         "replicaCount": {
           "type": "integer"
         },
+        "deployment": {
+          "type": "object",
+          "properties": {
+            "strategy": {
+              "type": "object"
+            }
+          }
+        },
         "annotations": {
           "type": "object"
         },
@@ -406,6 +438,14 @@
         },
         "replicaCount": {
           "type": "integer"
+        },
+        "deployment": {
+          "type": "object",
+          "properties": {
+            "strategy": {
+              "type": "object"
+            }
+          }
         },
         "annotations": {
           "type": "object"
@@ -471,6 +511,14 @@
         },
         "replicaCount": {
           "type": "integer"
+        },
+        "deployment": {
+          "type": "object",
+          "properties": {
+            "strategy": {
+              "type": "object"
+            }
+          }
         },
         "annotations": {
           "type": "object"

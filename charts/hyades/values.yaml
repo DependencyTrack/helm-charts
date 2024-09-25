@@ -29,6 +29,10 @@ apiServer:
   # -- Whether the API server shall be deployed.
   enabled: true
   replicaCount: 1
+  deployment:
+    # -- The deployment strategy to use.
+    strategy:
+      type: RollingUpdate
   annotations: {}
   image: &apiServerImage
     # -- Override common.image.registry for the API server.
@@ -158,6 +162,10 @@ frontend:
   # -- Whether the frontend shall be deployed.
   enabled: true
   replicaCount: 1
+  deployment:
+    # -- The deployment strategy to use.
+    strategy:
+      type: RollingUpdate
   annotations: {}
   image:
     # -- Override common.image.registry for the API frontend.
@@ -222,6 +230,12 @@ mirrorService:
   enabled: true
   # -- Number of replicas. Should be <= 1.
   replicaCount: 1
+  deployment:
+    # -- The deployment strategy to use. `Recreate` is recommended because the service
+    # does not serve user-traffic, and `RollingUpdate` will cause undesired
+    # Kafka consumer rebalances.
+    strategy:
+      type: Recreate
   annotations: {}
   image:
     # -- Override common.image.registry for the mirror service.
@@ -270,6 +284,12 @@ notificationPublisher:
   # -- Whether the notification publisher shall be deployed.
   enabled: true
   replicaCount: 1
+  deployment:
+    # -- The deployment strategy to use. `Recreate` is recommended because the service
+    # does not serve user-traffic, and `RollingUpdate` will cause undesired
+    # Kafka consumer rebalances.
+    strategy:
+      type: Recreate
   annotations: {}
   image:
     # -- Override common.image.registry for the notification publisher.
@@ -319,6 +339,12 @@ repoMetaAnalyzer:
   enabled: true
   annotations: {}
   replicaCount: 1
+  deployment:
+    # -- The deployment strategy to use. `Recreate` is recommended because the service
+    # does not serve user-traffic, and `RollingUpdate` will cause undesired
+    # Kafka consumer rebalances.
+    strategy:
+      type: Recreate
   image:
     # -- Override common.image.registry for the repository metadata analyzer.
     registry: ""
@@ -372,6 +398,12 @@ vulnAnalyzer:
   useStatefulSet: false
   annotations: {}
   replicaCount: 1
+  deployment:
+    # -- The deployment strategy to use. `Recreate` is recommended because the service
+    # does not serve user-traffic, and `RollingUpdate` will cause undesired
+    # Kafka consumer rebalances.
+    strategy:
+      type: Recreate
   image:
     # -- Override common.image.registry for the vulnerability analyzer.
     registry: ""

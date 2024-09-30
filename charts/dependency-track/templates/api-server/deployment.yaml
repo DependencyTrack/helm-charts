@@ -13,6 +13,9 @@ spec:
   template:
     metadata:
       labels: {{ include "dependencytrack.apiServerSelectorLabels" . | nindent 8 }}
+      {{- if .Values.apiServer.extraPodLabels }}
+      {{- toYaml .Values.apiServer.extraPodLabels | nindent 8 }}
+      {{- end }}
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: /metrics

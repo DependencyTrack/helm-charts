@@ -30,6 +30,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | apiServer.extraEnv | list | `[]` |  |
 | apiServer.extraEnvFrom | list | `[]` |  |
+| apiServer.extraPodLabels | object | `{}` | |
 | apiServer.image.pullPolicy | string | `"IfNotPresent"` |  |
 | apiServer.image.registry | string | `""` | Override common.image.registry for the API server. |
 | apiServer.image.repository | string | `"dependencytrack/apiserver"` |  |
@@ -83,6 +84,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | frontend.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | frontend.extraEnv | list | `[]` |  |
 | frontend.extraEnvFrom | list | `[]` |  |
+| frontend.extraPodLabels | object | `{}` | |
 | frontend.image.pullPolicy | string | `"IfNotPresent"` |  |
 | frontend.image.registry | string | `""` | Override common.image.registry for the frontend. |
 | frontend.image.repository | string | `"dependencytrack/frontend"` |  |

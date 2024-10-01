@@ -12,6 +12,9 @@ spec:
   template:
     metadata:
       labels: {{- include "dependencytrack.frontendSelectorLabels" . | nindent 8 }}
+      {{- if .Values.frontend.extraPodLabels }}
+      {{- toYaml .Values.frontend.extraPodLabels | nindent 8 }}
+      {{- end }}
       {{- with .Values.frontend.annotations }}
       annotations: {{- toYaml . | nindent 8 }}
       {{- end }}

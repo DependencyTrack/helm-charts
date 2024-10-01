@@ -109,6 +109,9 @@
         "extraContainers": {
           "$ref": "#/$defs/objectArray"
         },
+        "extraPodLabels": {
+          "type": "object"
+        },
         "tolerations": {
           "$ref": "#/$defs/objectArray"
         },
@@ -173,6 +176,9 @@
         },
         "extraContainers": {
           "$ref": "#/$defs/objectArray"
+        },
+        "extraPodLabels": {
+          "type": "object"
         },
         "tolerations": {
           "$ref": "#/$defs/objectArray"

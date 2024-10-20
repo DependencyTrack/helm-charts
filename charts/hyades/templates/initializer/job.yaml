@@ -34,10 +34,11 @@ spec:
         {{- end }}
         resources: {{- toYaml .Values.initializer.resources | nindent 10 }}
         env:
-        # Clear the defaults for garbage collector and heap size that we set in the API server's Dockerfile.
-        # Let the JVM deal with configuring itself appropriately for the available resources.
+        # The default JVM options of the image are optimized for the API server,
+        # i.e. longer runtime and larger heaps. Provide JVM options that are more
+        # suitable for one-off executions with fewer available resources.
         - name: JAVA_OPTIONS
-          value: ""
+          value: "-Xmx256m -XX:+UseSerialGC -XX:TieredStopAtLevel=1"
         - name: INIT_TASKS_ENABLED
           value: "true"
         - name: INIT_AND_EXIT

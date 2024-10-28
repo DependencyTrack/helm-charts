@@ -61,7 +61,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.service.type | string | `"ClusterIP"` |  |
 | apiServer.serviceMonitor.enabled | bool | `false` |  |
 | apiServer.serviceMonitor.namespace | string | `"monitoring"` |  |
-| apiServer.serviceMonitor.scrapeInternal | string | `"15s"` |  |
+| apiServer.serviceMonitor.scrapeInterval | string | `"60s"` |  |
 | apiServer.serviceMonitor.scrapeTimeout | string | `"30s"` |  |
 | apiServer.tolerations | list | `[]` |  |
 | common.fullnameOverride | string | `""` |  |
@@ -116,4 +116,3 @@ that allows organizations to identify and reduce risk in the software supply cha
 | ingress.hostname | string | `"example.com"` |  |
 | ingress.ingressClassName | string | `""` |  |
 | ingress.tls | list | `[]` |  |
-

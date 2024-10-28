@@ -99,7 +99,7 @@ apiServer:
   serviceMonitor:
     enabled: false
     namespace: monitoring
-    scrapeInternal: 15s
+    scrapeInterval: 60s
     scrapeTimeout: 30s
   # -- Additional init containers to deploy. Supports templating.
   initContainers: []

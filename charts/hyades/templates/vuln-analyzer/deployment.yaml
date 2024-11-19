@@ -7,8 +7,13 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.vulnAnalyzerLabels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.vulnAnalyzer.replicaCount }}
-  strategy: {{- toYaml .Values.vulnAnalyzer.deployment.strategy | nindent 4 }}
+  {{- if .Values.vulnAnalyzer.replicas.enabled }}
+  replicas: {{ .Values.vulnAnalyzer.replicas.replicaCount }}
+  {{- end }}
+  {{- if .Values.vulnAnalyzer.deployment.strategy.enabled }}
+  strategy:
+    type: {{ .Values.vulnAnalyzer.deployment.strategy.type }}
+  {{- end }}
   selector:
     matchLabels: {{- include "hyades.vulnAnalyzerSelectorLabels" . | nindent 6 }}
   template:

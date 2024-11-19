@@ -7,8 +7,13 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.apiServerLabels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.apiServer.replicaCount }}
-  strategy: {{- toYaml .Values.apiServer.deployment.strategy | nindent 4 }}
+  {{- if .Values.apiServer.replicas.enabled }}
+  replicas: {{ .Values.apiServer.replicas.replicaCount }}
+  {{- end }}
+  {{- if .Values.apiServer.deployment.strategy.enabled }}
+  strategy:
+    type: {{ .Values.apiServer.deployment.strategy.type }}
+  {{- end }}
   selector:
     matchLabels: {{- include "hyades.apiServerSelectorLabels" . | nindent 6 }}
   template:

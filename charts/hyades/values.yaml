@@ -235,15 +235,12 @@ mirrorService:
   # -- Whether the mirror service shall be deployed.
   enabled: true
   # -- Number of replicas. Should be <= 1.
-  replicas:
-    enabled: true
-    replicaCount: 1
+  replicaCount: 1
   deployment:
     # -- The deployment strategy to use. `Recreate` is recommended because the service
     # does not serve user-traffic, and `RollingUpdate` will cause undesired
     # Kafka consumer rebalances.
     strategy:
-      enabled: true
       type: Recreate
   annotations: {}
   image:

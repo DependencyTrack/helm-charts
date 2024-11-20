@@ -7,13 +7,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.mirrorServiceLabels" . | nindent 4 }}
 spec:
-  {{- if .Values.mirrorService.replicas.enabled }}
-  replicas: {{ .Values.mirrorService.replicas.replicaCount }}
-  {{- end }}
-  {{- if .Values.mirrorService.deployment.strategy.enabled }}
-  strategy:
-    type: {{ .Values.mirrorService.deployment.strategy.type }}
-  {{- end }}
+  replicas: {{ .Values.mirrorService.replicaCount }}
+  strategy: {{- toYaml .Values.mirrorService.deployment.strategy | nindent 4 }}
   selector:
     matchLabels: {{- include "hyades.mirrorServiceSelectorLabels" . | nindent 6 }}
   template:

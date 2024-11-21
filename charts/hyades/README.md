@@ -35,6 +35,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | apiServer.additionalVolumes | list | `[]` |  |
 | apiServer.annotations | object | `{}` |  |
 | apiServer.args | list | `[]` |  |
+| apiServer.autoScaling | object | `{"annotations":{},"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":70,"targetMemoryUtilizationPercentage":70}` | Enables horizontal pod autoscaling |
 | apiServer.command | list | `[]` |  |
 | apiServer.deployment.strategy | object | `{"type":"RollingUpdate"}` | The deployment strategy to use. |
 | apiServer.enabled | bool | `true` | Whether the API server shall be deployed. |
@@ -57,7 +58,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | apiServer.probes.readiness.periodSeconds | int | `15` |  |
 | apiServer.probes.readiness.successThreshold | int | `1` |  |
 | apiServer.probes.readiness.timeoutSeconds | int | `5` |  |
-| apiServer.replicaCount | int | `1` |  |
+| apiServer.replicaCount | int | `1` | replicaCount is not used when autoscaling is enabled |
 | apiServer.resources.limits.cpu | string | `"4"` |  |
 | apiServer.resources.limits.memory | string | `"2Gi"` |  |
 | apiServer.resources.requests.cpu | string | `"2"` |  |
@@ -94,6 +95,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | frontend.annotations | object | `{}` |  |
 | frontend.apiBaseUrl | string | `""` |  |
 | frontend.args | list | `[]` |  |
+| frontend.autoScaling | object | `{"annotations":{},"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":70,"targetMemoryUtilizationPercentage":70}` | Enables horizontal pod autoscaling |
 | frontend.command | list | `[]` |  |
 | frontend.deployment.strategy | object | `{"type":"RollingUpdate"}` | The deployment strategy to use. |
 | frontend.enabled | bool | `true` | Whether the frontend shall be deployed. |
@@ -116,7 +118,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | frontend.probes.readiness.periodSeconds | int | `15` |  |
 | frontend.probes.readiness.successThreshold | int | `1` |  |
 | frontend.probes.readiness.timeoutSeconds | int | `5` |  |
-| frontend.replicaCount | int | `1` |  |
+| frontend.replicaCount | int | `1` | replicaCount is not used when autoscaling is enabled |
 | frontend.resources.limits.cpu | string | `"500m"` |  |
 | frontend.resources.limits.memory | string | `"128Mi"` |  |
 | frontend.resources.requests.cpu | string | `"150m"` |  |
@@ -192,6 +194,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | notificationPublisher.additionalVolumes | list | `[]` |  |
 | notificationPublisher.annotations | object | `{}` |  |
 | notificationPublisher.args | list | `[]` |  |
+| notificationPublisher.autoScaling | object | `{"annotations":{},"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":70,"targetMemoryUtilizationPercentage":70}` | Enables horizontal pod autoscaling |
 | notificationPublisher.command | list | `[]` |  |
 | notificationPublisher.deployment.strategy | object | `{"type":"Recreate"}` | The deployment strategy to use. `Recreate` is recommended because the service does not serve user-traffic, and `RollingUpdate` will cause undesired Kafka consumer rebalances. |
 | notificationPublisher.enabled | bool | `true` | Whether the notification publisher shall be deployed. |
@@ -214,7 +217,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | notificationPublisher.probes.readiness.periodSeconds | int | `15` |  |
 | notificationPublisher.probes.readiness.successThreshold | int | `1` |  |
 | notificationPublisher.probes.readiness.timeoutSeconds | int | `5` |  |
-| notificationPublisher.replicaCount | int | `1` |  |
+| notificationPublisher.replicaCount | int | `1` | replicaCount is not used when autoscaling is enabled |
 | notificationPublisher.resources.limits.cpu | string | `"2"` |  |
 | notificationPublisher.resources.limits.memory | string | `"2Gi"` |  |
 | notificationPublisher.resources.requests.cpu | string | `"500m"` |  |
@@ -225,6 +228,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | repoMetaAnalyzer.additionalVolumes | list | `[]` |  |
 | repoMetaAnalyzer.annotations | object | `{}` |  |
 | repoMetaAnalyzer.args | list | `[]` |  |
+| repoMetaAnalyzer.autoScaling | object | `{"annotations":{},"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":70,"targetMemoryUtilizationPercentage":70}` | Enables horizontal pod autoscaling |
 | repoMetaAnalyzer.command | list | `[]` |  |
 | repoMetaAnalyzer.deployment.strategy | object | `{"type":"Recreate"}` | The deployment strategy to use. `Recreate` is recommended because the service does not serve user-traffic, and `RollingUpdate` will cause undesired Kafka consumer rebalances. |
 | repoMetaAnalyzer.enabled | bool | `true` | Whether the repository metadata analyzer shall be deployed. |
@@ -247,7 +251,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | repoMetaAnalyzer.probes.readiness.periodSeconds | int | `15` |  |
 | repoMetaAnalyzer.probes.readiness.successThreshold | int | `1` |  |
 | repoMetaAnalyzer.probes.readiness.timeoutSeconds | int | `5` |  |
-| repoMetaAnalyzer.replicaCount | int | `1` |  |
+| repoMetaAnalyzer.replicaCount | int | `1` | replicaCount is not used when autoscaling is enabled |
 | repoMetaAnalyzer.resources.limits.cpu | string | `"2"` |  |
 | repoMetaAnalyzer.resources.limits.memory | string | `"2Gi"` |  |
 | repoMetaAnalyzer.resources.requests.cpu | string | `"500m"` |  |
@@ -258,6 +262,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | vulnAnalyzer.additionalVolumes | list | `[]` |  |
 | vulnAnalyzer.annotations | object | `{}` |  |
 | vulnAnalyzer.args | list | `[]` |  |
+| vulnAnalyzer.autoScaling | object | `{"annotations":{},"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":70,"targetMemoryUtilizationPercentage":70}` | Enables horizontal pod autoscaling |
 | vulnAnalyzer.command | list | `[]` |  |
 | vulnAnalyzer.deployment.strategy | object | `{"type":"Recreate"}` | The deployment strategy to use. `Recreate` is recommended because the service does not serve user-traffic, and `RollingUpdate` will cause undesired Kafka consumer rebalances. |
 | vulnAnalyzer.enabled | bool | `true` | Whether the vulnerability analyzer shall be deployed. |
@@ -283,7 +288,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | vulnAnalyzer.probes.readiness.periodSeconds | int | `15` |  |
 | vulnAnalyzer.probes.readiness.successThreshold | int | `1` |  |
 | vulnAnalyzer.probes.readiness.timeoutSeconds | int | `5` |  |
-| vulnAnalyzer.replicaCount | int | `1` |  |
+| vulnAnalyzer.replicaCount | int | `1` | replicaCount is not used when autoscaling is enabled |
 | vulnAnalyzer.resources.limits.cpu | string | `"2"` |  |
 | vulnAnalyzer.resources.limits.memory | string | `"2Gi"` |  |
 | vulnAnalyzer.resources.requests.cpu | string | `"500m"` |  |

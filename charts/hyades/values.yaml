@@ -28,13 +28,19 @@ common:
 apiServer:
   # -- Whether the API server shall be deployed.
   enabled: true
-  replicas:
-    enabled: true
-    replicaCount: 1
+  # -- Enables horizontal pod autoscaling
+  autoScaling:
+    enabled: false
+    annotations: {}
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 70
+  # -- replicaCount is not used when autoscaling is enabled
+  replicaCount: 1
   deployment:
     # -- The deployment strategy to use.
     strategy:
-      enabled: true
       type: RollingUpdate
   annotations: {}
   image: &apiServerImage
@@ -164,13 +170,19 @@ initializer:
 frontend:
   # -- Whether the frontend shall be deployed.
   enabled: true
-  replicas:
-    enabled: true
-    replicaCount: 1
+  # -- Enables horizontal pod autoscaling
+  autoScaling:
+    enabled: false
+    annotations: {}
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 70
+  # -- replicaCount is not used when autoscaling is enabled
+  replicaCount: 1
   deployment:
     # -- The deployment strategy to use.
     strategy:
-      enabled: true
       type: RollingUpdate
   annotations: {}
   image:
@@ -289,15 +301,21 @@ mirrorService:
 notificationPublisher:
   # -- Whether the notification publisher shall be deployed.
   enabled: true
-  replicas:
-    enabled: true
-    replicaCount: 1
+  # -- Enables horizontal pod autoscaling
+  autoScaling:
+    enabled: false
+    annotations: {}
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 70
+  # -- replicaCount is not used when autoscaling is enabled
+  replicaCount: 1
   deployment:
     # -- The deployment strategy to use. `Recreate` is recommended because the service
     # does not serve user-traffic, and `RollingUpdate` will cause undesired
     # Kafka consumer rebalances.
     strategy:
-      enabled: true
       type: Recreate
   annotations: {}
   image:
@@ -347,15 +365,21 @@ repoMetaAnalyzer:
   # -- Whether the repository metadata analyzer shall be deployed.
   enabled: true
   annotations: {}
-  replicas:
-    enabled: true
-    replicaCount: 1
+  # -- Enables horizontal pod autoscaling
+  autoScaling:
+    enabled: false
+    annotations: {}
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 70
+  # -- replicaCount is not used when autoscaling is enabled
+  replicaCount: 1
   deployment:
     # -- The deployment strategy to use. `Recreate` is recommended because the service
     # does not serve user-traffic, and `RollingUpdate` will cause undesired
     # Kafka consumer rebalances.
     strategy:
-      enabled: true
       type: Recreate
   image:
     # -- Override common.image.registry for the repository metadata analyzer.
@@ -409,15 +433,21 @@ vulnAnalyzer:
   # state to disk. Should be used in combination with persistentVolume.enabled.
   useStatefulSet: false
   annotations: {}
-  replicas:
-    enabled: true
-    replicaCount: 1
+  # -- Enables horizontal pod autoscaling
+  autoScaling:
+    enabled: false
+    annotations: {}
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 70
+  # -- replicaCount is not used when autoscaling is enabled
+  replicaCount: 1
   deployment:
     # -- The deployment strategy to use. `Recreate` is recommended because the service
     # does not serve user-traffic, and `RollingUpdate` will cause undesired
     # Kafka consumer rebalances.
     strategy:
-      enabled: true
       type: Recreate
   image:
     # -- Override common.image.registry for the vulnerability analyzer.

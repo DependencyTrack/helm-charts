@@ -7,8 +7,11 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.frontendLabels" . | nindent 4 }}
 spec:
+  {{- if (not .Values.frontend.autoScaling.enabled) }}
   replicas: {{ .Values.frontend.replicaCount }}
-  strategy: {{- toYaml .Values.frontend.deployment.strategy | nindent 4 }}
+  {{- end }}
+  strategy:
+    type: {{ .Values.frontend.deployment.strategy.type }}
   selector:
     matchLabels: {{- include "hyades.frontendSelectorLabels" . | nindent 6 }}
   template:

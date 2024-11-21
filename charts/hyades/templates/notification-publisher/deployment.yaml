@@ -7,8 +7,11 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.notificationPublisherLabels" .  | nindent 4 }}
 spec:
+  {{- if (not .Values.notificationPublisher.autoScaling.enabled) }}
   replicas: {{ .Values.notificationPublisher.replicaCount }}
-  strategy: {{- toYaml .Values.notificationPublisher.deployment.strategy | nindent 4 }}
+  {{- end }}
+  strategy:
+    type: {{ .Values.notificationPublisher.deployment.strategy.type }}
   selector:
     matchLabels: {{- include "hyades.notificationPublisherSelectorLabels" . | nindent 6 }}
   template:

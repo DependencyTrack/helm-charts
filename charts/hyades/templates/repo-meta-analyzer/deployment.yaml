@@ -7,8 +7,11 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels: {{- include "hyades.repoMetaAnalyzerLabels" .  | nindent 4 }}
 spec:
+  {{- if (not .Values.repoMetaAnalyzer.autoScaling.enabled) }}
   replicas: {{ .Values.repoMetaAnalyzer.replicaCount }}
-  strategy: {{- toYaml .Values.repoMetaAnalyzer.deployment.strategy | nindent 4 }}
+  {{- end }}
+  strategy:
+    type: {{ .Values.repoMetaAnalyzer.deployment.strategy.type }}
   selector:
     matchLabels: {{- include "hyades.repoMetaAnalyzerSelectorLabels" . | nindent 6 }}
   template:

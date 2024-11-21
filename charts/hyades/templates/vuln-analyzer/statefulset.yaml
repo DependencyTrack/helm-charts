@@ -8,7 +8,9 @@ metadata:
   labels: {{- include "hyades.vulnAnalyzerLabels" . | nindent 4 }}
 spec:
   serviceName: {{ include "hyades.vulnAnalyzerFullname" . }}-headless
+  {{- if (not .Values.vulnAnalyzer.autoScaling.enabled) }}
   replicas: {{ .Values.vulnAnalyzer.replicaCount }}
+  {{- end }}
   selector:
     matchLabels: {{- include "hyades.vulnAnalyzerSelectorLabels" . | nindent 6 }}
   template:

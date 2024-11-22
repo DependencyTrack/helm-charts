@@ -3,6 +3,25 @@ entries:
   dependency-track:
   - apiVersion: v2
     appVersion: 4.12.1
+    created: "2024-11-22T11:34:58.253014592Z"
+    description: Dependency-Track is an intelligent Component Analysis platform that
+      allows organizations to identify and reduce risk in the software supply chain.
+    digest: 20817af5575b636dc4c0c77b84558f344d7d9fc07bbc671e0ab9d91a8f9240fb
+    home: https://github.com/DependencyTrack/dependency-track
+    icon: https://avatars.githubusercontent.com/u/40258585
+    maintainers:
+    - email: nscuro@protonmail.com
+      name: nscuro
+      url: https://github.com/nscuro
+    name: dependency-track
+    sources:
+    - https://github.com/DependencyTrack/helm-charts/tree/main/charts/dependency-track
+    type: application
+    urls:
+    - https://github.com/DependencyTrack/helm-charts/releases/download/dependency-track-0.23.0/dependency-track-0.23.0.tgz
+    version: 0.23.0
+  - apiVersion: v2
+    appVersion: 4.12.1
     created: "2024-10-25T23:04:55.263361211Z"
     description: Dependency-Track is an intelligent Component Analysis platform that
       allows organizations to identify and reduce risk in the software supply chain.
@@ -583,6 +602,41 @@ entries:
   hyades:
   - apiVersion: v2
     appVersion: 0.6.0-SNAPSHOT
+    created: "2024-11-22T11:34:58.395451751Z"
+    description: 'Hyades is an incubating project for decoupling responsibilities
+      from Dependency-Track''s monolithic API server into separate, scalable services.
+      It will eventually become Dependency-Track version 5. HYADES IS NOT CONSIDERED
+      GENERALLY AVAILABLE YET, and breaking changes may be introduced without prior
+      notice. Use this chart locally or in test environments, but don''t rely on it
+      in production yet. The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hyades/issues/860'
+    digest: a9eb40913274fd4485159fa7dee975fef76a05fc5e55407abfa82745145e0ccd
+    home: https://github.com/DependencyTrack/hyades
+    icon: https://avatars.githubusercontent.com/u/40258585
+    maintainers:
+    - email: nscuro@protonmail.com
+      name: nscuro
+      url: https://github.com/nscuro
+    - email: meha.bhargava@citi.com
+      name: mehab
+      url: https://github.com/mehab
+    - email: sahiba.mittal@citi.com
+      name: sahibamittal
+      url: https://github.com/sahibamittal
+    - email: vithika.shukla@citi.com
+      name: VithikaS
+      url: https://github.com/VithikaS
+    name: hyades
+    sources:
+    - https://github.com/DependencyTrack/helm-charts/tree/main/charts/hyades
+    - https://github.com/DependencyTrack/hyades
+    - https://github.com/DependencyTrack/hyades-apiserver
+    - https://github.com/DependencyTrack/hyades-frontend
+    type: application
+    urls:
+    - https://github.com/DependencyTrack/helm-charts/releases/download/hyades-0.10.0/hyades-0.10.0.tgz
+    version: 0.10.0
+  - apiVersion: v2
+    appVersion: 0.6.0-SNAPSHOT
     created: "2024-09-25T20:45:50.166529617Z"
     description: 'Hyades is an incubating project for decoupling responsibilities
       from Dependency-Track''s monolithic API server into separate, scalable services.
@@ -861,4 +915,4 @@ entries:
     urls:
     - https://github.com/DependencyTrack/helm-charts/releases/download/hyades-0.2.0/hyades-0.2.0.tgz
     version: 0.2.0
-generated: "2024-10-25T23:04:55.397812853Z"
+generated: "2024-11-22T11:34:58.395791154Z"

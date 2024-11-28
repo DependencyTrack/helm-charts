@@ -12,11 +12,19 @@ metadata:
 spec:
   type: {{ .Values.frontend.service.type | quote }}
   ports:
-  - name: web
-    port: {{ .Values.frontend.service.port }}
-    targetPort: web
+    - name: web
+      port: {{ .Values.frontend.service.port }}
+      targetPort: web
     {{- with .Values.frontend.service.nodePort }}
-    nodePort: {{ . }}
+      nodePort: {{ . }}
     {{- end }}
   selector: {{- include "hyades.frontendSelectorLabels" . | nindent 4 }}
+  {{- if eq .Values.frontend.service.type "LoadBalancer" }}
+  {{- if .Values.frontend.service.loadBalancerSourceRanges }}
+    loadBalancerSourceRanges:
+  {{- range .Values.frontend.service.loadBalancerSourceRanges }}
+      - {{ . }}
+   {{- end }}
+  {{- end -}}
+  {{- end -}}
 {{- end }}

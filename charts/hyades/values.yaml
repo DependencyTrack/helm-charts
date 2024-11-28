@@ -90,6 +90,8 @@ apiServer:
     nodePort: ~
     port: 8080
     annotations: {}
+    # loadBalancerSourceRanges:
+    #   - 0.0.0.0/0
   serviceMonitor:
     enabled: false
     namespace: monitoring
@@ -233,6 +235,8 @@ frontend:
     nodePort: ~
     port: 8080
     annotations: {}
+    # loadBalancerSourceRanges:
+    #   - 0.0.0.0/0
   apiBaseUrl: ""
   # -- Additional init containers to deploy. Supports templating.
   initContainers: []

@@ -69,6 +69,6 @@ jobs:
     - name: Set up Chart Testing
       uses: helm/chart-testing-action@e6669bcd63d7cb57cb4380c33043eebe5d111992 # tag=v2.6.1
     - name: Create Kind Cluster
-      uses: helm/kind-action@0025e74a8c7512023d06dc019c617aa3cf561fde # tag=v1.10.0
+      uses: helm/kind-action@a1b0e391336a6ee6713a0583f8c6240d70863de3 # tag=v1.12.0
     - name: Test
       run: ct install --config ct.yaml --debug

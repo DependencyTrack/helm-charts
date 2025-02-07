@@ -30,7 +30,7 @@ spec:
       {{- with .Values.apiServer.initContainers }}
       {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
-      serviceAccount: {{ include "dependencytrack.serviceAccountName" . }}
+      serviceAccountName: {{ include "dependencytrack.serviceAccountName" . }}
       {{- with .Values.apiServer.podSecurityContext }}
       securityContext: {{- toYaml . | nindent 8 }}
       {{- end }}

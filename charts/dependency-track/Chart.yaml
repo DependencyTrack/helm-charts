@@ -1,8 +1,8 @@
 apiVersion: v2
 name: dependency-track
-version: 0.27.0
+version: 0.28.0
 type: application
-appVersion: 4.12.5
+appVersion: 4.12.6
 description: |-
   Dependency-Track is an intelligent Component Analysis platform
   that allows organizations to identify and reduce risk in the software supply chain.

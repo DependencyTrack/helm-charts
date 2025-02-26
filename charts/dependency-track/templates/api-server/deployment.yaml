@@ -118,6 +118,9 @@ spec:
         {{- end }}
       - name: tmp
         emptyDir: { }
+      {{- if .Values.apiServer.additionalVolumes }}
+        {{- toYaml .Values.apiServer.additionalVolumes | nindent 6 }}
+      {{- end }}
       {{- with (include "dependencytrack.secretKeySecretName" .) }}
       - name: secret-key
         secret:

@@ -117,3 +117,4 @@ that allows organizations to identify and reduce risk in the software supply cha
 | ingress.hostname | string | `"example.com"` |  |
 | ingress.ingressClassName | string | `""` |  |
 | ingress.tls | list | `[]` |  |
+

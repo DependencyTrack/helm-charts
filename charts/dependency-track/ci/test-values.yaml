@@ -13,3 +13,5 @@ apiServer:
   extraEnv:
     - name: SYSTEM_REQUIREMENT_CHECK_ENABLED
       value: "false"
+  metrics:
+    enabled: false

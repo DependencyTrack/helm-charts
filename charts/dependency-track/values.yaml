@@ -23,6 +23,9 @@ apiServer:
 # -- The type of deployment. Can be either Deployment or StatefulSet.
   deploymentType: StatefulSet
   annotations: {}
+  metrics:
+    # -- Enable Prometheus scraping annotations on pods
+    enabled: true
   image:
     # -- Override common.image.registry for the API server.
     registry: ''

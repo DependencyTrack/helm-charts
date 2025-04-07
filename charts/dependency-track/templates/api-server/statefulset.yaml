@@ -18,8 +18,10 @@ spec:
       {{- toYaml .Values.apiServer.extraPodLabels | nindent 8 }}
       {{- end }}
       annotations:
+        {{- if .Values.apiServer.metrics.enabled }}
         prometheus.io/scrape: "true"
         prometheus.io/path: /metrics
+        {{- end }}
         {{- with .Values.apiServer.annotations }}
         {{ toYaml . | nindent 8 }}
         {{- end }}

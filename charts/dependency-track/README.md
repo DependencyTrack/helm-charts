@@ -36,6 +36,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.image.repository | string | `"dependencytrack/apiserver"` |  |
 | apiServer.image.tag | string | `""` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". Defaults to AppVersion of the chart. |
 | apiServer.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
+| apiServer.metrics.enabled | bool | `true` | Enable Prometheus scraping annotations on pods |
 | apiServer.nodeSelector | object | `{}` |  |
 | apiServer.persistentVolume.className | string | `""` |  |
 | apiServer.persistentVolume.enabled | bool | `false` |  |
@@ -116,4 +117,3 @@ that allows organizations to identify and reduce risk in the software supply cha
 | ingress.hostname | string | `"example.com"` |  |
 | ingress.ingressClassName | string | `""` |  |
 | ingress.tls | list | `[]` |  |
-

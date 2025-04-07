@@ -68,6 +68,14 @@
         "annotations": {
           "type": "object"
         },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          }
+        },
         "image": {
           "$ref": "#/$defs/image"
         },

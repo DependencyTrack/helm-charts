@@ -18,6 +18,8 @@ common:
     name: ""
     # -- Whether the serviceAccount should mount the token.
     automount: false
+  # -- Whether service links should be added to the Pods
+  serviceLinks: true
 
 apiServer:
 # -- The type of deployment. Can be either Deployment or StatefulSet.

@@ -53,6 +53,9 @@
               "type": "boolean"
             }
           }
+        },
+        "enableServiceLinks": {
+          "type": "boolean"
         }
       }
     },

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: dependency-track
-version: 0.33.0
+version: 0.34.0
 type: application
 appVersion: 4.13.2
 description: |-

@@ -93,6 +93,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | frontend.image.tag | string | `""` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". Defaults to AppVersion of the chart. |
 | frontend.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
 | frontend.nodeSelector | object | `{}` |  |
+| frontend.podSecurityContext | object | `{"fsGroup":1000}` | Security context of the Pod. Aids in preventing permission issues with persistent volumes. For OpenShift, explicitly set this to null. |
 | frontend.probes.liveness.failureThreshold | int | `3` |  |
 | frontend.probes.liveness.initialDelaySeconds | int | `5` |  |
 | frontend.probes.liveness.periodSeconds | int | `15` |  |

@@ -152,6 +152,11 @@ frontend:
     limits:
       cpu: 500m
       memory: 128Mi
+  # -- Security context of the Pod.
+  # Aids in preventing permission issues with persistent volumes.
+  # For OpenShift, explicitly set this to null.
+  podSecurityContext:
+    fsGroup: 1000
   # -- Security context of the Container.
   securityContext:
     allowPrivilegeEscalation: false

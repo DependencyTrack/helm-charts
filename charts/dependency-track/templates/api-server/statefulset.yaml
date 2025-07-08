@@ -129,7 +129,9 @@ spec:
       {{- end }}
   {{- if .Values.apiServer.persistentVolume.enabled }}
   volumeClaimTemplates:
-  - metadata:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
       name: data
     spec:
       storageClassName: {{ .Values.apiServer.persistentVolume.className }}

@@ -28,6 +28,9 @@ spec:
       {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
       serviceAccountName: {{ include "dependencytrack.serviceAccountName" . }}
+      {{- with .Values.frontend.podSecurityContext }}
+      securityContext: {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: {{ include "dependencytrack.frontendName" . }}
         image: {{ include "dependencytrack.frontendImage" . }}

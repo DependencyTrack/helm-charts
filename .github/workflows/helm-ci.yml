@@ -40,7 +40,7 @@ jobs:
     - name: Lint Chart
       run: ct lint --config ct.yaml
     - name: Scan for Misconfiguration
-      uses: aquasecurity/trivy-action@dc5a429b52fcf669ce959baa2c2dd26090d2a6c4 # tag=v0.32.0
+      uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # tag=v0.33.1
       with:
         scan-type: config
         format: sarif

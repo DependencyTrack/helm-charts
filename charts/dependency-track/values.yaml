@@ -22,7 +22,7 @@ common:
   enableServiceLinks: true
 
 apiServer:
-# -- The type of deployment. Can be either Deployment or StatefulSet.
+  # -- The type of deployment. Can be either Deployment or StatefulSet.
   deploymentType: StatefulSet
   annotations: {}
   metrics:
@@ -30,7 +30,7 @@ apiServer:
     enabled: true
   image:
     # -- Override common.image.registry for the API server.
-    registry: ''
+    registry: ""
     repository: dependencytrack/apiserver
     # -- Can be a tag name such as "latest", or an image digest
     # prefixed with "sha256:". Defaults to AppVersion of the chart.
@@ -55,7 +55,7 @@ apiServer:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
-      - ALL
+        - ALL
     runAsNonRoot: true
     readOnlyRootFilesystem: true
     seccompProfile:
@@ -64,7 +64,8 @@ apiServer:
     enabled: false
     className: ""
     size: 5Gi
-  extraEnv: []
+  extraEnv:
+    []
     # - name: "ALPINE_DATABASE_PASSWORD"
     #   valueFrom:
     #     secretKeyRef:
@@ -137,7 +138,7 @@ frontend:
   annotations: {}
   image:
     # -- Override common.image.registry for the frontend.
-    registry: ''
+    registry: ""
     repository: dependencytrack/frontend
     # -- Can be a tag name such as "latest", or an image digest
     # prefixed with "sha256:". Defaults to AppVersion of the chart.
@@ -162,7 +163,7 @@ frontend:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
-      - ALL
+        - ALL
     runAsNonRoot: true
     # RO filesystems are not supported by the frontend
     readOnlyRootFilesystem: false
@@ -207,6 +208,7 @@ frontend:
 ingress:
   enabled: false
   annotations: {}
+  labels: {}
   hostname: "example.com"
   ingressClassName: ""
   tls: []

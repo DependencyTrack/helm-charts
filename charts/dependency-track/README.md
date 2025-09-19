@@ -115,6 +115,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | frontend.service.type | string | `"ClusterIP"` |  |
 | frontend.tolerations | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
+| ingress.labels | object | `{}` |  |
 | ingress.enabled | bool | `false` |  |
 | ingress.hostname | string | `"example.com"` |  |
 | ingress.ingressClassName | string | `""` |  |

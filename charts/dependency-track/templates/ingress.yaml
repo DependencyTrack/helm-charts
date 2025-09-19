@@ -7,6 +7,9 @@ metadata:
   {{- with .Values.ingress.annotations }}
   annotations: {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- with .Values.ingress.labels }}
+  labels: {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   {{- if .Values.ingress.ingressClassName | empty | not }}
   ingressClassName: {{ .Values.ingress.ingressClassName | quote }}

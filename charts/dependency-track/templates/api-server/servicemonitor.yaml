@@ -5,7 +5,11 @@ kind: ServiceMonitor
 metadata:
   name: {{ include "dependencytrack.apiServerFullname" . }}
   namespace: {{ .Values.apiServer.serviceMonitor.namespace }}
-  labels: {{- include "dependencytrack.apiServerLabels" . | nindent 4 }}
+  labels:
+    {{- include "dependencytrack.apiServerLabels" . | nindent 4 }}
+    {{- with .Values.apiServer.serviceMonitor.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   namespaceSelector:
     matchNames:

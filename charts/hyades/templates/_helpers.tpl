@@ -220,51 +220,6 @@ Frontend image
 {{- end -}}
 {{- end -}}
 
-
-{{/*
-Mirror service labels
-*/}}
-{{- define "hyades.mirrorServiceLabels" -}}
-{{ include "hyades.commonLabels" . }}
-{{ include "hyades.mirrorServiceSelectorLabels" . }}
-app.kubernetes.io/version: {{ .Chart.AppVersion }}
-{{- end -}}
-
-{{/*
-Mirror service selector labels
-*/}}
-{{- define "hyades.mirrorServiceSelectorLabels" -}}
-{{ include "hyades.commonSelectorLabels" . }}
-app.kubernetes.io/name: {{ printf "%s-mirror-service" (include "hyades.name" .) }}
-app.kubernetes.io/component: mirror-service
-{{- end -}}
-
-{{/*
-Mirror service name
-*/}}
-{{- define "hyades.mirrorServiceName" -}}
-{{- printf "%s-mirror-service" (include "hyades.name" .) -}}
-{{- end -}}
-
-{{/*
-Mirror service fully qualified name
-*/}}
-{{- define "hyades.mirrorServiceFullname" -}}
-{{- printf "%s-mirror-service" (include "hyades.fullname" .) -}}
-{{- end -}}
-
-{{/*
-Mirror service image
-*/}}
-{{- define "hyades.mirrorServiceImage" -}}
-{{- if eq (substr 0 7 .Values.mirrorService.image.tag) "sha256:" -}}
-{{- printf "%s/%s@%s" (.Values.mirrorService.image.registry | default .Values.common.image.registry) .Values.mirrorService.image.repository .Values.mirrorService.image.tag -}}
-{{- else -}}
-{{- printf "%s/%s:%s" (.Values.mirrorService.image.registry | default .Values.common.image.registry) .Values.mirrorService.image.repository (.Values.mirrorService.image.tag | default .Chart.AppVersion) -}}
-{{- end -}}
-{{- end -}}
-
-
 {{/*
 Notification publisher labels
 */}}

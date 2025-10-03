@@ -18,7 +18,13 @@ apiServer:
       memory: 512Mi
 
 repoMetaAnalyzer:
-  resources: *hyadesResources
+  resources: &hyadesResources
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
 
 vulnAnalyzer:
   resources: *hyadesResources

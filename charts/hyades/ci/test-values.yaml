@@ -17,15 +17,6 @@ apiServer:
       cpu: "2"
       memory: 512Mi
 
-mirrorService:
-  resources: &hyadesResources
-    requests:
-      cpu: 100m
-      memory: 256Mi
-    limits:
-      cpu: 500m
-      memory: 256Mi
-
 repoMetaAnalyzer:
   resources: *hyadesResources
 

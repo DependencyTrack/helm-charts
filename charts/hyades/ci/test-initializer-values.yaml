@@ -26,15 +26,6 @@ initializer:
   # See https://github.com/helm/chart-testing/issues/202.
   noHelmHook: true
 
-mirrorService:
-  resources: &hyadesResources
-    requests:
-      cpu: 100m
-      memory: 256Mi
-    limits:
-      cpu: 500m
-      memory: 256Mi
-
 repoMetaAnalyzer:
   resources: *hyadesResources
 

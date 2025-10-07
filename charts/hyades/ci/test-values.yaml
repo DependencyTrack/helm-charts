@@ -17,7 +17,7 @@ apiServer:
       cpu: "2"
       memory: 512Mi
 
-mirrorService:
+repoMetaAnalyzer:
   resources: &hyadesResources
     requests:
       cpu: 100m
@@ -25,9 +25,6 @@ mirrorService:
     limits:
       cpu: 500m
       memory: 256Mi
-
-repoMetaAnalyzer:
-  resources: *hyadesResources
 
 vulnAnalyzer:
   resources: *hyadesResources

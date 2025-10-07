@@ -107,6 +107,7 @@ apiServer:
     namespace: monitoring
     scrapeInterval: 60s
     scrapeTimeout: 30s
+    labels: {}
   # -- Additional init containers to deploy. Supports templating.
   initContainers: []
   # Use the following to fix permissions on the /data volume,

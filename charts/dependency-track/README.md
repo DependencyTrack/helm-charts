@@ -64,6 +64,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.serviceMonitor.namespace | string | `"monitoring"` |  |
 | apiServer.serviceMonitor.scrapeInterval | string | `"60s"` |  |
 | apiServer.serviceMonitor.scrapeTimeout | string | `"30s"` |  |
+| apiServer.serviceMonitor.labels | object | `{}` | |
 | apiServer.tolerations | list | `[]` |  |
 | common.enableServiceLinks | bool | `true` | Whether service links should be added to the Pods |
 | common.fullnameOverride | string | `""` |  |

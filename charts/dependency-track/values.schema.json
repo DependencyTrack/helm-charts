@@ -363,6 +363,9 @@
         },
         "scrapeTimeout": {
           "type": "string"
+        },
+        "labels": {
+          "type": "object"
         }
       }
     }

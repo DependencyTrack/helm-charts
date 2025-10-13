@@ -297,6 +297,9 @@
     "probes": {
       "type": "object",
       "properties": {
+        "startup": {
+          "$ref": "#/$defs/probe"
+        },
         "readiness": {
           "$ref": "#/$defs/probe"
         },

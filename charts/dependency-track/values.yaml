@@ -79,6 +79,12 @@ apiServer:
   extraPodLabels: {}
   tolerations: []
   probes:
+    startup:
+      failureThreshold: 30
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
     liveness:
       failureThreshold: 3
       initialDelaySeconds: 10

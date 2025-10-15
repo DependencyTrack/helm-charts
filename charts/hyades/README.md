@@ -157,39 +157,6 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | initializer.waiter.image.registry | string | `"docker.io"` |  |
 | initializer.waiter.image.repository | string | `"bitnami/kubectl"` |  |
 | initializer.waiter.image.tag | string | `"latest"` |  |
-| mirrorService.additionalVolumeMounts | list | `[]` |  |
-| mirrorService.additionalVolumes | list | `[]` |  |
-| mirrorService.annotations | object | `{}` |  |
-| mirrorService.args | list | `[]` |  |
-| mirrorService.command | list | `[]` |  |
-| mirrorService.deployment.strategy | object | `{"type":"Recreate"}` | The deployment strategy to use. `Recreate` is recommended because the service does not serve user-traffic, and `RollingUpdate` will cause undesired Kafka consumer rebalances. |
-| mirrorService.enabled | bool | `true` | Whether the mirror service shall be deployed. |
-| mirrorService.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
-| mirrorService.extraEnv | list | `[]` |  |
-| mirrorService.extraEnvFrom | list | `[]` |  |
-| mirrorService.image.pullPolicy | string | `"Always"` |  |
-| mirrorService.image.registry | string | `""` | Override common.image.registry for the mirror service. |
-| mirrorService.image.repository | string | `"dependencytrack/hyades-mirror-service"` |  |
-| mirrorService.image.tag | string | `"snapshot-native"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
-| mirrorService.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
-| mirrorService.nodeSelector | object | `{}` |  |
-| mirrorService.probes.liveness.failureThreshold | int | `3` |  |
-| mirrorService.probes.liveness.initialDelaySeconds | int | `10` |  |
-| mirrorService.probes.liveness.periodSeconds | int | `15` |  |
-| mirrorService.probes.liveness.successThreshold | int | `1` |  |
-| mirrorService.probes.liveness.timeoutSeconds | int | `5` |  |
-| mirrorService.probes.readiness.failureThreshold | int | `3` |  |
-| mirrorService.probes.readiness.initialDelaySeconds | int | `10` |  |
-| mirrorService.probes.readiness.periodSeconds | int | `15` |  |
-| mirrorService.probes.readiness.successThreshold | int | `1` |  |
-| mirrorService.probes.readiness.timeoutSeconds | int | `5` |  |
-| mirrorService.replicaCount | int | `1` | Number of replicas. Should be <= 1. |
-| mirrorService.resources.limits.cpu | string | `"2"` |  |
-| mirrorService.resources.limits.memory | string | `"2Gi"` |  |
-| mirrorService.resources.requests.cpu | string | `"500m"` |  |
-| mirrorService.resources.requests.memory | string | `"512Mi"` |  |
-| mirrorService.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context of the container. |
-| mirrorService.tolerations | list | `[]` |  |
 | notificationPublisher.additionalVolumeMounts | list | `[]` |  |
 | notificationPublisher.additionalVolumes | list | `[]` |  |
 | notificationPublisher.annotations | object | `{}` |  |

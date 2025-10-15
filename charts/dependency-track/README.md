@@ -1,6 +1,6 @@
 # dependency-track
 
-![Version: 0.36.0](https://img.shields.io/badge/Version-0.36.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.13.4](https://img.shields.io/badge/AppVersion-4.13.4-informational?style=flat-square)
+![Version: 0.39.0](https://img.shields.io/badge/Version-0.39.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.13.5](https://img.shields.io/badge/AppVersion-4.13.5-informational?style=flat-square)
 
 Dependency-Track is an intelligent Component Analysis platform
 that allows organizations to identify and reduce risk in the software supply chain.
@@ -52,6 +52,11 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.probes.readiness.periodSeconds | int | `15` |  |
 | apiServer.probes.readiness.successThreshold | int | `1` |  |
 | apiServer.probes.readiness.timeoutSeconds | int | `5` |  |
+| apiServer.probes.startup.failureThreshold | int | `30` |  |
+| apiServer.probes.startup.initialDelaySeconds | int | `10` |  |
+| apiServer.probes.startup.periodSeconds | int | `10` |  |
+| apiServer.probes.startup.successThreshold | int | `1` |  |
+| apiServer.probes.startup.timeoutSeconds | int | `5` |  |
 | apiServer.resources.limits.cpu | string | `"4"` |  |
 | apiServer.resources.limits.memory | string | `"5Gi"` |  |
 | apiServer.resources.requests.cpu | string | `"2"` |  |
@@ -61,6 +66,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | apiServer.service.nodePort | string | `nil` |  |
 | apiServer.service.type | string | `"ClusterIP"` |  |
 | apiServer.serviceMonitor.enabled | bool | `false` |  |
+| apiServer.serviceMonitor.labels | object | `{}` |  |
 | apiServer.serviceMonitor.namespace | string | `"monitoring"` |  |
 | apiServer.serviceMonitor.scrapeInterval | string | `"60s"` |  |
 | apiServer.serviceMonitor.scrapeTimeout | string | `"30s"` |  |

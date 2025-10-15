@@ -80,6 +80,16 @@ spec:
         {{- if .Values.apiServer.additionalVolumeMounts }}
           {{- toYaml .Values.apiServer.additionalVolumeMounts | nindent 8 }}
         {{- end }}
+        startupProbe:
+          httpGet:
+            scheme: HTTP
+            port: web
+            path: /health/started
+          failureThreshold: {{ .Values.apiServer.probes.startup.failureThreshold }}
+          initialDelaySeconds: {{ .Values.apiServer.probes.startup.initialDelaySeconds }}
+          periodSeconds: {{ .Values.apiServer.probes.startup.periodSeconds }}
+          successThreshold: {{ .Values.apiServer.probes.startup.successThreshold }}
+          timeoutSeconds: {{ .Values.apiServer.probes.startup.timeoutSeconds }}
         livenessProbe:
           httpGet:
             scheme: HTTP

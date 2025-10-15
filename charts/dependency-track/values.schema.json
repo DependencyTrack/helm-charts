@@ -297,6 +297,9 @@
     "probes": {
       "type": "object",
       "properties": {
+        "startup": {
+          "$ref": "#/$defs/probe"
+        },
         "readiness": {
           "$ref": "#/$defs/probe"
         },
@@ -363,6 +366,9 @@
         },
         "scrapeTimeout": {
           "type": "string"
+        },
+        "labels": {
+          "type": "object"
         }
       }
     }

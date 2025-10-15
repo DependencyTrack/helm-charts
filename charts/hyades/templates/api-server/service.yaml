@@ -12,11 +12,19 @@ metadata:
 spec:
   type: {{ .Values.apiServer.service.type | quote }}
   ports:
-  - name: web
-    port: {{ .Values.apiServer.service.port }}
-    targetPort: web
+    - name: web
+      port: {{ .Values.apiServer.service.port }}
+      targetPort: web
     {{- with .Values.apiServer.service.nodePort }}
-    nodePort: {{ . }}
+      nodePort: {{ . }}
     {{- end }}
   selector: {{- include "hyades.apiServerSelectorLabels" . | nindent 4 }}
+  {{- if eq .Values.apiServer.service.type "LoadBalancer" }}
+  {{- if .Values.apiServer.service.loadBalancerSourceRanges }}
+    loadBalancerSourceRanges:
+  {{- range .Values.apiServer.service.loadBalancerSourceRanges }}
+      - {{ . }}
+   {{- end }}
+  {{- end -}}
+  {{- end -}}
 {{- end }}

@@ -36,7 +36,7 @@ jobs:
         python-version: "3.11"
         check-latest: true
     - name: Set up Chart Testing
-      uses: helm/chart-testing-action@0d28d3144d3a25ea2cc349d6e59901c4ff469b3b # tag=v2.7.0
+      uses: helm/chart-testing-action@6ec842c01de15ebb84c8627d2744a0c2f2755c9f # tag=v2.8.0
     - name: Lint Chart
       run: ct lint --config ct.yaml
     - name: Scan for Misconfiguration
@@ -67,7 +67,7 @@ jobs:
         python-version: "3.11"
         check-latest: true
     - name: Set up Chart Testing
-      uses: helm/chart-testing-action@0d28d3144d3a25ea2cc349d6e59901c4ff469b3b # tag=v2.7.0
+      uses: helm/chart-testing-action@6ec842c01de15ebb84c8627d2744a0c2f2755c9f # tag=v2.8.0
     - name: Create Kind Cluster
       uses: helm/kind-action@a1b0e391336a6ee6713a0583f8c6240d70863de3 # tag=v1.12.0
     - name: Test

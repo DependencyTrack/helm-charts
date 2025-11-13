@@ -80,18 +80,21 @@ apiServer:
   tolerations: []
   probes:
     startup:
+      path: "/health/started"
       failureThreshold: 30
       initialDelaySeconds: 10
       periodSeconds: 10
       successThreshold: 1
       timeoutSeconds: 5
     liveness:
+      path: "/health/live"
       failureThreshold: 3
       initialDelaySeconds: 10
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
     readiness:
+      path: "/health/ready"
       failureThreshold: 3
       initialDelaySeconds: 10
       periodSeconds: 15

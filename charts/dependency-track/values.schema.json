@@ -277,6 +277,9 @@
     "probe": {
       "type": "object",
       "properties": {
+        "path": {
+          "type": "string"
+        },
         "failureThreshold": {
           "type": "number"
         },

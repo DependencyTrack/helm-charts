@@ -84,7 +84,7 @@ spec:
           httpGet:
             scheme: HTTP
             port: web
-            path: /health/started
+            path: {{ .Values.apiServer.probes.startup.path }}
           failureThreshold: {{ .Values.apiServer.probes.startup.failureThreshold }}
           initialDelaySeconds: {{ .Values.apiServer.probes.startup.initialDelaySeconds }}
           periodSeconds: {{ .Values.apiServer.probes.startup.periodSeconds }}
@@ -94,7 +94,7 @@ spec:
           httpGet:
             scheme: HTTP
             port: web
-            path: /health/live
+            path: {{ .Values.apiServer.probes.liveness.path }}
           failureThreshold: {{ .Values.apiServer.probes.liveness.failureThreshold }}
           initialDelaySeconds: {{ .Values.apiServer.probes.liveness.initialDelaySeconds }}
           periodSeconds: {{ .Values.apiServer.probes.liveness.periodSeconds }}
@@ -104,7 +104,7 @@ spec:
           httpGet:
             scheme: HTTP
             port: web
-            path: /health/ready
+            path: {{ .Values.apiServer.probes.readiness.path }}
           failureThreshold: {{ .Values.apiServer.probes.readiness.failureThreshold }}
           initialDelaySeconds: {{ .Values.apiServer.probes.readiness.initialDelaySeconds }}
           periodSeconds: {{ .Values.apiServer.probes.readiness.periodSeconds }}

@@ -220,49 +220,6 @@ Frontend image
 {{- end -}}
 {{- end -}}
 
-{{/*
-Notification publisher labels
-*/}}
-{{- define "hyades.notificationPublisherLabels" -}}
-{{ include "hyades.commonLabels" . }}
-{{ include "hyades.notificationPublisherSelectorLabels" . }}
-app.kubernetes.io/version: {{ .Chart.AppVersion }}
-{{- end -}}
-
-{{/*
-Notification publisher selector labels
-*/}}
-{{- define "hyades.notificationPublisherSelectorLabels" -}}
-{{ include "hyades.commonSelectorLabels" . }}
-app.kubernetes.io/name: {{ printf "%s-notification-publisher" (include "hyades.name" .) }}
-app.kubernetes.io/component: notification-publisher
-{{- end -}}
-
-{{/*
-Notification publisher name
-*/}}
-{{- define "hyades.notificationPublisherName" -}}
-{{- printf "%s-notification-publisher" (include "hyades.name" .) -}}
-{{- end -}}
-
-{{/*
-Notification publisher fully qualified name
-*/}}
-{{- define "hyades.notificationPublisherFullname" -}}
-{{- printf "%s-notification-publisher" (include "hyades.fullname" .) -}}
-{{- end -}}
-
-{{/*
-Notification publisher image
-*/}}
-{{- define "hyades.notificationPublisherImage" -}}
-{{- if eq (substr 0 7 .Values.notificationPublisher.image.tag) "sha256:" -}}
-{{- printf "%s/%s@%s" (.Values.notificationPublisher.image.registry | default .Values.common.image.registry) .Values.notificationPublisher.image.repository .Values.notificationPublisher.image.tag -}}
-{{- else -}}
-{{- printf "%s/%s:%s" (.Values.notificationPublisher.image.registry | default .Values.common.image.registry) .Values.notificationPublisher.image.repository (.Values.notificationPublisher.image.tag | default .Chart.AppVersion) -}}
-{{- end -}}
-{{- end -}}
-
 
 {{/*
 Repository metadata analyzer labels

@@ -30,7 +30,7 @@ spec:
       {{- if .Values.initializer.enabled }}
       - {{ include "hyades.initializerWaiterContainer" . | nindent 8 }}
       {{- end }}
-      {{- with .Values.notificationPublisher.initContainers }}
+      {{- with .Values.vulnAnalyzer.initContainers }}
       {{- tpl (toYaml .) $ | nindent 6 }}
       {{- end }}
       serviceAccountName: {{ include "hyades.serviceAccountName" . }}

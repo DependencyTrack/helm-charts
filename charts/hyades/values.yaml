@@ -243,69 +243,6 @@ frontend:
   tolerations: []
   nodeSelector: {}
 
-notificationPublisher:
-  # -- Whether the notification publisher shall be deployed.
-  enabled: true
-  # -- Enables horizontal pod autoscaling
-  autoScaling:
-    enabled: false
-    annotations: {}
-    minReplicas: 1
-    maxReplicas: 3
-    targetCPUUtilizationPercentage: 70
-    targetMemoryUtilizationPercentage: 70
-  # -- replicaCount is not used when autoscaling is enabled
-  replicaCount: 1
-  deployment:
-    # -- The deployment strategy to use. `Recreate` is recommended because the service
-    # does not serve user-traffic, and `RollingUpdate` will cause undesired
-    # Kafka consumer rebalances.
-    strategy:
-      type: Recreate
-  annotations: {}
-  image:
-    # -- Override common.image.registry for the notification publisher.
-    registry: ""
-    repository: dependencytrack/hyades-notification-publisher
-    # -- Can be a tag name such as "latest", or an image digest
-    # prefixed with "sha256:".
-    tag: snapshot-native
-    pullPolicy: Always
-  command: []
-  args: []
-  resources:
-    requests:
-      cpu: 500m
-      memory: 512Mi
-    limits:
-      cpu: "2"
-      memory: 2Gi
-  # -- Security context of the container.
-  securityContext: *hyadesSecurityContext
-  extraEnv: []
-  extraEnvFrom: []
-  probes:
-    liveness:
-      failureThreshold: 3
-      initialDelaySeconds: 10
-      periodSeconds: 15
-      successThreshold: 1
-      timeoutSeconds: 5
-    readiness:
-      failureThreshold: 3
-      initialDelaySeconds: 10
-      periodSeconds: 15
-      successThreshold: 1
-      timeoutSeconds: 5
-  # -- Additional init containers to deploy. Supports templating.
-  initContainers: []
-  # -- Additional containers to deploy. Supports templating.
-  extraContainers: []
-  additionalVolumes: []
-  additionalVolumeMounts: []
-  tolerations: []
-  nodeSelector: {}
-
 repoMetaAnalyzer:
   # -- Whether the repository metadata analyzer shall be deployed.
   enabled: true

@@ -43,7 +43,6 @@ apiServer:
       cpu: "2"
       memory: 5Gi
     limits:
-      cpu: "4"
       memory: 5Gi
   # -- Security context of the Pod.
   # Aids in preventing permission issues with persistent volumes.
@@ -64,8 +63,7 @@ apiServer:
     enabled: false
     className: ""
     size: 5Gi
-  extraEnv:
-    []
+  extraEnv: []
     # - name: "ALPINE_DATABASE_PASSWORD"
     #   valueFrom:
     #     secretKeyRef:
@@ -103,8 +101,7 @@ apiServer:
   additionalVolumeMounts: []
   #   - name: foo
   #     mountPath: /bar
-  additionalVolumes:
-    []
+  additionalVolumes: []
     # - name: foo
     #   emptyDir: {}
   service:
@@ -161,7 +158,6 @@ frontend:
       cpu: 150m
       memory: 64Mi
     limits:
-      cpu: 500m
       memory: 128Mi
   # -- Security context of the Pod.
   # Aids in preventing permission issues with persistent volumes.
@@ -198,12 +194,10 @@ frontend:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
-  additionalVolumeMounts:
-    []
+  additionalVolumeMounts: []
     # - name: foo
     #   mountPath: /bar
-  additionalVolumes:
-    []
+  additionalVolumes: []
     # - name: foo
     #   emptyDir: {}
   service:
@@ -227,8 +221,7 @@ ingress:
   #      - example.com
 
 # -- Create extra manifests via values.
-extraObjects:
-  []
+extraObjects: []
   # - apiVersion: "kubernetes-client.io/v1"
   #   kind: ExternalSecret
   #   metadata:

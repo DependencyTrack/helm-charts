@@ -157,40 +157,6 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | initializer.waiter.image.registry | string | `"docker.io"` |  |
 | initializer.waiter.image.repository | string | `"bitnami/kubectl"` |  |
 | initializer.waiter.image.tag | string | `"latest"` |  |
-| notificationPublisher.additionalVolumeMounts | list | `[]` |  |
-| notificationPublisher.additionalVolumes | list | `[]` |  |
-| notificationPublisher.annotations | object | `{}` |  |
-| notificationPublisher.args | list | `[]` |  |
-| notificationPublisher.autoScaling | object | `{"annotations":{},"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":70,"targetMemoryUtilizationPercentage":70}` | Enables horizontal pod autoscaling |
-| notificationPublisher.command | list | `[]` |  |
-| notificationPublisher.deployment.strategy | object | `{"type":"Recreate"}` | The deployment strategy to use. `Recreate` is recommended because the service does not serve user-traffic, and `RollingUpdate` will cause undesired Kafka consumer rebalances. |
-| notificationPublisher.enabled | bool | `true` | Whether the notification publisher shall be deployed. |
-| notificationPublisher.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
-| notificationPublisher.extraEnv | list | `[]` |  |
-| notificationPublisher.extraEnvFrom | list | `[]` |  |
-| notificationPublisher.image.pullPolicy | string | `"Always"` |  |
-| notificationPublisher.image.registry | string | `""` | Override common.image.registry for the notification publisher. |
-| notificationPublisher.image.repository | string | `"dependencytrack/hyades-notification-publisher"` |  |
-| notificationPublisher.image.tag | string | `"snapshot-native"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
-| notificationPublisher.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
-| notificationPublisher.nodeSelector | object | `{}` |  |
-| notificationPublisher.probes.liveness.failureThreshold | int | `3` |  |
-| notificationPublisher.probes.liveness.initialDelaySeconds | int | `10` |  |
-| notificationPublisher.probes.liveness.periodSeconds | int | `15` |  |
-| notificationPublisher.probes.liveness.successThreshold | int | `1` |  |
-| notificationPublisher.probes.liveness.timeoutSeconds | int | `5` |  |
-| notificationPublisher.probes.readiness.failureThreshold | int | `3` |  |
-| notificationPublisher.probes.readiness.initialDelaySeconds | int | `10` |  |
-| notificationPublisher.probes.readiness.periodSeconds | int | `15` |  |
-| notificationPublisher.probes.readiness.successThreshold | int | `1` |  |
-| notificationPublisher.probes.readiness.timeoutSeconds | int | `5` |  |
-| notificationPublisher.replicaCount | int | `1` | replicaCount is not used when autoscaling is enabled |
-| notificationPublisher.resources.limits.cpu | string | `"2"` |  |
-| notificationPublisher.resources.limits.memory | string | `"2Gi"` |  |
-| notificationPublisher.resources.requests.cpu | string | `"500m"` |  |
-| notificationPublisher.resources.requests.memory | string | `"512Mi"` |  |
-| notificationPublisher.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context of the container. |
-| notificationPublisher.tolerations | list | `[]` |  |
 | repoMetaAnalyzer.additionalVolumeMounts | list | `[]` |  |
 | repoMetaAnalyzer.additionalVolumes | list | `[]` |  |
 | repoMetaAnalyzer.annotations | object | `{}` |  |

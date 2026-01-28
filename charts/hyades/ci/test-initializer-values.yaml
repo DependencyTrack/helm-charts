@@ -128,13 +128,13 @@ extraObjects:
           - PLAINTEXT://0.0.0.0:9092
           - --advertise-kafka-addr
           - PLAINTEXT://redpanda.{{ .Release.Namespace }}.svc.cluster.local:9092
-        ports:
-        - name: kafka-api
-          containerPort: 9092
-          protocol: TCP
-        - name: redpanda-admin
-          containerPort: 9644
-          protocol: TCP
+          ports:
+          - name: kafka-api
+            containerPort: 9092
+            protocol: TCP
+          - name: redpanda-admin
+            containerPort: 9644
+            protocol: TCP
 - apiVersion: v1
   kind: Service
   metadata:

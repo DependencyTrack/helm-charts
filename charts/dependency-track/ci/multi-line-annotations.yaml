@@ -1,4 +1,13 @@
 api-server:
+  resources:
+    requests:
+      cpu: "1"
+      memory: "512Mi"
+    limits:
+      memory: "1Gi"
+  extraEnv:
+    - name: SYSTEM_REQUIREMENT_CHECK_ENABLED
+      value: "false"
   service:
     annotations:
       foo: |

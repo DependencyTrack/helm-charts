@@ -224,6 +224,17 @@ ingress:
   #    hosts:
   #      - example.com
 
+httpRoute:
+  enabled: false
+  annotations: {}
+  labels: {}
+  hostnames:
+    - "example.com"
+  parentRefs: []
+  #  - name: my-gateway
+  #    namespace: default
+  #    sectionName: https
+
 # -- Create extra manifests via values.
 extraObjects:
   []

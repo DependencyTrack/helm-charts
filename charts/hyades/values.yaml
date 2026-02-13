@@ -391,6 +391,17 @@ ingress:
   #    hosts:
   #    - example.com
 
+httpRoute:
+  enabled: false
+  annotations: {}
+  labels: {}
+  hostnames:
+    - "example.com"
+  parentRefs: []
+  #  - name: my-gateway
+  #    namespace: default
+  #    sectionName: https
+
 extraObjects: []
 # - apiVersion: "kubernetes-client.io/v1"
 #   kind: ExternalSecret

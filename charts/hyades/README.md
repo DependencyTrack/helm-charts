@@ -1,6 +1,6 @@
 # hyades
 
-![Version: 0.10.0](https://img.shields.io/badge/Version-0.10.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.6.0-SNAPSHOT](https://img.shields.io/badge/AppVersion-0.6.0--SNAPSHOT-informational?style=flat-square)
+![Version: 0.11.0](https://img.shields.io/badge/Version-0.11.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.7.0-alpha.1](https://img.shields.io/badge/AppVersion-0.7.0--alpha.1-informational?style=flat-square)
 
 Hyades is an incubating project for decoupling responsibilities from Dependency-Track's
 monolithic API server into separate, scalable services. It will eventually become
@@ -45,7 +45,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | apiServer.image.pullPolicy | string | `"Always"` |  |
 | apiServer.image.registry | string | `""` | Override common.image.registry for the API server. |
 | apiServer.image.repository | string | `"dependencytrack/hyades-apiserver"` |  |
-| apiServer.image.tag | string | `"snapshot"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
+| apiServer.image.tag | string | `"5.7.0-alpha.1"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | apiServer.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
 | apiServer.nodeSelector | object | `{}` |  |
 | apiServer.probes.liveness.failureThreshold | int | `3` |  |
@@ -59,7 +59,6 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | apiServer.probes.readiness.successThreshold | int | `1` |  |
 | apiServer.probes.readiness.timeoutSeconds | int | `5` |  |
 | apiServer.replicaCount | int | `1` | replicaCount is not used when autoscaling is enabled |
-| apiServer.resources.limits.cpu | string | `"4"` |  |
 | apiServer.resources.limits.memory | string | `"2Gi"` |  |
 | apiServer.resources.requests.cpu | string | `"2"` |  |
 | apiServer.resources.requests.memory | string | `"2Gi"` |  |
@@ -105,7 +104,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | frontend.image.pullPolicy | string | `"Always"` |  |
 | frontend.image.registry | string | `""` | Override common.image.registry for the API frontend. |
 | frontend.image.repository | string | `"dependencytrack/hyades-frontend"` |  |
-| frontend.image.tag | string | `"snapshot"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
+| frontend.image.tag | string | `"5.7.0-alpha.1"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | frontend.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
 | frontend.nodeSelector | object | `{}` |  |
 | frontend.probes.liveness.failureThreshold | int | `3` |  |
@@ -119,7 +118,6 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | frontend.probes.readiness.successThreshold | int | `1` |  |
 | frontend.probes.readiness.timeoutSeconds | int | `5` |  |
 | frontend.replicaCount | int | `1` | replicaCount is not used when autoscaling is enabled |
-| frontend.resources.limits.cpu | string | `"500m"` |  |
 | frontend.resources.limits.memory | string | `"128Mi"` |  |
 | frontend.resources.requests.cpu | string | `"150m"` |  |
 | frontend.resources.requests.memory | string | `"64Mi"` |  |
@@ -129,6 +127,11 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | frontend.service.port | int | `8080` |  |
 | frontend.service.type | string | `"ClusterIP"` |  |
 | frontend.tolerations | list | `[]` |  |
+| httpRoute.annotations | object | `{}` |  |
+| httpRoute.enabled | bool | `false` |  |
+| httpRoute.hostnames[0] | string | `"example.com"` |  |
+| httpRoute.labels | object | `{}` |  |
+| httpRoute.parentRefs | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.enabled | bool | `false` |  |
 | ingress.hostname | string | `"example.com"` |  |
@@ -143,10 +146,9 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | initializer.image.pullPolicy | string | `"Always"` |  |
 | initializer.image.registry | string | `""` | Override common.image.registry for the API server. |
 | initializer.image.repository | string | `"dependencytrack/hyades-apiserver"` |  |
-| initializer.image.tag | string | `"snapshot"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
+| initializer.image.tag | string | `"5.7.0-alpha.1"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | initializer.noHelmHook | bool | `false` | Whether to NOT deploy the initializer Job as `post-install` and `post-upgrade` Helm hook. Deploying as Helm hook can create deadlock situations when `helm install` and `helm upgrade` are executed with `--wait` flag. See <https://github.com/helm/helm/issues/10555>. Note that without hooks, `helm upgrade` may fail due to Job fields being immutable. |
 | initializer.nodeSelector | object | `{}` |  |
-| initializer.resources.limits.cpu | string | `"500m"` |  |
 | initializer.resources.limits.memory | string | `"256Mi"` |  |
 | initializer.resources.requests.cpu | string | `"150m"` |  |
 | initializer.resources.requests.memory | string | `"256Mi"` |  |
@@ -171,7 +173,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | repoMetaAnalyzer.image.pullPolicy | string | `"Always"` |  |
 | repoMetaAnalyzer.image.registry | string | `""` | Override common.image.registry for the repository metadata analyzer. |
 | repoMetaAnalyzer.image.repository | string | `"dependencytrack/hyades-repository-meta-analyzer"` |  |
-| repoMetaAnalyzer.image.tag | string | `"snapshot-native"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
+| repoMetaAnalyzer.image.tag | string | `"0.7.0-alpha.1"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | repoMetaAnalyzer.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
 | repoMetaAnalyzer.nodeSelector | object | `{}` |  |
 | repoMetaAnalyzer.probes.liveness.failureThreshold | int | `3` |  |
@@ -185,7 +187,6 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | repoMetaAnalyzer.probes.readiness.successThreshold | int | `1` |  |
 | repoMetaAnalyzer.probes.readiness.timeoutSeconds | int | `5` |  |
 | repoMetaAnalyzer.replicaCount | int | `1` | replicaCount is not used when autoscaling is enabled |
-| repoMetaAnalyzer.resources.limits.cpu | string | `"2"` |  |
 | repoMetaAnalyzer.resources.limits.memory | string | `"2Gi"` |  |
 | repoMetaAnalyzer.resources.requests.cpu | string | `"500m"` |  |
 | repoMetaAnalyzer.resources.requests.memory | string | `"512Mi"` |  |
@@ -205,7 +206,7 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | vulnAnalyzer.image.pullPolicy | string | `"Always"` |  |
 | vulnAnalyzer.image.registry | string | `""` | Override common.image.registry for the vulnerability analyzer. |
 | vulnAnalyzer.image.repository | string | `"dependencytrack/hyades-vulnerability-analyzer"` |  |
-| vulnAnalyzer.image.tag | string | `"snapshot-native"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
+| vulnAnalyzer.image.tag | string | `"0.7.0-alpha.1"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | vulnAnalyzer.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
 | vulnAnalyzer.nodeSelector | object | `{}` |  |
 | vulnAnalyzer.persistentVolume.className | string | `""` |  |
@@ -222,7 +223,6 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | vulnAnalyzer.probes.readiness.successThreshold | int | `1` |  |
 | vulnAnalyzer.probes.readiness.timeoutSeconds | int | `5` |  |
 | vulnAnalyzer.replicaCount | int | `1` | replicaCount is not used when autoscaling is enabled |
-| vulnAnalyzer.resources.limits.cpu | string | `"2"` |  |
 | vulnAnalyzer.resources.limits.memory | string | `"2Gi"` |  |
 | vulnAnalyzer.resources.requests.cpu | string | `"500m"` |  |
 | vulnAnalyzer.resources.requests.memory | string | `"512Mi"` |  |

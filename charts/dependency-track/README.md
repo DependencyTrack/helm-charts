@@ -1,6 +1,6 @@
 # dependency-track
 
-![Version: 0.41.0](https://img.shields.io/badge/Version-0.41.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.13.6](https://img.shields.io/badge/AppVersion-4.13.6-informational?style=flat-square)
+![Version: 0.42.0](https://img.shields.io/badge/Version-0.42.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.13.6](https://img.shields.io/badge/AppVersion-4.13.6-informational?style=flat-square)
 
 Dependency-Track is an intelligent Component Analysis platform
 that allows organizations to identify and reduce risk in the software supply chain.
@@ -121,6 +121,11 @@ that allows organizations to identify and reduce risk in the software supply cha
 | frontend.service.nodePort | string | `nil` |  |
 | frontend.service.type | string | `"ClusterIP"` |  |
 | frontend.tolerations | list | `[]` |  |
+| httpRoute.annotations | object | `{}` |  |
+| httpRoute.enabled | bool | `false` |  |
+| httpRoute.hostnames[0] | string | `"example.com"` |  |
+| httpRoute.labels | object | `{}` |  |
+| httpRoute.parentRefs | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.enabled | bool | `false` |  |
 | ingress.hostname | string | `"example.com"` |  |

@@ -33,6 +33,13 @@ spec:
             name: {{ include "hyades.apiServerFullname" . }}
             port:
               name: web
+      - path: /health
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "hyades.apiServerFullname" . }}
+            port:
+              name: web
       {{- end }}
       {{- if .Values.frontend.enabled }}
       - path: /

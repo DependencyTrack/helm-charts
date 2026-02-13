@@ -1,0 +1,47 @@
+{{- if and .Values.httpRoute.enabled (or .Values.apiServer.enabled .Values.frontend.enabled) -}}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "hyades.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  {{- with .Values.httpRoute.annotations }}
+  annotations: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.httpRoute.labels }}
+  labels: {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.httpRoute.parentRefs }}
+  parentRefs: {{- toYaml . | nindent 2 }}
+  {{- end }}
+  hostnames:
+  {{- range .Values.httpRoute.hostnames }}
+  - {{ . | quote }}
+  {{- end }}
+  rules:
+  {{- if .Values.apiServer.enabled }}
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /api
+    backendRefs:
+    - name: {{ include "hyades.apiServerFullname" . }}
+      port: {{ .Values.apiServer.service.port }}
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /health
+    backendRefs:
+    - name: {{ include "hyades.apiServerFullname" . }}
+      port: {{ .Values.apiServer.service.port }}
+  {{- end }}
+  {{- if .Values.frontend.enabled }}
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: {{ include "hyades.frontendFullname" . }}
+      port: {{ .Values.frontend.service.port }}
+  {{- end }}
+{{- end }}

@@ -473,6 +473,29 @@
         }
       }
     },
+    "httpRoute": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "annotations": {
+          "type": "object"
+        },
+        "labels": {
+          "type": "object"
+        },
+        "hostnames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "parentRefs": {
+          "$ref": "#/$defs/objectArray"
+        }
+      }
+    },
     "extraObjects": {
       "$ref": "#/$defs/objectArray"
     }

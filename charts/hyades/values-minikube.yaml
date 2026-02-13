@@ -15,7 +15,6 @@ apiServer:
       cpu: "2"
       memory: 1Gi
     limits:
-      cpu: "4"
       memory: 2Gi
   service:
     type: NodePort

@@ -58,7 +58,6 @@ apiServer:
       cpu: "2"
       memory: 2Gi
     limits:
-      cpu: "4"
       memory: 2Gi
   # -- Security context of the Container.
   securityContext: &hyadesSecurityContext
@@ -149,7 +148,6 @@ initializer:
       cpu: 150m
       memory: 256Mi
     limits:
-      cpu: 500m
       memory: 256Mi
   # -- Security context of the Container.
   securityContext: *hyadesSecurityContext
@@ -200,7 +198,6 @@ frontend:
       cpu: 150m
       memory: 64Mi
     limits:
-      cpu: 500m
       memory: 128Mi
   # -- Security context of the Container.
   securityContext:
@@ -278,7 +275,6 @@ repoMetaAnalyzer:
       cpu: 500m
       memory: 512Mi
     limits:
-      cpu: "2"
       memory: 2Gi
   # -- Security context of the container.
   securityContext: *hyadesSecurityContext
@@ -346,7 +342,6 @@ vulnAnalyzer:
       cpu: 500m
       memory: 512Mi
     limits:
-      cpu: "2"
       memory: 2Gi
   # -- Security context of the container.
   securityContext: *hyadesSecurityContext

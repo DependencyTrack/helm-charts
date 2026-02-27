@@ -962,6 +962,41 @@ entries:
     version: 0.1.0
   hyades:
   - apiVersion: v2
+    appVersion: 0.7.0-alpha.2
+    created: "2026-02-27T23:43:59.626019848Z"
+    description: 'Hyades is an incubating project for decoupling responsibilities
+      from Dependency-Track''s monolithic API server into separate, scalable services.
+      It will eventually become Dependency-Track version 5. HYADES IS NOT CONSIDERED
+      GENERALLY AVAILABLE YET, and breaking changes may be introduced without prior
+      notice. Use this chart locally or in test environments, but don''t rely on it
+      in production yet. The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hyades/issues/860'
+    digest: ad3c0689c984c5f25bd017e09e61a839f5bf5856100df473f7783253dffcfb14
+    home: https://github.com/DependencyTrack/hyades
+    icon: https://avatars.githubusercontent.com/u/40258585
+    maintainers:
+    - email: nscuro@protonmail.com
+      name: nscuro
+      url: https://github.com/nscuro
+    - email: meha.bhargava@citi.com
+      name: mehab
+      url: https://github.com/mehab
+    - email: sahiba.mittal@citi.com
+      name: sahibamittal
+      url: https://github.com/sahibamittal
+    - email: vithika.shukla@citi.com
+      name: VithikaS
+      url: https://github.com/VithikaS
+    name: hyades
+    sources:
+    - https://github.com/DependencyTrack/helm-charts/tree/main/charts/hyades
+    - https://github.com/DependencyTrack/hyades
+    - https://github.com/DependencyTrack/hyades-apiserver
+    - https://github.com/DependencyTrack/hyades-frontend
+    type: application
+    urls:
+    - https://github.com/DependencyTrack/helm-charts/releases/download/hyades-0.12.0/hyades-0.12.0.tgz
+    version: 0.12.0
+  - apiVersion: v2
     appVersion: 0.7.0-alpha.1
     created: "2026-02-13T19:47:13.909685611Z"
     description: 'Hyades is an incubating project for decoupling responsibilities
@@ -1311,4 +1346,4 @@ entries:
     urls:
     - https://github.com/DependencyTrack/helm-charts/releases/download/hyades-0.2.0/hyades-0.2.0.tgz
     version: 0.2.0
-generated: "2026-02-13T19:47:13.909820304Z"
+generated: "2026-02-27T23:43:59.626215957Z"

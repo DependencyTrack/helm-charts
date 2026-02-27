@@ -49,7 +49,7 @@ apiServer:
     repository: dependencytrack/hyades-apiserver
     # -- Can be a tag name such as "latest", or an image digest
     # prefixed with "sha256:".
-    tag: 5.7.0-alpha.1
+    tag: 5.7.0-alpha.2
     pullPolicy: Always
   command: []
   args: []
@@ -189,7 +189,7 @@ frontend:
     repository: dependencytrack/hyades-frontend
     # -- Can be a tag name such as "latest", or an image digest
     # prefixed with "sha256:".
-    tag: 5.7.0-alpha.1
+    tag: 5.7.0-alpha.2
     pullPolicy: Always
   command: []
   args: []
@@ -266,7 +266,7 @@ repoMetaAnalyzer:
     repository: dependencytrack/hyades-repository-meta-analyzer
     # -- Can be a tag name such as "latest", or an image digest
     # prefixed with "sha256:".
-    tag: 0.7.0-alpha.1
+    tag: 0.7.0-alpha.2
     pullPolicy: Always
   command: []
   args: []
@@ -333,7 +333,7 @@ vulnAnalyzer:
     repository: dependencytrack/hyades-vulnerability-analyzer
     # -- Can be a tag name such as "latest", or an image digest
     # prefixed with "sha256:".
-    tag: 0.7.0-alpha.1
+    tag: 0.7.0-alpha.2
     pullPolicy: Always
   command: []
   args: []

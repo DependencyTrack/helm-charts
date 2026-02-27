@@ -1,8 +1,8 @@
 apiVersion: v2
 name: hyades
-version: 0.11.0
+version: 0.12.0
 type: application
-appVersion: 0.7.0-alpha.1
+appVersion: 0.7.0-alpha.2
 description: |-
   Hyades is an incubating project for decoupling responsibilities from Dependency-Track's
   monolithic API server into separate, scalable services. It will eventually become

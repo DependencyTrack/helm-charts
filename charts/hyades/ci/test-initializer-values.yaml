@@ -26,15 +26,12 @@ initializer:
   noHelmHook: true
 
 repoMetaAnalyzer:
-  resources: &hyadesResources
+  resources:
     requests:
       cpu: 100m
       memory: 512Mi
     limits:
       memory: 512Mi
-
-vulnAnalyzer:
-  resources: *hyadesResources
 
 extraObjects:
 - apiVersion: apps/v1

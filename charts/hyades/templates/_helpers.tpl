@@ -264,50 +264,6 @@ Repository metadata analyzer image
 {{- end -}}
 {{- end -}}
 
-
-{{/*
-Vulnerability analyzer labels
-*/}}
-{{- define "hyades.vulnAnalyzerLabels" -}}
-{{ include "hyades.commonLabels" . }}
-{{ include "hyades.vulnAnalyzerSelectorLabels" . }}
-app.kubernetes.io/version: {{ .Chart.AppVersion }}
-{{- end -}}
-
-{{/*
-Vulnerability analyzer selector labels
-*/}}
-{{- define "hyades.vulnAnalyzerSelectorLabels" -}}
-{{ include "hyades.commonSelectorLabels" . }}
-app.kubernetes.io/name: {{ printf "%s-vulnerability-analyzer" (include "hyades.name" .) }}
-app.kubernetes.io/component: vulnerability-analyzer
-{{- end -}}
-
-{{/*
-Vulnerability analyzer name
-*/}}
-{{- define "hyades.vulnAnalyzerName" -}}
-{{- printf "%s-vulnerability-analyzer" (include "hyades.name" .) -}}
-{{- end -}}
-
-{{/*
-Vulnerability analyzer fully qualified name
-*/}}
-{{- define "hyades.vulnAnalyzerFullname" -}}
-{{- printf "%s-vulnerability-analyzer" (include "hyades.fullname" .) -}}
-{{- end -}}
-
-{{/*
-Vulnerability analyzer image
-*/}}
-{{- define "hyades.vulnAnalyzerImage" -}}
-{{- if eq (substr 0 7 .Values.vulnAnalyzer.image.tag) "sha256:" -}}
-{{- printf "%s/%s@%s" (.Values.vulnAnalyzer.image.registry | default .Values.common.image.registry) .Values.vulnAnalyzer.image.repository .Values.vulnAnalyzer.image.tag -}}
-{{- else -}}
-{{- printf "%s/%s:%s" (.Values.vulnAnalyzer.image.registry | default .Values.common.image.registry) .Values.vulnAnalyzer.image.repository (.Values.vulnAnalyzer.image.tag | default .Chart.AppVersion) -}}
-{{- end -}}
-{{- end -}}
-
 {{/*
 */}}
 {{- define "hyades.secretKeySecretName" -}}

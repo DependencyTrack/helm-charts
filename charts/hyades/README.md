@@ -192,3 +192,4 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | repoMetaAnalyzer.resources.requests.memory | string | `"512Mi"` |  |
 | repoMetaAnalyzer.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context of the container. |
 | repoMetaAnalyzer.tolerations | list | `[]` |  |
+

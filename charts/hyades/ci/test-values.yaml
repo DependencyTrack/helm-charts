@@ -7,6 +7,17 @@ common:
     createSecret: true
 
 apiServer:
+  initContainers:
+  - name: wait-for-postgres
+    image: postgres:16-alpine
+    command:
+    - sh
+    - -c
+    - |
+      until pg_isready -h postgres.{{ .Release.Namespace }}.svc.cluster.local -p 5432; do
+        echo "Waiting for PostgreSQL..."
+        sleep 1
+      done
   resources:
     requests:
       cpu: 100m

@@ -222,49 +222,6 @@ Frontend image
 
 
 {{/*
-Repository metadata analyzer labels
-*/}}
-{{- define "hyades.repoMetaAnalyzerLabels" -}}
-{{ include "hyades.commonLabels" . }}
-{{ include "hyades.repoMetaAnalyzerSelectorLabels" . }}
-app.kubernetes.io/version: {{ .Chart.AppVersion }}
-{{- end -}}
-
-{{/*
-Repository metadata analyzer selector labels
-*/}}
-{{- define "hyades.repoMetaAnalyzerSelectorLabels" -}}
-{{ include "hyades.commonSelectorLabels" . }}
-app.kubernetes.io/name: {{ printf "%s-repository-meta-analyzer" (include "hyades.name" .) }}
-app.kubernetes.io/component: repository-meta-analyzer
-{{- end -}}
-
-{{/*
-Repository metadata analyzer name
-*/}}
-{{- define "hyades.repoMetaAnalyzerName" -}}
-{{- printf "%s-repository-meta-analyzer" (include "hyades.name" .) -}}
-{{- end -}}
-
-{{/*
-Repository metadata analyzer fully qualified name
-*/}}
-{{- define "hyades.repoMetaAnalyzerFullname" -}}
-{{- printf "%s-repository-meta-analyzer" (include "hyades.fullname" .) -}}
-{{- end -}}
-
-{{/*
-Repository metadata analyzer image
-*/}}
-{{- define "hyades.repoMetaAnalyzerImage" -}}
-{{- if eq (substr 0 7 .Values.repoMetaAnalyzer.image.tag) "sha256:" -}}
-{{- printf "%s/%s@%s" (.Values.repoMetaAnalyzer.image.registry | default .Values.common.image.registry) .Values.repoMetaAnalyzer.image.repository .Values.repoMetaAnalyzer.image.tag -}}
-{{- else -}}
-{{- printf "%s/%s:%s" (.Values.repoMetaAnalyzer.image.registry | default .Values.common.image.registry) .Values.repoMetaAnalyzer.image.repository (.Values.repoMetaAnalyzer.image.tag | default .Chart.AppVersion) -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 */}}
 {{- define "hyades.secretKeySecretName" -}}
 {{- if .Values.common.secretKey.existingSecretName -}}

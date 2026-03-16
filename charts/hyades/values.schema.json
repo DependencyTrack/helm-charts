@@ -40,17 +40,6 @@
             }
           }
         },
-        "kafka": {
-          "type": "object",
-          "properties": {
-            "bootstrapServers": {
-              "type": "string"
-            },
-            "topicPrefix": {
-              "type": "string"
-            }
-          }
-        },
         "secretKey": {
           "type": "object",
           "properties": {
@@ -279,76 +268,6 @@
         },
         "apiBaseUrl": {
           "type": "string"
-        },
-        "initContainers": {
-          "$ref": "#/$defs/objectArray"
-        },
-        "nodeSelector": {
-          "type": "object"
-        }
-      }
-    },
-    "repoMetaAnalyzer": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
-        "replicaCount": {
-          "type": "integer"
-        },
-        "deployment": {
-          "type": "object",
-          "properties": {
-            "strategy": {
-              "type": "object"
-            }
-          }
-        },
-        "annotations": {
-          "type": "object"
-        },
-        "image": {
-          "$ref": "#/$defs/image"
-        },
-        "command": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "args": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "resources": {
-          "$ref": "#/$defs/resources"
-        },
-        "securityContext": {
-          "type": "object"
-        },
-        "extraEnv": {
-          "$ref": "#/$defs/objectArray"
-        },
-        "extraEnvFrom": {
-          "$ref": "#/$defs/objectArray"
-        },
-        "extraContainers": {
-          "$ref": "#/$defs/objectArray"
-        },
-        "tolerations": {
-          "$ref": "#/$defs/objectArray"
-        },
-        "probes": {
-          "$ref": "#/$defs/probes"
-        },
-        "additionalVolumeMounts": {
-          "$ref": "#/$defs/objectArray"
-        },
-        "additionalVolumes": {
-          "$ref": "#/$defs/objectArray"
         },
         "initContainers": {
           "$ref": "#/$defs/objectArray"

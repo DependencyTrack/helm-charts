@@ -39,22 +39,22 @@ spec:
         # suitable for one-off executions with fewer available resources.
         - name: JAVA_OPTIONS
           value: "-Xmx256m -XX:+UseSerialGC -XX:TieredStopAtLevel=1"
-        - name: INIT_TASKS_ENABLED
+        - name: DT_INIT_TASKS_ENABLED
           value: "true"
-        - name: INIT_AND_EXIT
+        - name: DT_INIT_AND_EXIT
           value: "true"
-        - name: ALPINE_DATABASE_POOL_ENABLED
+        - name: DT_DATASOURCE_POOL_ENABLED
           value: "false"
         {{- with .Values.common.database.jdbcUrl }}
-        - name: ALPINE_DATABASE_URL
+        - name: DT_DATASOURCE_URL
           value: {{ tpl . $ | quote }}
         {{- end}}
         {{- with .Values.common.database.username }}
-        - name: ALPINE_DATABASE_USERNAME
+        - name: DT_DATASOURCE_USERNAME
           value: {{ . | quote }}
         {{- end }}
         {{- with .Values.common.database.password }}
-        - name: ALPINE_DATABASE_PASSWORD
+        - name: DT_DATASOURCE_PASSWORD
           value: {{ . | quote }}
         {{- end }}
         {{- with .Values.initializer.extraEnv }}

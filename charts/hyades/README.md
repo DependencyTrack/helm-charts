@@ -79,8 +79,6 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | common.fullnameOverride | string | `""` |  |
 | common.image.pullSecrets | list | `[]` |  |
 | common.image.registry | string | `"ghcr.io"` |  |
-| common.kafka.bootstrapServers | string | `""` |  |
-| common.kafka.topicPrefix | string | `""` |  |
 | common.nameOverride | string | `""` |  |
 | common.secretKey.createSecret | bool | `false` | Whether the chart should generate a secret key upon deployment. |
 | common.secretKey.existingSecretName | string | `""` | Use the secret key defined in an existing secret. |
@@ -159,37 +157,4 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | initializer.waiter.image.registry | string | `"docker.io"` |  |
 | initializer.waiter.image.repository | string | `"bitnami/kubectl"` |  |
 | initializer.waiter.image.tag | string | `"latest"` |  |
-| repoMetaAnalyzer.additionalVolumeMounts | list | `[]` |  |
-| repoMetaAnalyzer.additionalVolumes | list | `[]` |  |
-| repoMetaAnalyzer.annotations | object | `{}` |  |
-| repoMetaAnalyzer.args | list | `[]` |  |
-| repoMetaAnalyzer.autoScaling | object | `{"annotations":{},"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":70,"targetMemoryUtilizationPercentage":70}` | Enables horizontal pod autoscaling |
-| repoMetaAnalyzer.command | list | `[]` |  |
-| repoMetaAnalyzer.deployment.strategy | object | `{"type":"Recreate"}` | The deployment strategy to use. `Recreate` is recommended because the service does not serve user-traffic, and `RollingUpdate` will cause undesired Kafka consumer rebalances. |
-| repoMetaAnalyzer.enabled | bool | `true` | Whether the repository metadata analyzer shall be deployed. |
-| repoMetaAnalyzer.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
-| repoMetaAnalyzer.extraEnv | list | `[]` |  |
-| repoMetaAnalyzer.extraEnvFrom | list | `[]` |  |
-| repoMetaAnalyzer.image.pullPolicy | string | `"Always"` |  |
-| repoMetaAnalyzer.image.registry | string | `""` | Override common.image.registry for the repository metadata analyzer. |
-| repoMetaAnalyzer.image.repository | string | `"dependencytrack/hyades-repository-meta-analyzer"` |  |
-| repoMetaAnalyzer.image.tag | string | `"0.7.0-alpha.2"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
-| repoMetaAnalyzer.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
-| repoMetaAnalyzer.nodeSelector | object | `{}` |  |
-| repoMetaAnalyzer.probes.liveness.failureThreshold | int | `3` |  |
-| repoMetaAnalyzer.probes.liveness.initialDelaySeconds | int | `10` |  |
-| repoMetaAnalyzer.probes.liveness.periodSeconds | int | `15` |  |
-| repoMetaAnalyzer.probes.liveness.successThreshold | int | `1` |  |
-| repoMetaAnalyzer.probes.liveness.timeoutSeconds | int | `5` |  |
-| repoMetaAnalyzer.probes.readiness.failureThreshold | int | `3` |  |
-| repoMetaAnalyzer.probes.readiness.initialDelaySeconds | int | `10` |  |
-| repoMetaAnalyzer.probes.readiness.periodSeconds | int | `15` |  |
-| repoMetaAnalyzer.probes.readiness.successThreshold | int | `1` |  |
-| repoMetaAnalyzer.probes.readiness.timeoutSeconds | int | `5` |  |
-| repoMetaAnalyzer.replicaCount | int | `1` | replicaCount is not used when autoscaling is enabled |
-| repoMetaAnalyzer.resources.limits.memory | string | `"2Gi"` |  |
-| repoMetaAnalyzer.resources.requests.cpu | string | `"500m"` |  |
-| repoMetaAnalyzer.resources.requests.memory | string | `"512Mi"` |  |
-| repoMetaAnalyzer.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context of the container. |
-| repoMetaAnalyzer.tolerations | list | `[]` |  |
 

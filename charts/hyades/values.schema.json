@@ -40,17 +40,6 @@
             }
           }
         },
-        "secretKey": {
-          "type": "object",
-          "properties": {
-            "createSecret": {
-              "type": "boolean"
-            },
-            "existingSecretName": {
-              "type": "string"
-            }
-          }
-        },
         "serviceAccount": {
           "type": "object",
           "properties": {

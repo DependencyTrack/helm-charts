@@ -9,11 +9,6 @@ common:
     jdbcUrl: ""
     username: ""
     password: ""
-  secretKey:
-    # -- Whether the chart should generate a secret key upon deployment.
-    createSecret: false
-    # -- Use the secret key defined in an existing secret.
-    existingSecretName: ""
   serviceAccount:
     create: true
     annotations: {}

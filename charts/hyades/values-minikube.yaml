@@ -4,8 +4,6 @@ common:
     jdbcUrl: "jdbc:postgresql://postgres.{{ .Release.Namespace }}.svc.cluster.local:5432/dtrack"
     username: "dtrack"
     password: "dtrack"
-  secretKey:
-    createSecret: true
 
 apiServer:
   resources:

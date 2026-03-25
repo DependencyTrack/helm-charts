@@ -222,16 +222,6 @@ Frontend image
 
 
 {{/*
-*/}}
-{{- define "hyades.secretKeySecretName" -}}
-{{- if .Values.common.secretKey.existingSecretName -}}
-{{- .Values.common.secretKey.existingSecretName -}}
-{{- else if .Values.common.secretKey.createSecret -}}
-{{- printf "%s-secret-key" (include "hyades.fullname" .) -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
 Create the name of the service account
 */}}
 {{- define "hyades.serviceAccountName" -}}

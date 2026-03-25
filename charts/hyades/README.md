@@ -85,8 +85,6 @@ The GA roadmap for Hyades is tracked here: https://github.com/DependencyTrack/hy
 | common.image.pullSecrets | list | `[]` |  |
 | common.image.registry | string | `"ghcr.io"` |  |
 | common.nameOverride | string | `""` |  |
-| common.secretKey.createSecret | bool | `false` | Whether the chart should generate a secret key upon deployment. |
-| common.secretKey.existingSecretName | string | `""` | Use the secret key defined in an existing secret. |
 | common.serviceAccount.annotations | object | `{}` |  |
 | common.serviceAccount.automount | bool | `false` | Whether the serviceAccount should mount the token. |
 | common.serviceAccount.create | bool | `true` |  |

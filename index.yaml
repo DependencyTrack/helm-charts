@@ -1000,6 +1000,37 @@ entries:
     version: 0.1.0
   hyades:
   - apiVersion: v2
+    appVersion: 0.7.0-alpha.6
+    created: "2026-05-08T15:12:50.599250779Z"
+    description: Hyades is the next major version of OWASP Dependency-Track. It has
+      not yet reached GA. For a production-ready release, use the `dependency-track`
+      chart. Before upgrading, please consult the [upgrade guides](https://dependencytrack.github.io/docs/next/guides/upgrading/).
+    digest: e7a702cc67fc17bcd2c913ec9f8fd8538d731d51e73437122680fe4978601196
+    home: https://dependencytrack.github.io/docs/next
+    icon: https://avatars.githubusercontent.com/u/40258585
+    maintainers:
+    - email: nscuro@protonmail.com
+      name: nscuro
+      url: https://github.com/nscuro
+    - email: meha.bhargava@citi.com
+      name: mehab
+      url: https://github.com/mehab
+    - email: sahiba.mittal@citi.com
+      name: sahibamittal
+      url: https://github.com/sahibamittal
+    - email: vithika.shukla@citi.com
+      name: VithikaS
+      url: https://github.com/VithikaS
+    name: hyades
+    sources:
+    - https://github.com/DependencyTrack/helm-charts/tree/main/charts/hyades
+    - https://github.com/DependencyTrack/hyades-apiserver
+    - https://github.com/DependencyTrack/hyades-frontend
+    type: application
+    urls:
+    - https://github.com/DependencyTrack/helm-charts/releases/download/hyades-0.15.0/hyades-0.15.0.tgz
+    version: 0.15.0
+  - apiVersion: v2
     appVersion: 0.7.0-alpha.4
     created: "2026-05-08T14:40:21.994571453Z"
     description: Hyades is the next major version of OWASP Dependency-Track. It has
@@ -1415,4 +1446,4 @@ entries:
     urls:
     - https://github.com/DependencyTrack/helm-charts/releases/download/hyades-0.2.0/hyades-0.2.0.tgz
     version: 0.2.0
-generated: "2026-05-08T14:40:21.99478926Z"
+generated: "2026-05-08T15:12:50.599458438Z"

@@ -1,8 +1,8 @@
 apiVersion: v2
 name: hyades
-version: 0.15.0
+version: 0.16.0
 type: application
-appVersion: 0.7.0-alpha.6
+appVersion: 0.7.0-alpha.7
 description: |-
   Hyades is the next major version of OWASP Dependency-Track.
   It has not yet reached GA. For a production-ready release, use the `dependency-track` chart.

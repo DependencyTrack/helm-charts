@@ -42,6 +42,13 @@ spec:
             name: {{ include "dependencytrack.apiServerFullname" . }}
             port:
               name: web
+      - path: /mirror
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "dependencytrack.apiServerFullname" . }}
+            port:
+              name: web
       - path: /
         pathType: Prefix
         backend:

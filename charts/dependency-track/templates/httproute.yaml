@@ -36,6 +36,13 @@ spec:
   - matches:
     - path:
         type: PathPrefix
+        value: /mirror
+    backendRefs:
+    - name: {{ include "dependencytrack.apiServerFullname" . }}
+      port: 8080
+  - matches:
+    - path:
+        type: PathPrefix
         value: /
     backendRefs:
     - name: {{ include "dependencytrack.frontendFullname" . }}

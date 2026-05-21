@@ -24,27 +24,39 @@ spec:
         type: PathPrefix
         value: /api
     backendRefs:
-    - name: {{ include "dependencytrack.apiServerFullname" . }}
+    - group: ""
+      kind: Service
+      name: {{ include "dependencytrack.apiServerFullname" . }}
       port: 8080
+      weight: 1
   - matches:
     - path:
         type: PathPrefix
         value: /health
     backendRefs:
-    - name: {{ include "dependencytrack.apiServerFullname" . }}
+    - group: ""
+      kind: Service
+      name: {{ include "dependencytrack.apiServerFullname" . }}
       port: 8080
+      weight: 1
   - matches:
     - path:
         type: PathPrefix
         value: /mirror
     backendRefs:
-    - name: {{ include "dependencytrack.apiServerFullname" . }}
+    - group: ""
+      kind: Service
+      name: {{ include "dependencytrack.apiServerFullname" . }}
       port: 8080
+      weight: 1
   - matches:
     - path:
         type: PathPrefix
         value: /
     backendRefs:
-    - name: {{ include "dependencytrack.frontendFullname" . }}
+    - group: ""
+      kind: Service
+      name: {{ include "dependencytrack.frontendFullname" . }}
       port: 8080
+      weight: 1
 {{- end }}

@@ -1,6 +1,6 @@
 # hyades
 
-![Version: 0.17.0](https://img.shields.io/badge/Version-0.17.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.7.0-alpha.9](https://img.shields.io/badge/AppVersion-0.7.0--alpha.9-informational?style=flat-square)
+![Version: 0.18.0](https://img.shields.io/badge/Version-0.18.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.0.0-rc.1](https://img.shields.io/badge/AppVersion-5.0.0--rc.1-informational?style=flat-square)
 
 Hyades is the next major version of OWASP Dependency-Track.
 It has not yet reached GA. For a production-ready release, use the `dependency-track` chart.
@@ -40,8 +40,8 @@ Before upgrading, please consult the [upgrade guides](https://dependencytrack.gi
 | apiServer.extraEnvFrom | list | `[]` |  |
 | apiServer.image.pullPolicy | string | `"Always"` |  |
 | apiServer.image.registry | string | `""` | Override common.image.registry for the API server. |
-| apiServer.image.repository | string | `"dependencytrack/hyades-apiserver"` |  |
-| apiServer.image.tag | string | `"5.7.0-alpha.9"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
+| apiServer.image.repository | string | `"dependencytrack/apiserver"` |  |
+| apiServer.image.tag | string | `""` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | apiServer.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
 | apiServer.nodeSelector | object | `{}` |  |
 | apiServer.probes.liveness.failureThreshold | int | `3` |  |
@@ -100,8 +100,8 @@ Before upgrading, please consult the [upgrade guides](https://dependencytrack.gi
 | frontend.extraEnvFrom | list | `[]` |  |
 | frontend.image.pullPolicy | string | `"Always"` |  |
 | frontend.image.registry | string | `""` | Override common.image.registry for the API frontend. |
-| frontend.image.repository | string | `"dependencytrack/hyades-frontend"` |  |
-| frontend.image.tag | string | `"5.7.0-alpha.9"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
+| frontend.image.repository | string | `"dependencytrack/frontend"` |  |
+| frontend.image.tag | string | `""` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | frontend.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
 | frontend.nodeSelector | object | `{}` |  |
 | frontend.probes.liveness.failureThreshold | int | `3` |  |
@@ -142,8 +142,8 @@ Before upgrading, please consult the [upgrade guides](https://dependencytrack.gi
 | initializer.extraEnvFrom | list | `[]` |  |
 | initializer.image.pullPolicy | string | `"Always"` |  |
 | initializer.image.registry | string | `""` | Override common.image.registry for the API server. |
-| initializer.image.repository | string | `"dependencytrack/hyades-apiserver"` |  |
-| initializer.image.tag | string | `"5.7.0-alpha.9"` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
+| initializer.image.repository | string | `"dependencytrack/apiserver"` |  |
+| initializer.image.tag | string | `""` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | initializer.noHelmHook | bool | `false` | Whether to NOT deploy the initializer Job as `post-install` and `post-upgrade` Helm hook. Deploying as Helm hook can create deadlock situations when `helm install` and `helm upgrade` are executed with `--wait` flag. See <https://github.com/helm/helm/issues/10555>. Note that without hooks, `helm upgrade` may fail due to Job fields being immutable. |
 | initializer.nodeSelector | object | `{}` |  |
 | initializer.resources.limits.memory | string | `"256Mi"` |  |

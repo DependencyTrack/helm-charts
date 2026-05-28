@@ -38,10 +38,10 @@ apiServer:
   image: &apiServerImage
     # -- Override common.image.registry for the API server.
     registry: ""
-    repository: dependencytrack/hyades-apiserver
+    repository: dependencytrack/apiserver
     # -- Can be a tag name such as "latest", or an image digest
     # prefixed with "sha256:".
-    tag: 5.7.0-alpha.9
+    tag: ""
     pullPolicy: Always
   command: []
   args: []
@@ -184,10 +184,10 @@ frontend:
   image:
     # -- Override common.image.registry for the API frontend.
     registry: ""
-    repository: dependencytrack/hyades-frontend
+    repository: dependencytrack/frontend
     # -- Can be a tag name such as "latest", or an image digest
     # prefixed with "sha256:".
-    tag: 5.7.0-alpha.9
+    tag: ""
     pullPolicy: Always
   command: []
   args: []

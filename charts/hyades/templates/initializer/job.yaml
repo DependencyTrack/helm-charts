@@ -41,7 +41,7 @@ spec:
           value: "-Xmx256m -XX:+UseSerialGC -XX:TieredStopAtLevel=1"
         - name: DT_INIT_TASKS_ENABLED
           value: "true"
-        - name: DT_INIT_AND_EXIT
+        - name: DT_INIT_TASKS_EXIT_AFTER_COMPLETION
           value: "true"
         - name: DT_DATASOURCE_POOL_ENABLED
           value: "false"

@@ -1,0 +1,26 @@
+{{- if and (eq (include "dependencytrack.topology" .) "split") .Values.apiServer.worker.pdb.enabled }}
+{{- $min := .Values.apiServer.worker.pdb.minAvailable }}
+{{- $max := .Values.apiServer.worker.pdb.maxUnavailable }}
+{{- if and (not (kindIs "invalid" $min)) (not (kindIs "invalid" $max)) }}
+{{- fail "apiServer.worker.pdb: minAvailable and maxUnavailable are mutually exclusive; set exactly one" }}
+{{- end }}
+{{- if and (kindIs "invalid" $min) (kindIs "invalid" $max) }}
+{{- fail "apiServer.worker.pdb.enabled requires either minAvailable or maxUnavailable" }}
+{{- end -}}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "dependencytrack.apiServer.workerFullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "dependencytrack.componentLabels" (dict "ctx" . "component" "api-server" "role" "worker") | nindent 4 }}
+spec:
+  {{- if not (kindIs "invalid" $min) }}
+  minAvailable: {{ $min }}
+  {{- end }}
+  {{- if not (kindIs "invalid" $max) }}
+  maxUnavailable: {{ $max }}
+  {{- end }}
+  selector:
+    matchLabels: {{- include "dependencytrack.selectorLabels" (dict "ctx" . "component" "api-server" "role" "worker") | nindent 6 }}
+{{- end }}

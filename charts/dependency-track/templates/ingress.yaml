@@ -1,4 +1,8 @@
-{{- if .Values.ingress.enabled -}}
+{{- if .Values.ingress.enabled }}
+{{- $apiSvc := include "dependencytrack.apiServer.webFullname" . }}
+{{- $rootSvc := ternary (include "dependencytrack.frontend.fullname" .) $apiSvc .Values.frontend.enabled }}
+{{- $rootPort := ternary (int .Values.frontend.service.port) (int .Values.apiServer.service.port) .Values.frontend.enabled -}}
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -7,16 +11,18 @@ metadata:
   {{- with .Values.ingress.annotations }}
   annotations: {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.ingress.labels }}
-  labels: {{- toYaml . | nindent 4 }}
-  {{- end }}
+  labels:
+    {{- include "dependencytrack.commonLabels" . | nindent 4 }}
+    {{- with .Values.ingress.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
-  {{- if .Values.ingress.ingressClassName | empty | not }}
-  ingressClassName: {{ .Values.ingress.ingressClassName | quote }}
+  {{- with .Values.ingress.ingressClassName }}
+  ingressClassName: {{ . | quote }}
   {{- end }}
-  {{- if .Values.ingress.tls }}
+  {{- with .Values.ingress.tls }}
   tls:
-    {{- range .Values.ingress.tls }}
+    {{- range . }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -25,35 +31,21 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-  - host: {{ .Values.ingress.hostname | quote }}
-    http:
-      paths:
-      - path: /api
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ include "dependencytrack.apiServerFullname" . }}
-            port:
-              name: web
-      - path: /health
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ include "dependencytrack.apiServerFullname" . }}
-            port:
-              name: web
-      - path: /mirror
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ include "dependencytrack.apiServerFullname" . }}
-            port:
-              name: web
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ include "dependencytrack.frontendFullname" . }}
-            port:
-              name: web
+    - host: {{ .Values.ingress.hostname | quote }}
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $apiSvc }}
+                port:
+                  name: web
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $rootSvc }}
+                port:
+                  number: {{ $rootPort }}
 {{- end }}

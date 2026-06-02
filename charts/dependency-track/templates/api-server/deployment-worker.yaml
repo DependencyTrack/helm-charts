@@ -1,0 +1,121 @@
+{{- if eq (include "dependencytrack.topology" .) "split" }}
+{{- $envFrom := concat .Values.apiServer.extraEnvFrom .Values.apiServer.worker.extraEnvFrom -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dependencytrack.apiServer.workerFullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "dependencytrack.componentLabels" (dict "ctx" . "component" "api-server" "role" "worker") | nindent 4 }}
+  {{- with .Values.apiServer.annotations }}
+  annotations: {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if not .Values.apiServer.worker.autoscaling.enabled }}
+  replicas: {{ .Values.apiServer.worker.replicaCount }}
+  {{- end }}
+  revisionHistoryLimit: {{ .Values.apiServer.worker.revisionHistoryLimit }}
+  strategy: {{- toYaml .Values.apiServer.deployment.strategy | nindent 4 }}
+  selector:
+    matchLabels: {{- include "dependencytrack.selectorLabels" (dict "ctx" . "component" "api-server" "role" "worker") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "dependencytrack.selectorLabels" (dict "ctx" . "component" "api-server" "role" "worker") | nindent 8 }}
+        {{- with .Values.apiServer.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.apiServer.podAnnotations }}
+      annotations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ include "dependencytrack.serviceAccountName" . }}
+      automountServiceAccountToken: false
+      enableServiceLinks: {{ .Values.enableServiceLinks }}
+      terminationGracePeriodSeconds: {{ .Values.apiServer.worker.terminationGracePeriodSeconds }}
+      {{- with .Values.apiServer.worker.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
+      {{- with .Values.apiServer.podSecurityContext }}
+      securityContext: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.apiServer.initContainers }}
+      initContainers:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: api-server
+          image: {{ include "dependencytrack.apiServer.image" . }}
+          imagePullPolicy: {{ .Values.apiServer.image.pullPolicy }}
+          {{- with .Values.apiServer.securityContext }}
+          securityContext: {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.apiServer.command }}
+          command: {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.apiServer.args }}
+          args: {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources: {{- toYaml .Values.apiServer.worker.resources | nindent 12 }}
+          env:
+            {{- include "dependencytrack.podEnv" (dict "ctx" . "role" "worker") | nindent 12 }}
+          {{- with $envFrom }}
+          envFrom: {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: management
+              containerPort: {{ .Values.apiServer.service.managementPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              port: management
+              path: /health/live
+            {{- toYaml .Values.apiServer.probes.liveness | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              port: management
+              path: /health/ready
+            {{- toYaml .Values.apiServer.probes.readiness | nindent 12 }}
+          startupProbe:
+            httpGet:
+              scheme: HTTP
+              port: management
+              path: /health/started
+            {{- toYaml .Values.apiServer.probes.startup | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- include "dependencytrack.secretVolumeMounts" (dict "ctx" . "includeFileStorage" true) | nindent 12 }}
+            {{- include "dependencytrack.fileStorage.volumeMounts" . | nindent 12 }}
+            {{- with .Values.apiServer.additionalVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+        {{- with .Values.apiServer.extraContainers }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
+        {{- end }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- include "dependencytrack.secretVolumes" (dict "ctx" . "includeFileStorage" true) | nindent 8 }}
+        {{- include "dependencytrack.fileStorage.volumes" . | nindent 8 }}
+        {{- with .Values.apiServer.additionalVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.apiServer.worker.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.apiServer.worker.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.apiServer.worker.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.apiServer.worker.topologySpreadConstraints }}
+      topologySpreadConstraints: {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

@@ -1,0 +1,144 @@
+suite: routing
+release:
+  name: dt
+  namespace: dt-test
+set:
+  database.username: dtrack
+  database.password: dtrack
+  secretManagement.database.kek.existingSecret.name: dt-kek
+templates:
+  - ingress.yaml
+  - httproute.yaml
+  - api-server/deployment-web.yaml
+tests:
+  - it: neither Ingress nor HTTPRoute renders by default
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: ingress.yaml
+      - hasDocuments:
+          count: 0
+        template: httproute.yaml
+
+  - it: Ingress renders with the configured hostname, ingressClassName and TLS block
+    set:
+      ingress.enabled: true
+      ingress.hostname: dt.example.test
+      ingress.ingressClassName: nginx
+      ingress.tls:
+        - secretName: dt-tls
+          hosts:
+            - dt.example.test
+    template: ingress.yaml
+    asserts:
+      - equal:
+          path: spec.ingressClassName
+          value: nginx
+      - equal:
+          path: spec.rules[0].host
+          value: dt.example.test
+      - equal:
+          path: spec.tls[0].secretName
+          value: dt-tls
+      - equal:
+          path: spec.tls[0].hosts[0]
+          value: dt.example.test
+
+  - it: HTTPRoute renders with parentRefs and hostnames
+    set:
+      httpRoute.enabled: true
+      httpRoute.hostnames:
+        - dt.example.test
+      httpRoute.parentRefs:
+        - name: shared-gateway
+          namespace: gateway-system
+          sectionName: https
+    template: httproute.yaml
+    asserts:
+      - equal:
+          path: spec.parentRefs[0].name
+          value: shared-gateway
+      - equal:
+          path: spec.parentRefs[0].namespace
+          value: gateway-system
+      - equal:
+          path: spec.hostnames[0]
+          value: dt.example.test
+
+  - it: HTTPRoute with no parentRefs fails fast
+    set:
+      httpRoute.enabled: true
+    template: httproute.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "httpRoute.enabled=true requires httpRoute.parentRefs; a HTTPRoute with no parentRefs is silently rejected by Gateway controllers"
+
+  - it: Ingress + HTTPRoute together fails fast
+    set:
+      ingress.enabled: true
+      ingress.hostname: dt.example.test
+      httpRoute.enabled: true
+      httpRoute.hostnames:
+        - dt.example.test
+      httpRoute.parentRefs:
+        - name: gw
+    template: api-server/deployment-web.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "ingress.enabled and httpRoute.enabled are mutually exclusive; both routes would target the same Services. Pick one."
+
+  - it: Ingress routes `/` to api-server when frontend is disabled
+    set:
+      ingress.enabled: true
+      ingress.hostname: dt.example.test
+      frontend.enabled: false
+    template: ingress.yaml
+    asserts:
+      - equal:
+          path: spec.rules[0].http.paths[0].path
+          value: /api
+      - equal:
+          path: spec.rules[0].http.paths[0].backend.service.name
+          value: dt-dependency-track-api-server
+      - equal:
+          path: spec.rules[0].http.paths[1].path
+          value: /
+      - equal:
+          path: spec.rules[0].http.paths[1].backend.service.name
+          value: dt-dependency-track-api-server
+
+  - it: HTTPRoute routes `/` to api-server when frontend is disabled
+    set:
+      httpRoute.enabled: true
+      httpRoute.hostnames:
+        - dt.example.test
+      httpRoute.parentRefs:
+        - name: gw
+      frontend.enabled: false
+    template: httproute.yaml
+    asserts:
+      - equal:
+          path: spec.rules[0].matches[0].path.value
+          value: /api
+      - equal:
+          path: spec.rules[0].backendRefs[0].name
+          value: dt-dependency-track-api-server
+      - equal:
+          path: spec.rules[1].matches[0].path.value
+          value: /
+      - equal:
+          path: spec.rules[1].backendRefs[0].name
+          value: dt-dependency-track-api-server
+
+  - it: Ingress routes `/` to frontend and `/api` to api-server when frontend enabled
+    set:
+      ingress.enabled: true
+      ingress.hostname: dt.example.test
+    template: ingress.yaml
+    asserts:
+      - equal:
+          path: spec.rules[0].http.paths[0].backend.service.name
+          value: dt-dependency-track-api-server
+      - equal:
+          path: spec.rules[0].http.paths[1].backend.service.name
+          value: dt-dependency-track-frontend

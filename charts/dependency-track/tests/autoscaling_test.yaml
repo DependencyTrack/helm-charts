@@ -1,0 +1,86 @@
+suite: autoscaling
+release:
+  name: dt
+  namespace: dt-test
+set:
+  database.username: dtrack
+  database.password: dtrack
+  secretManagement.database.kek.existingSecret.name: dt-kek
+  fileStorage.local.accessModes: [ReadWriteMany]
+templates:
+  - api-server/deployment-web.yaml
+  - api-server/deployment-worker.yaml
+  - api-server/hpa-web.yaml
+  - api-server/hpa-worker.yaml
+  - api-server/pdb-web.yaml
+  - frontend/hpa.yaml
+tests:
+  - it: web HPA renders with the configured replica bounds and omits replicas on the Deployment
+    set:
+      apiServer.web.autoscaling.enabled: true
+      apiServer.web.autoscaling.minReplicas: 3
+      apiServer.web.autoscaling.maxReplicas: 7
+    asserts:
+      - equal:
+          path: spec.minReplicas
+          value: 3
+        template: api-server/hpa-web.yaml
+      - equal:
+          path: spec.maxReplicas
+          value: 7
+        template: api-server/hpa-web.yaml
+      - equal:
+          path: spec.scaleTargetRef.name
+          value: dt-dependency-track-api-server
+        template: api-server/hpa-web.yaml
+      - notExists:
+          path: spec.replicas
+        template: api-server/deployment-web.yaml
+
+  - it: worker HPA renders only in split topology
+    set:
+      apiServer.topology: split
+      apiServer.worker.autoscaling.enabled: true
+      apiServer.worker.autoscaling.minReplicas: 2
+      apiServer.worker.autoscaling.maxReplicas: 8
+    asserts:
+      - equal:
+          path: spec.minReplicas
+          value: 2
+        template: api-server/hpa-worker.yaml
+      - equal:
+          path: spec.maxReplicas
+          value: 8
+        template: api-server/hpa-worker.yaml
+      - notExists:
+          path: spec.replicas
+        template: api-server/deployment-worker.yaml
+
+  - it: worker autoscaling in monolith topology fails fast
+    set:
+      apiServer.topology: monolith
+      apiServer.worker.autoscaling.enabled: true
+    template: api-server/hpa-worker.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "apiServer.worker.autoscaling requires apiServer.topology=split: there is no worker Deployment to scale in monolith mode. Switch topology or disable worker autoscaling."
+
+  - it: web PDB rejects minAvailable + maxUnavailable being set together
+    set:
+      apiServer.web.pdb.enabled: true
+      apiServer.web.pdb.minAvailable: 1
+      apiServer.web.pdb.maxUnavailable: 1
+    template: api-server/pdb-web.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "apiServer.web.pdb: minAvailable and maxUnavailable are mutually exclusive; set exactly one"
+
+  - it: web PDB rejects enabled with neither minAvailable nor maxUnavailable
+    set:
+      apiServer.web.pdb.enabled: true
+      apiServer.web.pdb.minAvailable: ~
+      apiServer.web.pdb.maxUnavailable: ~
+    template: api-server/pdb-web.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "apiServer.web.pdb.enabled requires either minAvailable or maxUnavailable"

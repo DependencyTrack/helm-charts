@@ -2,20 +2,37 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "dependencytrack.apiServerFullname" . }}
+  name: {{ include "dependencytrack.apiServer.webFullname" . }}
   namespace: {{ .Release.Namespace }}
-  labels: {{- include "dependencytrack.apiServerLabels" . | nindent 4 }}
-  {{- if .Values.apiServer.service.annotations }}
-  annotations:
-  {{- toYaml .Values.apiServer.service.annotations | nindent 4 }}
+  labels: {{- include "dependencytrack.componentLabels" (dict "ctx" . "component" "api-server" "role" "web") | nindent 4 }}
+  {{- with .Values.apiServer.service.annotations }}
+  annotations: {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.apiServer.service.type | quote }}
+  type: {{ .Values.apiServer.service.type }}
   ports:
-  - name: web
-    port: 8080
-    targetPort: web
-    {{- with .Values.apiServer.service.nodePort }}
-    nodePort: {{ . }}
-    {{- end }}
-  selector: {{- include "dependencytrack.apiServerSelectorLabels" . | nindent 4 }}
+    - name: web
+      port: {{ .Values.apiServer.service.port }}
+      targetPort: web
+      protocol: TCP
+      {{- if not (kindIs "invalid" .Values.apiServer.service.nodePort) }}
+      nodePort: {{ .Values.apiServer.service.nodePort }}
+      {{- end }}
+  selector: {{- include "dependencytrack.selectorLabels" (dict "ctx" . "component" "api-server" "role" "web") | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "dependencytrack.apiServer.metricsFullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "dependencytrack.componentLabels" (dict "ctx" . "component" "api-server" "role" "") | nindent 4 }}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+    - name: management
+      port: {{ .Values.apiServer.service.managementPort }}
+      targetPort: management
+      protocol: TCP
+  selector: {{- include "dependencytrack.selectorLabels" (dict "ctx" . "component" "api-server" "role" "") | nindent 4 }}

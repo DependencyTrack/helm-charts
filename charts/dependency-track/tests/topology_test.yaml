@@ -1,0 +1,116 @@
+suite: topology
+release:
+  name: dt
+  namespace: dt-test
+set:
+  database.username: dtrack
+  database.password: dtrack
+  secretManagement.database.kek.existingSecret.name: dt-kek
+templates:
+  - api-server/deployment-web.yaml
+  - api-server/deployment-worker.yaml
+tests:
+  - it: split topology renders web + worker Deployments with web-specific env profile
+    set:
+      apiServer.topology: split
+    asserts:
+      - hasDocuments:
+          count: 1
+        template: api-server/deployment-web.yaml
+      - hasDocuments:
+          count: 1
+        template: api-server/deployment-worker.yaml
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_CONFIG_PROFILE
+            value: web
+        template: api-server/deployment-web.yaml
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_CONFIG_PROFILE
+        template: api-server/deployment-worker.yaml
+
+  - it: worker Deployment is omitted in monolith topology
+    set:
+      apiServer.topology: monolith
+    template: api-server/deployment-worker.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: web pod default terminationGracePeriodSeconds is 120, worker default is 300
+    set:
+      apiServer.topology: split
+    asserts:
+      - equal:
+          path: spec.template.spec.terminationGracePeriodSeconds
+          value: 120
+        template: api-server/deployment-web.yaml
+      - equal:
+          path: spec.template.spec.terminationGracePeriodSeconds
+          value: 300
+        template: api-server/deployment-worker.yaml
+
+  - it: monolith pod mounts the db secret
+    template: api-server/deployment-web.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: db-secret
+            mountPath: /etc/dt/secrets/db
+            readOnly: true
+
+  - it: monolith api-server Deployment drops the -web suffix
+    set:
+      apiServer.topology: monolith
+    template: api-server/deployment-web.yaml
+    asserts:
+      - equal:
+          path: metadata.name
+          value: dt-dependency-track-api-server
+
+  - it: split api-server Deployments keep the -web/-worker suffix
+    set:
+      apiServer.topology: split
+    asserts:
+      - equal:
+          path: metadata.name
+          value: dt-dependency-track-api-server-web
+        template: api-server/deployment-web.yaml
+      - equal:
+          path: metadata.name
+          value: dt-dependency-track-api-server-worker
+        template: api-server/deployment-worker.yaml
+
+  - it: monolith fails when worker.replicaCount is bumped
+    set:
+      apiServer.topology: monolith
+      apiServer.worker.replicaCount: 3
+    template: api-server/deployment-web.yaml
+    asserts:
+      - failedTemplate:
+          errorPattern: "apiServer\\.worker\\.\\{.*replicaCount.*\\}.*topology=monolith"
+
+  - it: monolith fails when worker.autoscaling.enabled is set
+    set:
+      apiServer.topology: monolith
+      apiServer.worker.autoscaling.enabled: true
+    template: api-server/deployment-web.yaml
+    asserts:
+      - failedTemplate:
+          errorPattern: "apiServer\\.worker\\.\\{.*autoscaling\\.enabled.*\\}"
+
+  - it: monolith fails when worker.extraEnv is set
+    set:
+      apiServer.topology: monolith
+      apiServer.worker.extraEnv:
+        - name: FOO
+          value: bar
+    template: api-server/deployment-web.yaml
+    asserts:
+      - failedTemplate:
+          errorPattern: "apiServer\\.worker\\.\\{.*extraEnv.*\\}"
+

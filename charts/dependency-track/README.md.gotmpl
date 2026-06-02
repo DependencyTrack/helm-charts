@@ -1,0 +1,109 @@
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+{{ template "chart.homepageLine" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+## Quickstart
+
+Evaluate the chart on any conformant Kubernetes cluster, no Postgres or KEK Secret needed:
+
+```sh
+helm install dt oci://ghcr.io/dependencytrack/charts/dependency-track \
+  --create-namespace -n dependency-track \
+  -f https://raw.githubusercontent.com/DependencyTrack/helm-charts/main/charts/dependency-track/values-quickstart.yaml
+
+kubectl -n dependency-track port-forward svc/dt-dependency-track-frontend 8080:8080
+# Open http://localhost:8080 - default credentials: admin / admin
+```
+
+> [!WARNING]
+> The quickstart values bundle an inline Postgres and a fixture KEK Secret.
+> They are NOT suitable for production. The Postgres has no persistence and
+> the KEK is a public, deterministic fixture.
+>
+> For real deployments, provision Postgres and the KEK Secret separately.
+> Reference them via `database.existingSecret.name` and `secretManagement.database.kek.existingSecret.name`.
+
+## Upgrading from chart 1.x
+
+Chart 2.0 is a rewrite for Dependency-Track 5 and is not API-compatible with
+chart 1.x. See [UPGRADING.md](UPGRADING.md) for the migration procedure.
+
+## OpenShift compatibility
+
+The chart targets parity with OpenShift's `restricted-v2` SCC and the Kubernetes Pod Security Admission
+`restricted` profile. Every workload pod ships with:
+
+- `allowPrivilegeEscalation: false`
+- `capabilities.drop: [ALL]`
+- `runAsNonRoot: true`
+- `seccompProfile.type: RuntimeDefault`
+- `readOnlyRootFilesystem: true` (except the frontend)
+- no `hostNetwork`, `hostPID`, `hostIPC`, `hostPath`, or `privileged: true`
+- no ports below 1024, no `NodePort` default
+
+OpenShift assigns UIDs and supplemental groups per namespace via the active SCC.
+The chart's `fsGroup: 1000` defaults fall outside most namespaces' allowed ranges.
+Override on install:
+
+```yaml
+apiServer:
+  podSecurityContext: ~
+frontend:
+  podSecurityContext: ~
+```
+
+If the namespace's default SCC does not already grant `restricted-v2`,
+bind it to the chart-created `ServiceAccount`:
+
+```sh
+oc adm policy add-scc-to-user restricted-v2 \
+  -z <release>-dependency-track \
+  -n <namespace>
+```
+
+## Initializer
+
+On startup, `api-server` pods run Dependency-Track's initialization tasks
+(database schema migrations, default-object seeding, and partition maintenance),
+serialized across pods by a Postgres advisory lock.
+This needs no configuration and works for both Helm and GitOps installs.
+
+Every pod runs these tasks on startup. They are idempotent, but each run still costs a little
+to check whether migrations are pending, whether default data already exists, and so on.
+With many replicas or autoscaling, that overhead repeats on every pod and every scale-up.
+The initializer Job confines it to a single run and lets all api-server replicas skip initialization entirely:
+
+```yaml
+apiServer:
+  initializer:
+    enabled: true
+```
+
+When enabled, the Job becomes the sole initializer. It runs as a `pre-install`/`pre-upgrade` Helm hook
+and completes **before** the `api-server` pods start, which then skip in-pod initialization.
+Helm, Flux (its helm-controller runs hooks), and Argo CD (which runs `pre-install` hooks as a `PreSync` step)
+all honor this with no extra annotations.
+
+Do note however:
+
+- **Credentials must come from existing Secrets.** The hook runs before the chart's own Secrets are created,
+  so set `database.existingSecret.name`. Provision it separately. Chart rendering fails if the initializer
+  is enabled without `database.existingSecret.name`.
+- **The Job runs on every sync.** Argo CD re-runs `PreSync` on each sync. This is safe because the tasks no-op
+  when the database is already current. If your team disables Helm hooks in Argo CD entirely,
+  leave the initializer *off* and keep the default startup initialization.
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}

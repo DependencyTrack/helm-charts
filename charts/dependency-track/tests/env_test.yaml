@@ -1,0 +1,187 @@
+suite: pod env construction
+release:
+  name: dt
+  namespace: dt-test
+set:
+  database.username: dtrack
+  database.password: dtrack
+  secretManagement.database.kek.existingSecret.name: dt-kek
+tests:
+  - it: in split topology, web.extraEnv does not leak onto worker pods
+    set:
+      apiServer.topology: split
+      apiServer.web.extraEnv:
+        - name: WEB_ONLY
+          value: "yes"
+      apiServer.worker.extraEnv:
+        - name: WORKER_ONLY
+          value: "yes"
+    template: api-server/deployment-worker.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: WORKER_ONLY
+            value: "yes"
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: WEB_ONLY
+            value: "yes"
+
+  - it: in split topology, worker.extraEnv does not leak onto web pods
+    set:
+      apiServer.topology: split
+      apiServer.web.extraEnv:
+        - name: WEB_ONLY
+          value: "yes"
+      apiServer.worker.extraEnv:
+        - name: WORKER_ONLY
+          value: "yes"
+    template: api-server/deployment-web.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: WEB_ONLY
+            value: "yes"
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: WORKER_ONLY
+            value: "yes"
+
+  - it: web pod sets DT_CONFIG_PROFILE=web in split topology
+    set:
+      apiServer.topology: split
+    template: api-server/deployment-web.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_CONFIG_PROFILE
+            value: web
+
+  - it: worker pod sets no DT_CONFIG_PROFILE
+    set:
+      apiServer.topology: split
+    template: api-server/deployment-worker.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_CONFIG_PROFILE
+
+  - it: monolith pod sets no DT_CONFIG_PROFILE
+    template: api-server/deployment-web.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_CONFIG_PROFILE
+
+  - it: api-server pod does not set DT_INIT_TASKS_ENABLED (defaults to DT's true)
+    template: api-server/deployment-web.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_INIT_TASKS_ENABLED
+
+  - it: env-mode secret management sets the provider but no KEK path or volume
+    set:
+      secretManagement.provider: env
+      secretManagement.database.kek.existingSecret.name: ""
+    template: api-server/deployment-web.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_SECRET_MANAGEMENT_PROVIDER
+            value: env
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_SECRET_MANAGEMENT_DATABASE_KEK_KEYSET_PATH
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_SECRET_MANAGEMENT_DATABASE_KEK
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: sm-database-kek
+
+  - it: KEK config mode is the default and emits DT_SECRET_MANAGEMENT_DATABASE_KEK as ${file::...}
+    template: api-server/deployment-web.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_SECRET_MANAGEMENT_DATABASE_KEK
+            value: "${file::/etc/dt/secrets/sm/database/kek/kek}"
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_SECRET_MANAGEMENT_DATABASE_KEK_KEYSET_PATH
+
+  - it: KEK keyset mode emits DT_SECRET_MANAGEMENT_DATABASE_KEK_KEYSET_PATH
+    set:
+      secretManagement.database.kek.mode: keyset
+    template: api-server/deployment-web.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_SECRET_MANAGEMENT_DATABASE_KEK_KEYSET_PATH
+            value: "/etc/dt/secrets/sm/database/kek/kek-keyset.json"
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_SECRET_MANAGEMENT_DATABASE_KEK
+
+  - it: KEK existingSecret.key override beats the mode default
+    set:
+      secretManagement.database.kek.existingSecret.key: custom-key-name
+    template: api-server/deployment-web.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_SECRET_MANAGEMENT_DATABASE_KEK
+            value: "${file::/etc/dt/secrets/sm/database/kek/custom-key-name}"
+
+  - it: envFrom merges apiServer.extraEnvFrom before role-level on web
+    set:
+      apiServer.extraEnvFrom:
+        - configMapRef:
+            name: shared-cm
+      apiServer.web.extraEnvFrom:
+        - secretRef:
+            name: web-secret
+    template: api-server/deployment-web.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
+          value: shared-cm
+      - equal:
+          path: spec.template.spec.containers[0].envFrom[1].secretRef.name
+          value: web-secret
+
+  - it: envFrom merges apiServer.extraEnvFrom before role-level on worker (split)
+    set:
+      apiServer.topology: split
+      apiServer.extraEnvFrom:
+        - configMapRef:
+            name: shared-cm
+      apiServer.worker.extraEnvFrom:
+        - secretRef:
+            name: worker-secret
+    template: api-server/deployment-worker.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].envFrom[0].configMapRef.name
+          value: shared-cm
+      - equal:
+          path: spec.template.spec.containers[0].envFrom[1].secretRef.name
+          value: worker-secret

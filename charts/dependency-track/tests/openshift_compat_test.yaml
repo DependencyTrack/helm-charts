@@ -1,0 +1,107 @@
+suite: openshift-compat
+release:
+  name: dt
+  namespace: dt-test
+set:
+  database.username: dtrack
+  database.password: dtrack
+  secretManagement.database.kek.existingSecret.name: dt-kek
+tests:
+  # Scenario A: stock values keep every restricted-v2 / PSA-restricted field intact.
+  - it: api-server container securityContext keeps restricted-v2 hardening
+    template: api-server/deployment-web.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+          value: false
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.seccompProfile.type
+          value: RuntimeDefault
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop[0]
+          value: ALL
+
+  - it: api-server worker container securityContext keeps restricted-v2 hardening
+    set:
+      apiServer.topology: split
+    template: api-server/deployment-worker.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+          value: false
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.seccompProfile.type
+          value: RuntimeDefault
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop[0]
+          value: ALL
+
+  - it: frontend container securityContext keeps restricted-v2 hardening
+    template: frontend/deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+          value: false
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.seccompProfile.type
+          value: RuntimeDefault
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop[0]
+          value: ALL
+
+  - it: no rendered pod opts into host namespaces
+    asserts:
+      - notExists:
+          path: spec.template.spec.hostNetwork
+        template: api-server/deployment-web.yaml
+      - notExists:
+          path: spec.template.spec.hostPID
+        template: api-server/deployment-web.yaml
+      - notExists:
+          path: spec.template.spec.hostIPC
+        template: api-server/deployment-web.yaml
+      - notExists:
+          path: spec.template.spec.hostNetwork
+        template: frontend/deployment.yaml
+      - notExists:
+          path: spec.template.spec.hostPID
+        template: frontend/deployment.yaml
+      - notExists:
+          path: spec.template.spec.hostIPC
+        template: frontend/deployment.yaml
+
+  # Scenario B: the documented OpenShift override (nulled podSecurityContext)
+  # suppresses the pod-level securityContext block entirely on every workload.
+  - it: nulling apiServer.podSecurityContext suppresses the pod-level securityContext on web
+    set:
+      apiServer.podSecurityContext: ~
+    template: api-server/deployment-web.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.securityContext
+
+  - it: nulling apiServer.podSecurityContext suppresses the pod-level securityContext on worker
+    set:
+      apiServer.topology: split
+      apiServer.podSecurityContext: ~
+    template: api-server/deployment-worker.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.securityContext
+
+  - it: nulling frontend.podSecurityContext suppresses the pod-level securityContext
+    set:
+      frontend.podSecurityContext: ~
+    template: frontend/deployment.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.securityContext

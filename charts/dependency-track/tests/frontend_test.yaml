@@ -1,0 +1,80 @@
+suite: frontend
+release:
+  name: dt
+  namespace: dt-test
+set:
+  database.username: dtrack
+  database.password: dtrack
+  secretManagement.database.kek.existingSecret.name: dt-kek
+templates:
+  - frontend/deployment.yaml
+  - frontend/service.yaml
+  - frontend/hpa.yaml
+  - frontend/pdb.yaml
+tests:
+  - it: disabling the frontend drops all frontend resources
+    set:
+      frontend.enabled: false
+      frontend.autoscaling.enabled: true
+      frontend.pdb.enabled: true
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: frontend/deployment.yaml
+      - hasDocuments:
+          count: 0
+        template: frontend/service.yaml
+      - hasDocuments:
+          count: 0
+        template: frontend/hpa.yaml
+      - hasDocuments:
+          count: 0
+        template: frontend/pdb.yaml
+
+  - it: frontend HPA renders with configured bounds
+    set:
+      frontend.autoscaling.enabled: true
+      frontend.autoscaling.minReplicas: 2
+      frontend.autoscaling.maxReplicas: 4
+    template: frontend/hpa.yaml
+    asserts:
+      - equal:
+          path: spec.minReplicas
+          value: 2
+      - equal:
+          path: spec.maxReplicas
+          value: 4
+      - equal:
+          path: spec.scaleTargetRef.name
+          value: dt-dependency-track-frontend
+
+  - it: frontend PDB renders with maxUnavailable
+    set:
+      frontend.pdb.enabled: true
+      frontend.pdb.maxUnavailable: 1
+    template: frontend/pdb.yaml
+    asserts:
+      - equal:
+          path: spec.maxUnavailable
+          value: 1
+      - equal:
+          path: spec.selector.matchLabels["app.kubernetes.io/component"]
+          value: frontend
+
+  - it: frontend pod has writable rootfs (config.json is rendered at startup)
+    template: frontend/deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
+          value: false
+
+  - it: frontend.apiBaseUrl flows into API_BASE_URL env on the pod
+    set:
+      frontend.apiBaseUrl: https://api.example.test
+    template: frontend/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: API_BASE_URL
+            value: https://api.example.test

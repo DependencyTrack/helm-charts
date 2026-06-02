@@ -1,4 +1,11 @@
-{{- if .Values.httpRoute.enabled -}}
+{{- if .Values.httpRoute.enabled }}
+{{- if not .Values.httpRoute.parentRefs }}
+{{- fail "httpRoute.enabled=true requires httpRoute.parentRefs; a HTTPRoute with no parentRefs is silently rejected by Gateway controllers" }}
+{{- end }}
+{{- $apiSvc := include "dependencytrack.apiServer.webFullname" . }}
+{{- $rootSvc := ternary (include "dependencytrack.frontend.fullname" .) $apiSvc .Values.frontend.enabled }}
+{{- $rootPort := ternary (int .Values.frontend.service.port) (int .Values.apiServer.service.port) .Values.frontend.enabled -}}
+---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -7,56 +14,34 @@ metadata:
   {{- with .Values.httpRoute.annotations }}
   annotations: {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.httpRoute.labels }}
-  labels: {{- toYaml . | nindent 4 }}
-  {{- end }}
+  labels:
+    {{- include "dependencytrack.commonLabels" . | nindent 4 }}
+    {{- with .Values.httpRoute.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
-  {{- with .Values.httpRoute.parentRefs }}
-  parentRefs: {{- toYaml . | nindent 2 }}
-  {{- end }}
+  parentRefs: {{- toYaml .Values.httpRoute.parentRefs | nindent 4 }}
   hostnames:
-  {{- range .Values.httpRoute.hostnames }}
-  - {{ . | quote }}
-  {{- end }}
+    {{- range .Values.httpRoute.hostnames }}
+    - {{ . | quote }}
+    {{- end }}
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /api
-    backendRefs:
-    - group: ""
-      kind: Service
-      name: {{ include "dependencytrack.apiServerFullname" . }}
-      port: 8080
-      weight: 1
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /health
-    backendRefs:
-    - group: ""
-      kind: Service
-      name: {{ include "dependencytrack.apiServerFullname" . }}
-      port: 8080
-      weight: 1
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /mirror
-    backendRefs:
-    - group: ""
-      kind: Service
-      name: {{ include "dependencytrack.apiServerFullname" . }}
-      port: 8080
-      weight: 1
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - group: ""
-      kind: Service
-      name: {{ include "dependencytrack.frontendFullname" . }}
-      port: 8080
-      weight: 1
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api
+      backendRefs:
+        - kind: Service
+          name: {{ $apiSvc }}
+          port: {{ .Values.apiServer.service.port }}
+          weight: 1
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - kind: Service
+          name: {{ $rootSvc }}
+          port: {{ $rootPort }}
+          weight: 1
 {{- end }}

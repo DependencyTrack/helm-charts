@@ -1,0 +1,42 @@
+{{- if and (eq (include "dependencytrack.topology" .) "monolith") .Values.apiServer.worker.autoscaling.enabled }}
+{{- fail "apiServer.worker.autoscaling requires apiServer.topology=split: there is no worker Deployment to scale in monolith mode. Switch topology or disable worker autoscaling." }}
+{{- end }}
+{{- if and (eq (include "dependencytrack.topology" .) "split") .Values.apiServer.worker.autoscaling.enabled -}}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "dependencytrack.apiServer.workerFullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "dependencytrack.componentLabels" (dict "ctx" . "component" "api-server" "role" "worker") | nindent 4 }}
+  {{- with .Values.apiServer.worker.autoscaling.annotations }}
+  annotations: {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "dependencytrack.apiServer.workerFullname" . }}
+  minReplicas: {{ .Values.apiServer.worker.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.apiServer.worker.autoscaling.maxReplicas }}
+  metrics:
+    {{- if not (kindIs "invalid" .Values.apiServer.worker.autoscaling.targetCPUUtilizationPercentage) }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.apiServer.worker.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if not (kindIs "invalid" .Values.apiServer.worker.autoscaling.targetMemoryUtilizationPercentage) }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.apiServer.worker.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+  {{- with .Values.apiServer.worker.autoscaling.behavior }}
+  behavior: {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

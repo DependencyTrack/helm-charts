@@ -1,0 +1,322 @@
+# Production-like combination test:
+# * split topology
+# * pre-install initializer Job
+# * S3 file storage with credentials from an existing Secret
+# * DB credentials and KEK from existing Secrets
+# * KEK in keyset mode
+# * PodDisruptionBudgets on web, worker, and frontend
+# * ingress enabled
+database:
+  jdbcUrl: "jdbc:postgresql://postgres.{{ .Release.Namespace }}.svc.cluster.local:5432/dtrack"
+  existingSecret:
+    name: dt-db-creds
+    usernameKey: user
+    passwordKey: pass
+secretManagement:
+  provider: database
+  database:
+    kek:
+      mode: keyset
+      existingSecret:
+        name: dt-kek
+fileStorage:
+  provider: s3
+  s3:
+    endpoint: "http://seaweedfs.{{ .Release.Namespace }}.svc.cluster.local:8333"
+    region: us-east-1
+    bucket: dtrack
+    credentials:
+      existingSecret:
+        name: dt-s3-creds
+        accessKeyIdKey: accessKey
+        secretAccessKeyKey: secretKey
+
+apiServer:
+  topology: split
+  initializer:
+    enabled: true
+    initContainers:
+      - name: wait-for-postgres
+        image: postgres:14-alpine
+        command:
+          - sh
+          - -c
+          - |
+            until pg_isready -h postgres.{{ .Release.Namespace }}.svc.cluster.local -p 5432; do
+              echo "waiting for postgres"
+              sleep 2
+            done
+  web:
+    replicaCount: 2
+    pdb:
+      enabled: true
+      minAvailable: ~
+      maxUnavailable: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 1Gi
+      limits:
+        memory: 1Gi
+  worker:
+    replicaCount: 2
+    pdb:
+      enabled: true
+      minAvailable: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 1Gi
+      limits:
+        memory: 1Gi
+  initContainers:
+    - name: wait-for-postgres
+      image: postgres:14-alpine
+      command:
+        - sh
+        - -c
+        - |
+          until pg_isready -h postgres.{{ .Release.Namespace }}.svc.cluster.local -p 5432; do
+            echo "waiting for postgres"
+            sleep 2
+          done
+    - name: wait-for-seaweedfs
+      image: amazon/aws-cli:latest
+      env:
+        - name: AWS_ACCESS_KEY_ID
+          value: seaweedfs
+        - name: AWS_SECRET_ACCESS_KEY
+          value: seaweedfs
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
+      command:
+        - sh
+        - -c
+        - |
+          until aws --endpoint-url http://seaweedfs.{{ .Release.Namespace }}.svc.cluster.local:8333 s3 ls s3://dtrack >/dev/null 2>&1; do
+            echo "waiting for seaweedfs bucket"
+            sleep 2
+          done
+
+frontend:
+  enabled: true
+  replicaCount: 2
+  pdb:
+    enabled: true
+    maxUnavailable: 1
+
+ingress:
+  enabled: true
+  hostname: dt.example.test
+  ingressClassName: ""
+
+extraObjects:
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: dt-db-creds
+      namespace: "{{ .Release.Namespace }}"
+      annotations:
+        "helm.sh/hook": pre-install,pre-upgrade
+        "helm.sh/hook-weight": "-20"
+        "helm.sh/hook-delete-policy": before-hook-creation
+    type: Opaque
+    stringData:
+      user: dtrack
+      pass: dtrack
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: dt-kek
+      namespace: "{{ .Release.Namespace }}"
+      annotations:
+        "helm.sh/hook": pre-install,pre-upgrade
+        "helm.sh/hook-weight": "-20"
+        "helm.sh/hook-delete-policy": before-hook-creation
+    type: Opaque
+    stringData:
+      kek-keyset.json: |
+        {
+          "primaryKeyId": 1234567890,
+          "key": [
+            {
+              "keyData": {
+                "typeUrl": "type.googleapis.com/google.crypto.tink.AesGcmKey",
+                "value":"GiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+                "keyMaterialType": "SYMMETRIC"
+              },
+              "status": "ENABLED",
+              "keyId": 1234567890,
+              "outputPrefixType": "TINK"
+            }
+          ]
+        }
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: dt-s3-creds
+      namespace: "{{ .Release.Namespace }}"
+    type: Opaque
+    stringData:
+      accessKey: seaweedfs
+      secretKey: seaweedfs
+
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: postgres
+      namespace: "{{ .Release.Namespace }}"
+      annotations:
+        "helm.sh/hook": pre-install,pre-upgrade
+        "helm.sh/hook-weight": "-10"
+        "helm.sh/hook-delete-policy": before-hook-creation
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: "{{ .Release.Name }}"
+          app.kubernetes.io/component: postgres
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/instance: "{{ .Release.Name }}"
+            app.kubernetes.io/component: postgres
+        spec:
+          containers:
+            - name: postgres
+              image: postgres:14-alpine
+              env:
+                - name: POSTGRES_DB
+                  value: dtrack
+                - name: POSTGRES_USER
+                  value: dtrack
+                - name: POSTGRES_PASSWORD
+                  value: dtrack
+              ports:
+                - name: postgres
+                  containerPort: 5432
+                  protocol: TCP
+              readinessProbe:
+                exec:
+                  command: ["pg_isready", "-U", "dtrack"]
+                initialDelaySeconds: 5
+                periodSeconds: 5
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: postgres
+      namespace: "{{ .Release.Namespace }}"
+      annotations:
+        "helm.sh/hook": pre-install,pre-upgrade
+        "helm.sh/hook-weight": "-10"
+        "helm.sh/hook-delete-policy": before-hook-creation
+    spec:
+      type: ClusterIP
+      selector:
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        app.kubernetes.io/component: postgres
+      ports:
+        - port: 5432
+          targetPort: 5432
+
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: seaweedfs-s3-config
+      namespace: "{{ .Release.Namespace }}"
+    data:
+      s3.json: |
+        {
+          "identities": [
+            {
+              "name": "dtrack",
+              "credentials": [
+                {
+                  "accessKey": "seaweedfs",
+                  "secretKey": "seaweedfs"
+                }
+              ],
+              "actions": ["Admin", "Read", "Write", "List", "Tagging"]
+            }
+          ]
+        }
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: seaweedfs
+      namespace: "{{ .Release.Namespace }}"
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: "{{ .Release.Name }}"
+          app.kubernetes.io/component: seaweedfs
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/instance: "{{ .Release.Name }}"
+            app.kubernetes.io/component: seaweedfs
+        spec:
+          containers:
+            - name: seaweedfs
+              image: chrislusf/seaweedfs:latest
+              args: ["server", "-s3", "-s3.config=/etc/seaweedfs/s3.json", "-dir=/data"]
+              ports:
+                - name: s3
+                  containerPort: 8333
+                  protocol: TCP
+              volumeMounts:
+                - name: s3-config
+                  mountPath: /etc/seaweedfs
+              readinessProbe:
+                tcpSocket:
+                  port: 8333
+                initialDelaySeconds: 5
+                periodSeconds: 5
+          volumes:
+            - name: s3-config
+              configMap:
+                name: seaweedfs-s3-config
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: seaweedfs
+      namespace: "{{ .Release.Namespace }}"
+    spec:
+      type: ClusterIP
+      selector:
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        app.kubernetes.io/component: seaweedfs
+      ports:
+        - port: 8333
+          targetPort: 8333
+
+  - apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: ensure-bucket
+      namespace: "{{ .Release.Namespace }}"
+    spec:
+      backoffLimit: 5
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: createbucket
+              image: amazon/aws-cli:latest
+              env:
+                - name: AWS_ACCESS_KEY_ID
+                  value: seaweedfs
+                - name: AWS_SECRET_ACCESS_KEY
+                  value: seaweedfs
+                - name: AWS_DEFAULT_REGION
+                  value: us-east-1
+              command:
+                - sh
+                - -c
+                - |
+                  until aws --endpoint-url http://seaweedfs.{{ .Release.Namespace }}.svc.cluster.local:8333 s3 ls >/dev/null 2>&1; do
+                    echo "waiting for seaweedfs"
+                    sleep 2
+                  done
+                  aws --endpoint-url http://seaweedfs.{{ .Release.Namespace }}.svc.cluster.local:8333 s3 mb s3://dtrack || true

@@ -1,0 +1,62 @@
+{{- if .Values.apiServer.initializer.enabled }}
+{{- $envFrom := .Values.apiServer.extraEnvFrom -}}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "dependencytrack.componentFullname" (dict "ctx" . "suffix" "initializer") }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "dependencytrack.componentLabels" (dict "ctx" . "component" "initializer" "role" "") | nindent 4 }}
+  annotations:
+    "helm.sh/hook": "pre-install,pre-upgrade"
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+spec:
+  backoffLimit: {{ .Values.apiServer.initializer.backoffLimit }}
+  template:
+    metadata:
+      labels: {{- include "dependencytrack.selectorLabels" (dict "ctx" . "component" "initializer" "role" "") | nindent 8 }}
+      {{- with .Values.apiServer.initializer.podAnnotations }}
+      annotations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: {{ .Values.enableServiceLinks }}
+      restartPolicy: Never
+      {{- with .Values.apiServer.podSecurityContext }}
+      securityContext: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.apiServer.initializer.initContainers }}
+      initContainers:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: initializer
+          image: {{ include "dependencytrack.apiServer.image" . }}
+          imagePullPolicy: {{ .Values.apiServer.image.pullPolicy }}
+          {{- with .Values.apiServer.securityContext }}
+          securityContext: {{- toYaml . | nindent 12 }}
+          {{- end }}
+          resources: {{- toYaml .Values.apiServer.initializer.resources | nindent 12 }}
+          env:
+            # The default JVM options of the image are optimized for the API server,
+            # i.e. longer runtime and larger heaps. Provide JVM options that are more
+            # suitable for one-off executions with fewer available resources.
+            - name: JAVA_OPTIONS
+              value: "-Xmx256m -XX:+UseSerialGC -XX:TieredStopAtLevel=1"
+            {{- include "dependencytrack.podEnv" (dict "ctx" . "role" "initializer") | nindent 12 }}
+          {{- with $envFrom }}
+          envFrom: {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- include "dependencytrack.secretVolumeMounts" (dict "ctx" . "includeFileStorage" false) | nindent 12 }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- include "dependencytrack.secretVolumes" (dict "ctx" . "includeFileStorage" false) | nindent 8 }}
+{{- end }}

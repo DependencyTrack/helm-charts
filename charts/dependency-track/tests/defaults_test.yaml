@@ -1,0 +1,139 @@
+suite: defaults
+release:
+  name: dt
+  namespace: dt-test
+set:
+  database.username: dtrack
+  database.password: dtrack
+  secretManagement.database.kek.existingSecret.name: dt-kek
+tests:
+  - it: stock-values renders the expected document set
+    asserts:
+      - hasDocuments:
+          count: 1
+        template: api-server/deployment-web.yaml
+      - hasDocuments:
+          count: 0
+        template: api-server/deployment-worker.yaml
+      - hasDocuments:
+          count: 2
+        template: api-server/service.yaml
+      - hasDocuments:
+          count: 1
+        template: frontend/deployment.yaml
+      - hasDocuments:
+          count: 1
+        template: file-storage/pvc.yaml
+      - hasDocuments:
+          count: 1
+        template: secrets/db.yaml
+      - hasDocuments:
+          count: 1
+        template: serviceaccount.yaml
+
+  - it: api-server pod ships the documented hardening defaults
+    template: api-server/deployment-web.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.automountServiceAccountToken
+          value: false
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+          value: false
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.seccompProfile.type
+          value: RuntimeDefault
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop[0]
+          value: ALL
+      - equal:
+          path: spec.template.spec.securityContext.fsGroup
+          value: 1000
+
+  - it: api-server probes target the management port and /health endpoints
+    template: api-server/deployment-web.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.path
+          value: /health/live
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.port
+          value: management
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.path
+          value: /health/ready
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.httpGet.path
+          value: /health/started
+
+  - it: frontend probes hit /static/config.json (not the SPA shell)
+    template: frontend/deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.path
+          value: /static/config.json
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.path
+          value: /static/config.json
+
+  - it: default api-server replicaCount is 1 (RWO-safe with the default PVC)
+    template: api-server/deployment-web.yaml
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 1
+
+  - it: default PVC accessModes is ReadWriteOnce
+    template: file-storage/pvc.yaml
+    asserts:
+      - equal:
+          path: spec.accessModes[0]
+          value: ReadWriteOnce
+
+  - it: chart sets DT_METRICS_ENABLED + DT_MANAGEMENT_PORT on the api-server pod
+    template: api-server/deployment-web.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_METRICS_ENABLED
+            value: "true"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_MANAGEMENT_PORT
+            value: "9000"
+
+  - it: db credentials are mounted as files and referenced via ${file::...}
+    template: api-server/deployment-web.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_DATASOURCE_USERNAME
+            value: "${file::/etc/dt/secrets/db/username}"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_DATASOURCE_PASSWORD
+            value: "${file::/etc/dt/secrets/db/password}"
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: db-secret
+            mountPath: /etc/dt/secrets/db
+            readOnly: true
+
+  - it: no apiServer JAVA_OPTIONS env is shipped by the chart
+    template: api-server/deployment-web.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: JAVA_OPTIONS

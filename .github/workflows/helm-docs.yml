@@ -27,10 +27,8 @@ jobs:
       with:
         go-version: "1.22"
         check-latest: true
-    - name: Install helm-docs
-      run: go install -v github.com/norwoodj/helm-docs/cmd/helm-docs@v1.13.1
     - name: Run helm-docs
-      run: helm-docs
+      run: make docs
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # tag=v8.1.1
       with:

@@ -25,15 +25,21 @@ spec:
         type: PathPrefix
         value: /api
     backendRefs:
-    - name: {{ include "hyades.apiServerFullname" . }}
+    - group: ""
+      kind: Service
+      name: {{ include "hyades.apiServerFullname" . }}
       port: {{ .Values.apiServer.service.port }}
+      weight: 1
   - matches:
     - path:
         type: PathPrefix
         value: /health
     backendRefs:
-    - name: {{ include "hyades.apiServerFullname" . }}
+    - group: ""
+      kind: Service
+      name: {{ include "hyades.apiServerFullname" . }}
       port: {{ .Values.apiServer.service.port }}
+      weight: 1
   {{- end }}
   {{- if .Values.frontend.enabled }}
   - matches:
@@ -41,7 +47,10 @@ spec:
         type: PathPrefix
         value: /
     backendRefs:
-    - name: {{ include "hyades.frontendFullname" . }}
+    - group: ""
+      kind: Service
+      name: {{ include "hyades.frontendFullname" . }}
       port: {{ .Values.frontend.service.port }}
+      weight: 1
   {{- end }}
 {{- end }}

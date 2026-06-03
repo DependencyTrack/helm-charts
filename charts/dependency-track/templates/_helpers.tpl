@@ -83,10 +83,14 @@ API server fully qualified name
 API server image
 */}}
 {{- define "dependencytrack.apiServerImage" -}}
-{{- if eq (substr 0 7 .Values.apiServer.image.tag) "sha256:" -}}
-{{- printf "%s/%s@%s" (.Values.apiServer.image.registry | default .Values.common.image.registry) .Values.apiServer.image.repository .Values.apiServer.image.tag -}}
+{{- $tag := .Values.apiServer.image.tag | default .Chart.AppVersion -}}
+{{- if and (ne (substr 0 7 $tag) "sha256:") (regexMatch "^5\\..*" $tag) -}}
+{{- fail (printf "apiServer.image.tag %q is not supported by this chart version" $tag) -}}
+{{- end -}}
+{{- if eq (substr 0 7 $tag) "sha256:" -}}
+{{- printf "%s/%s@%s" (.Values.apiServer.image.registry | default .Values.common.image.registry) .Values.apiServer.image.repository $tag -}}
 {{- else -}}
-{{- printf "%s/%s:%s" (.Values.apiServer.image.registry | default .Values.common.image.registry) .Values.apiServer.image.repository (.Values.apiServer.image.tag | default .Chart.AppVersion) -}}
+{{- printf "%s/%s:%s" (.Values.apiServer.image.registry | default .Values.common.image.registry) .Values.apiServer.image.repository $tag -}}
 {{- end -}}
 {{- end -}}
 
@@ -127,10 +131,14 @@ Frontend fully qualified name
 Frontend image
 */}}
 {{- define "dependencytrack.frontendImage" -}}
-{{- if eq (substr 0 7 .Values.frontend.image.tag) "sha256:" -}}
-{{- printf "%s/%s@%s" (.Values.frontend.image.registry | default .Values.common.image.registry) .Values.frontend.image.repository .Values.frontend.image.tag -}}
+{{- $tag := .Values.frontend.image.tag | default .Chart.AppVersion -}}
+{{- if and (ne (substr 0 7 $tag) "sha256:") (regexMatch "^5\\..*" $tag) -}}
+{{- fail (printf "frontend.image.tag %q is not supported by this chart version" $tag) -}}
+{{- end -}}
+{{- if eq (substr 0 7 $tag) "sha256:" -}}
+{{- printf "%s/%s@%s" (.Values.frontend.image.registry | default .Values.common.image.registry) .Values.frontend.image.repository $tag -}}
 {{- else -}}
-{{- printf "%s/%s:%s" (.Values.frontend.image.registry | default .Values.common.image.registry) .Values.frontend.image.repository (.Values.frontend.image.tag | default .Chart.AppVersion) -}}
+{{- printf "%s/%s:%s" (.Values.frontend.image.registry | default .Values.common.image.registry) .Values.frontend.image.repository $tag -}}
 {{- end -}}
 {{- end -}}
 

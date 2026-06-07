@@ -63,6 +63,7 @@ apiServer:
       type: RuntimeDefault
   extraEnv: []
   extraEnvFrom: []
+  extraLabels: {}
   probes:
     startup:
       failureThreshold: 30
@@ -210,6 +211,7 @@ frontend:
       type: RuntimeDefault
   extraEnv: []
   extraEnvFrom: []
+  extraLabels: {}
   probes:
     liveness:
       failureThreshold: 3

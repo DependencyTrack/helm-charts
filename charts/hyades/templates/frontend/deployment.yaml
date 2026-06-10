@@ -17,6 +17,9 @@ spec:
   template:
     metadata:
       labels: {{- include "hyades.frontendSelectorLabels" . | nindent 8 }}
+      {{- if .Values.frontend.extraLabels }}
+      {{- toYaml .Values.frontend.extraLabels | nindent 8 }}
+      {{- end }}
       {{- with .Values.frontend.annotations }}
       annotations: {{- toYaml . | nindent 8 }}
       {{- end }}

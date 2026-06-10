@@ -17,6 +17,9 @@ spec:
   template:
     metadata:
       labels: {{ include "hyades.apiServerSelectorLabels" . | nindent 8 }}
+      {{- if .Values.apiServer.extraLabels }}
+      {{- toYaml .Values.apiServer.extraLabels | nindent 8 }}
+      {{- end }}
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: /metrics

@@ -38,6 +38,7 @@ Before upgrading, please consult the [upgrade guides](https://dependencytrack.gi
 | apiServer.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | apiServer.extraEnv | list | `[]` |  |
 | apiServer.extraEnvFrom | list | `[]` |  |
+| apiServer.extraLabels | object | `{}` | Additional labels to add to the API-service deployment. |
 | apiServer.image.pullPolicy | string | `"Always"` |  |
 | apiServer.image.registry | string | `""` | Override common.image.registry for the API server. |
 | apiServer.image.repository | string | `"dependencytrack/apiserver"` |  |
@@ -98,6 +99,7 @@ Before upgrading, please consult the [upgrade guides](https://dependencytrack.gi
 | frontend.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | frontend.extraEnv | list | `[]` |  |
 | frontend.extraEnvFrom | list | `[]` |  |
+| frontend.extraLabels | object | `{}` | Additional labels to add to the frontend deployment. |
 | frontend.image.pullPolicy | string | `"Always"` |  |
 | frontend.image.registry | string | `""` | Override common.image.registry for the API frontend. |
 | frontend.image.repository | string | `"dependencytrack/frontend"` |  |

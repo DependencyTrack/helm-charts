@@ -14,7 +14,7 @@ spec:
     matchLabels: {{- include "hyades.apiServerSelectorLabels" . | nindent 6 }}
   jobLabel: {{ include "hyades.apiServerFullname" . }}
   endpoints:
-  - port: web
+  - port: management
     path: /metrics
     interval: {{ .Values.apiServer.serviceMonitor.scrapeInterval }}
     scrapeTimeout: {{ .Values.apiServer.serviceMonitor.scrapeTimeout }}

@@ -90,7 +90,7 @@ apiServer:
   serviceMonitor:
     enabled: false
     namespace: monitoring
-    scrapeInternal: 15s
+    scrapeInterval: 15s
     scrapeTimeout: 30s
   # -- Grace period for pod termination in seconds.
   # Should always be equal to or greater than the sum of `_DRAIN_TIMEOUT` configurations to ensure graceful shutdown.

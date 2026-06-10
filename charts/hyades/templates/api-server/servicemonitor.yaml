@@ -16,6 +16,6 @@ spec:
   endpoints:
   - port: web
     path: /metrics
-    interval: {{ .Values.apiServer.serviceMonitor.scrapeInternal }}
+    interval: {{ .Values.apiServer.serviceMonitor.scrapeInterval }}
     timeout: {{ .Values.apiServer.serviceMonitor.scrapeTimeout }}
 {{- end }}

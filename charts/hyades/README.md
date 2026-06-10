@@ -2,9 +2,11 @@
 
 ![Version: 0.20.0](https://img.shields.io/badge/Version-0.20.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.0.0-rc.3](https://img.shields.io/badge/AppVersion-5.0.0--rc.3-informational?style=flat-square)
 
-Hyades is the next major version of OWASP Dependency-Track.
-It has not yet reached GA. For a production-ready release, use the `dependency-track` chart.
-Before upgrading, please consult the [upgrade guides](https://dependencytrack.github.io/docs/next/guides/upgrading/).
+Hyades is the preview chart for Dependency-Track v5.
+
+NOTE: This chart will be discontinued when version 2 of the
+`dependency-track` chart is released. New users should wait for
+v2, or be ready to migrate when v2 is released.
 
 **Homepage:** <https://dependencytrack.github.io/docs/next>
 

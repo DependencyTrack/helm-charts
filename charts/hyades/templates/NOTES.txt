@@ -1,0 +1,6 @@
+NOTE: This chart will be discontinued when version 2 of the dependency-track chart is released.
+
+New users should wait for v2, or be ready to migrate when v2 is released.
+
+See https://dependencytrack.github.io/docs/next/guides/administration/deploying-to-kubernetes/
+for current deployment guidance.

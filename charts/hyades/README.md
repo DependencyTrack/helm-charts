@@ -38,7 +38,7 @@ Before upgrading, please consult the [upgrade guides](https://dependencytrack.gi
 | apiServer.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | apiServer.extraEnv | list | `[]` |  |
 | apiServer.extraEnvFrom | list | `[]` |  |
-| apiServer.extraLabels | object | `{}` | Additional labels to add to the API-service deployment. |
+| apiServer.extraLabels | object | `{}` |  |
 | apiServer.image.pullPolicy | string | `"Always"` |  |
 | apiServer.image.registry | string | `""` | Override common.image.registry for the API server. |
 | apiServer.image.repository | string | `"dependencytrack/apiserver"` |  |
@@ -71,8 +71,8 @@ Before upgrading, please consult the [upgrade guides](https://dependencytrack.gi
 | apiServer.service.type | string | `"ClusterIP"` |  |
 | apiServer.serviceMonitor.enabled | bool | `false` |  |
 | apiServer.serviceMonitor.namespace | string | `"monitoring"` |  |
-| apiServer.serviceMonitor.scrapeInternal | string | `"15s"` |  |
-| apiServer.serviceMonitor.scrapeTimeout | string | `"30s"` |  |
+| apiServer.serviceMonitor.scrapeInterval | string | `"15s"` |  |
+| apiServer.serviceMonitor.scrapeTimeout | string | `"10s"` |  |
 | apiServer.terminationGracePeriodSeconds | int | `60` | Grace period for pod termination in seconds. Should always be equal to or greater than the sum of `_DRAIN_TIMEOUT` configurations to ensure graceful shutdown. Refer to https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/ for details. |
 | apiServer.tolerations | list | `[]` |  |
 | common.database.jdbcUrl | string | `""` |  |
@@ -99,7 +99,7 @@ Before upgrading, please consult the [upgrade guides](https://dependencytrack.gi
 | frontend.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | frontend.extraEnv | list | `[]` |  |
 | frontend.extraEnvFrom | list | `[]` |  |
-| frontend.extraLabels | object | `{}` | Additional labels to add to the frontend deployment. |
+| frontend.extraLabels | object | `{}` |  |
 | frontend.image.pullPolicy | string | `"Always"` |  |
 | frontend.image.registry | string | `""` | Override common.image.registry for the API frontend. |
 | frontend.image.repository | string | `"dependencytrack/frontend"` |  |

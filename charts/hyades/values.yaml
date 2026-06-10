@@ -91,7 +91,7 @@ apiServer:
     enabled: false
     namespace: monitoring
     scrapeInterval: 15s
-    scrapeTimeout: 30s
+    scrapeTimeout: 10s
   # -- Grace period for pod termination in seconds.
   # Should always be equal to or greater than the sum of `_DRAIN_TIMEOUT` configurations to ensure graceful shutdown.
   # Refer to https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/ for details.

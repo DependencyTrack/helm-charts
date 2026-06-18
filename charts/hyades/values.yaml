@@ -56,7 +56,7 @@ apiServer:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
-      - ALL
+        - ALL
     runAsNonRoot: true
     readOnlyRootFilesystem: true
     seccompProfile:
@@ -121,6 +121,21 @@ apiServer:
   #         type: RuntimeDefault
   # -- Additional containers to deploy. Supports templating.
   extraContainers: []
+  persistentVolume:
+    # -- Whether to create a PersistentVolumeClaim for the API server.
+    enabled: false
+    # -- Use an existing PVC instead of creating a new one.
+    # When set, the PVC will not be created by the chart.
+    existingClaim: ""
+    # -- Storage class name. If empty, the default storage class will be used.
+    className: ""
+    # -- Size of the PVC.
+    size: 5Gi
+    # -- Access modes for the PVC.
+    # When empty, access modes are determined automatically:
+    # - ReadWriteMany when autoScaling is enabled or replicaCount > 1
+    # - ReadWriteOnce otherwise
+    accessModes: []
   additionalVolumes: []
   additionalVolumeMounts: []
   tolerations: []
@@ -203,7 +218,7 @@ frontend:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
-      - ALL
+        - ALL
     runAsNonRoot: true
     # RO filesystems are not supported by the frontend
     readOnlyRootFilesystem: false

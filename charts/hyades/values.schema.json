@@ -135,6 +135,26 @@
         },
         "nodeSelector": {
           "type": "object"
+        },
+        "persistentVolume": {
+          "type": "object",
+          "properties": {
+            "accessModes": {
+              "type": "array"
+            },
+            "className": {
+              "type": "string"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "existingClaim": {
+              "type": "string"
+            },
+            "size": {
+              "type": "string"
+            }
+          }
         }
       }
     },

@@ -90,6 +90,23 @@ API server image
 {{- end -}}
 {{- end -}}
 
+{{/*
+Determine PVC access modes for the API server.
+If .Values.apiServer.persistentVolume.accessModes is set explicitly, use it.
+Otherwise:
+- ReadWriteMany when multiple replicas are expected
+- ReadWriteOnce otherwise
+*/}}
+{{- define "hyades.apiServerPersistentVolumeAccessModes" -}}
+{{- if .Values.apiServer.persistentVolume.accessModes }}
+{{- toYaml .Values.apiServer.persistentVolume.accessModes }}
+{{- else if or .Values.apiServer.autoScaling.enabled (gt (int .Values.apiServer.replicaCount) 1) }}
+- ReadWriteMany
+{{- else }}
+- ReadWriteOnce
+{{- end }}
+{{- end -}}
+
 
 {{/*
 Initializer labels

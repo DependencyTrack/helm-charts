@@ -1,8 +1,8 @@
 apiVersion: v2
 name: hyades
-version: 0.21.0
+version: 0.22.0
 type: application
-appVersion: 5.0.0
+appVersion: 5.0.2
 description: |-
   Hyades is the preview chart for Dependency-Track v5.
 

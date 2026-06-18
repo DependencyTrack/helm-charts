@@ -4,3 +4,14 @@ New users should wait for v2, or be ready to migrate when v2 is released.
 
 See https://dependencytrack.github.io/docs/next/guides/administration/deploying-to-kubernetes/
 for current deployment guidance.
+
+{{- if and .Values.apiServer.persistentVolume.enabled (or .Values.apiServer.autoScaling.enabled (gt (int .Values.apiServer.replicaCount) 1)) .Values.apiServer.persistentVolume.accessModes (not (has "ReadWriteMany" .Values.apiServer.persistentVolume.accessModes)) }}
+WARNING: Multiple API server replicas are configured
+{{- if .Values.apiServer.autoScaling.enabled }}
+(autoScaling is enabled)
+{{- else }}
+(replicaCount={{ .Values.apiServer.replicaCount }})
+{{- end }}
+but persistentVolume.accessModes is set to {{ .Values.apiServer.persistentVolume.accessModes }}.
+Multiple replicas require ReadWriteMany access mode. Pods may fail to mount the PVC.
+{{- end }}

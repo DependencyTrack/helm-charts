@@ -132,7 +132,12 @@ spec:
       {{- end }}
       volumes:
       - name: data
+      {{- if .Values.apiServer.persistentVolume.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.apiServer.persistentVolume.existingClaim | default (include "hyades.apiServerFullname" .) }}
+      {{- else }}
         emptyDir: {}
+      {{- end }}
       - name: tmp
         emptyDir: {}
       {{- with .Values.apiServer.additionalVolumes }}

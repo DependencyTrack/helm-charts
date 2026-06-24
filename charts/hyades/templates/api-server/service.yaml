@@ -18,5 +18,8 @@ spec:
     {{- with .Values.apiServer.service.nodePort }}
     nodePort: {{ . }}
     {{- end }}
+  - name: management
+    port: {{ .Values.apiServer.service.managementPort }}
+    targetPort: management
   selector: {{- include "hyades.apiServerSelectorLabels" . | nindent 4 }}
 {{- end }}

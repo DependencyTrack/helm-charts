@@ -87,6 +87,7 @@ apiServer:
     type: ClusterIP
     nodePort: ~
     port: 8080
+    managementPort: 9000
     annotations: {}
   serviceMonitor:
     enabled: false

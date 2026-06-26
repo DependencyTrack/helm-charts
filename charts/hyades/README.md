@@ -73,6 +73,7 @@ v2, or be ready to migrate when v2 is released.
 | apiServer.resources.requests.memory | string | `"2Gi"` |  |
 | apiServer.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context of the Container. |
 | apiServer.service.annotations | object | `{}` |  |
+| apiServer.service.managementPort | int | `9000` |  |
 | apiServer.service.nodePort | string | `nil` |  |
 | apiServer.service.port | int | `8080` |  |
 | apiServer.service.type | string | `"ClusterIP"` |  |

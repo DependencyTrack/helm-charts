@@ -76,7 +76,16 @@
             }
           }
         },
+        "labels": {
+          "type": "object"
+        },
         "annotations": {
+          "type": "object"
+        },
+        "podLabels": {
+          "type": "object"
+        },
+        "podAnnotations": {
           "type": "object"
         },
         "image": {
@@ -105,9 +114,6 @@
         },
         "extraEnvFrom": {
           "$ref": "#/$defs/objectArray"
-        },
-        "extraLabels": {
-          "type": "object"
         },
         "extraContainers": {
           "$ref": "#/$defs/objectArray"
@@ -164,7 +170,19 @@
         "enabled": {
           "type": "boolean"
         },
+        "noHelmHook": {
+          "type": "boolean"
+        },
+        "labels": {
+          "type": "object"
+        },
         "annotations": {
+          "type": "object"
+        },
+        "podLabels": {
+          "type": "object"
+        },
+        "podAnnotations": {
           "type": "object"
         },
         "image": {
@@ -230,7 +248,16 @@
             }
           }
         },
+        "labels": {
+          "type": "object"
+        },
         "annotations": {
+          "type": "object"
+        },
+        "podLabels": {
+          "type": "object"
+        },
+        "podAnnotations": {
           "type": "object"
         },
         "image": {
@@ -259,9 +286,6 @@
         },
         "extraEnvFrom": {
           "$ref": "#/$defs/objectArray"
-        },
-        "extraLabels": {
-          "type": "object"
         },
         "extraContainers": {
           "$ref": "#/$defs/objectArray"

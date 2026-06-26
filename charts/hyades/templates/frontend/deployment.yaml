@@ -5,7 +5,15 @@ kind: Deployment
 metadata:
   name: {{ include "hyades.frontendFullname" . }}
   namespace: {{ .Release.Namespace }}
-  labels: {{- include "hyades.frontendLabels" . | nindent 4 }}
+  {{- with .Values.frontend.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "hyades.frontendLabels" . | nindent 4 }}
+    {{- with .Values.frontend.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   {{- if (not .Values.frontend.autoScaling.enabled) }}
   replicas: {{ .Values.frontend.replicaCount }}
@@ -16,13 +24,15 @@ spec:
     matchLabels: {{- include "hyades.frontendSelectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels: {{- include "hyades.frontendSelectorLabels" . | nindent 8 }}
-      {{- if .Values.frontend.extraLabels }}
-      {{- toYaml .Values.frontend.extraLabels | nindent 8 }}
+      {{- with .Values.frontend.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.frontend.annotations }}
-      annotations: {{- toYaml . | nindent 8 }}
-      {{- end }}
+      labels:
+        {{- include "hyades.frontendSelectorLabels" . | nindent 8 }}
+        {{- with .Values.frontend.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.common.image.pullSecrets }}
       imagePullSecrets: {{- toYaml . | nindent 6 }}

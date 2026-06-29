@@ -23,8 +23,9 @@ database:
 secretManagement:
   database:
     kek:
-      existingSecret:
-        name: dt-kek
+      # DO NOT USE IN PRODUCTION. The key is a public fixture, treat it as
+      # compromised. Generate a real one with `openssl rand -base64 32`.
+      value: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
 
 fileStorage:
   provider: local
@@ -61,18 +62,6 @@ frontend:
   replicaCount: 1
 
 extraObjects:
-  # DO NOT USE IN PRODUCTION. The key is a public fixture, treat it as
-  # compromised. Generate a real one with `openssl rand -base64 32` and
-  # ship it via your secret tooling.
-  - apiVersion: v1
-    kind: Secret
-    metadata:
-      name: dt-kek
-      namespace: "{{ .Release.Namespace }}"
-    type: Opaque
-    stringData:
-      kek: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
-
   - apiVersion: apps/v1
     kind: Deployment
     metadata:

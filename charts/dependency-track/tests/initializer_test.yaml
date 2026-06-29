@@ -172,4 +172,4 @@ tests:
       database.password: dtrack
     asserts:
       - failedTemplate:
-          errorMessage: "apiServer.initializer.enabled requires database.existingSecret.name: the pre-install/pre-upgrade hook Job runs before chart-managed Secrets are created, so provision DB credentials out of band (as already required for the KEK Secret)."
+          errorMessage: "apiServer.initializer.enabled requires database.existingSecret.name: the pre-install/pre-upgrade hook Job runs before chart-managed Secrets are created, so provision DB credentials separately."

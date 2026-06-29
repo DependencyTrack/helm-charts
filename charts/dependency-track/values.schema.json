@@ -172,6 +172,9 @@
                     "keyset"
                   ]
                 },
+                "value": {
+                  "type": "string"
+                },
                 "existingSecret": {
                   "type": "object",
                   "additionalProperties": false,

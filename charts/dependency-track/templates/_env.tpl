@@ -33,7 +33,10 @@
 {{- define "dependencytrack.validate.initializer" }}
 {{- if .Values.apiServer.initializer.enabled }}
 {{- if not .Values.database.existingSecret.name }}
-{{- fail "apiServer.initializer.enabled requires database.existingSecret.name: the pre-install/pre-upgrade hook Job runs before chart-managed Secrets are created, so provision DB credentials out of band (as already required for the KEK Secret)." }}
+{{- fail "apiServer.initializer.enabled requires database.existingSecret.name: the pre-install/pre-upgrade hook Job runs before chart-managed Secrets are created, so provision DB credentials separately." }}
+{{- end }}
+{{- if eq (include "dependencytrack.secretManagement.database.kek.chartManaged" .) "true" }}
+{{- fail "apiServer.initializer.enabled is incompatible with an inline secretManagement.database.kek.value: the pre-install/pre-upgrade hook Job runs before chart-managed Secrets are created. Provision the KEK Secret separately and reference it via secretManagement.database.kek.existingSecret.name." }}
 {{- end }}
 {{- end }}
 {{- end }}

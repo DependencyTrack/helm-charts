@@ -55,8 +55,15 @@ Chart v2 does not generate these. Create them with your usual secret tooling
   - A [Tink AES-GCM JSON keyset][tink-keyset] (`mode: keyset`). Default Secret key `kek-keyset.json`.
     Supports rotation. Recommended for long-running production.
 
-  Reference it from `secretManagement.database.kek.existingSecret.name` and override the key name with
-  `secretManagement.database.kek.existingSecret.key`. The chart mounts it under `/etc/dt/secrets/sm/database/kek/`.
+  Two ways to wire it:
+  - Inline via `secretManagement.database.kek.value`. Here, the chart creates the `Secret` for you.
+    Simplest to get started, but the KEK is persisted as plaintext in etcd.
+  - Provision the `Secret` yourself (e.g. via External Secrets Operator / Vault / SealedSecrets)
+    and reference it from `secretManagement.database.kek.existingSecret.name`, overriding the key
+    name with `secretManagement.database.kek.existingSecret.key` if needed. Required when
+    `apiServer.initializer.enabled` (the hook Job runs before chart-managed Secrets exist).
+
+  Either way the chart mounts it under `/etc/dt/secrets/sm/database/kek/`.
   See the [secret management reference][secret-mgmt-ref].
 - **S3 credentials Secret.** Only needed when `fileStorage.provider: s3`. Keys `accessKeyId` and
   `secretAccessKey` by default (override via
@@ -136,8 +143,8 @@ New values worth investigating before you upgrade:
 - Per-role `autoscaling`, `pdb`, `topologySpreadConstraints`, and `terminationGracePeriodSeconds`.
 - `frontend.enabled: false` for API-only deployments.
 - `secretManagement.provider: env` resolves DT-side secrets from `DT_SECRET_*` env vars instead of the
-  DB-encrypted store. Useful if you already deliver secrets via ESO or Vault and do not want to manage
-  a KEK.
+  DB-encrypted store. Useful if you already deliver secrets via External Secrets Operator or Vault and
+  do not want to manage a KEK.
 - The new `management` port (default `9000`) carries `/health` and `/metrics` and is exposed only inside
   the pod (no Service port). When using a `NetworkPolicy`, allow your `ServiceMonitor` source to reach it.
 
@@ -229,7 +236,7 @@ Still run `pg_dump` before you cut over, in case you need to roll back.
 ### 2. Provision the Secrets the new chart expects
 
 `hyades` injected the database credentials straight into the pod as env vars and did not manage a KEK.
-The new chart mounts credentials as files and, by default, expects a KEK Secret you provision out of band.
+The new chart mounts credentials as files and, by default, expects a KEK Secret you provision separately.
 Follow [step 4 of the 1.x guide](#4-provision-the-secrets-the-new-chart-expects) to create the Database, KEK,
 and (if you use S3) credentials Secrets.
 

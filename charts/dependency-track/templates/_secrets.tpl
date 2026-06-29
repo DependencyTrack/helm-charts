@@ -25,7 +25,15 @@ true
 {{- end }}
 
 {{- define "dependencytrack.secretManagement.database.kekSecretName" }}
+{{- if .Values.secretManagement.database.kek.existingSecret.name }}
 {{- .Values.secretManagement.database.kek.existingSecret.name }}
+{{- else }}
+{{- printf "%s-kek" (include "dependencytrack.fullname" .) }}
+{{- end }}
+{{- end }}
+
+{{- define "dependencytrack.secretManagement.database.kek.chartManaged" }}
+{{- if and .Values.secretManagement.database.kek.value (not .Values.secretManagement.database.kek.existingSecret.name) -}}true{{- end }}
 {{- end }}
 
 {{- define "dependencytrack.secretManagement.database.kekMode" }}
@@ -77,8 +85,11 @@ kek
 
 {{- define "dependencytrack.validate.kek" }}
 {{- if eq (include "dependencytrack.secretManagement.database.active" .) "true" }}
-{{- if not .Values.secretManagement.database.kek.existingSecret.name }}
-{{- fail "secretManagement.database.kek.existingSecret.name is required when secretManagement.provider=database. Provision the KEK Secret out of band (ESO/Vault/SealedSecrets) and reference it here." }}
+{{- $kek := .Values.secretManagement.database.kek }}
+{{- if and $kek.value $kek.existingSecret.name }}
+{{- fail "secretManagement.database.kek.value and secretManagement.database.kek.existingSecret.name are both set; remove one to avoid ambiguity about which KEK is in effect" }}
+{{- else if not (or $kek.value $kek.existingSecret.name) }}
+{{- fail "secretManagement.database.kek is required when secretManagement.provider=database. Either set secretManagement.database.kek.value (chart creates the Secret; generate one with `openssl rand -base64 32`), or provision the KEK Secret separately and reference it via secretManagement.database.kek.existingSecret.name." }}
 {{- end }}
 {{- end }}
 {{- end }}

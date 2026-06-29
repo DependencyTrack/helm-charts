@@ -96,7 +96,7 @@ secretManagement:
   database:
     # -- The key encryption key (KEK) configuration.
     # Required when `provider: database`. The chart does not generate the KEK.
-    # Provision it separately and reference it here.
+    # Either supply it inline via `value` (the chart creates the Secret), or reference an `existingSecret`.
     kek:
       # -- Mode in which the KEK is provided.
       #
@@ -107,6 +107,13 @@ secretManagement:
       # and is required for long-running production deployments that expect
       # to rotate the KEK without re-encrypting every DB-stored secret.
       mode: config
+      # -- Inline KEK value. When set, the chart creates the KEK Secret for you.
+      # Mutually exclusive with `existingSecret.name`.
+      # For `mode: config` generate one with `openssl rand -base64 32`.
+      # For `mode: keyset` paste the Tink AES-GCM JSON keyset.
+      # NOTE: this is stored in plaintext in etcd. For stronger isolation,
+      # leave this empty and use `existingSecret` with external secret tooling.
+      value: ""
       existingSecret:
         # -- Name of the existing secret.
         name: ""

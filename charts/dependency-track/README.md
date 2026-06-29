@@ -21,6 +21,10 @@ that allows organizations to identify and reduce risk in the software supply cha
 
 Kubernetes: `>=1.27.0-0`
 
+> [!IMPORTANT]
+> Chart v2.x is only compatible with Dependency-Track 5.0.0 and later.
+> If you are running Dependency-Track 4.x, use chart v1.x instead.
+
 ## Quickstart
 
 Evaluate the chart on any conformant Kubernetes cluster, no Postgres or KEK Secret needed:
@@ -194,7 +198,7 @@ Do note however:
 | frontend.additionalVolumes | list | `[]` |  |
 | frontend.affinity | object | `{}` |  |
 | frontend.annotations | object | `{}` |  |
-| frontend.apiBaseUrl | string | `""` | Base URL the UI calls for the API. Leave empty when the chart's Ingress/HTTPRoute serves UI + API from the same host (relative URLs). Set to the external API base URL when the UI is served from a different host. |
+| frontend.apiBaseUrl | string | `""` | Base URL the UI calls for the API. Leave empty when the chart's Ingress/HTTPRoute serves UI + API from the same host (relative URLs). Set to the external API base URL when the UI is served from a different host. The UI is a static SPA whose browser calls the api-server directly, so this address must be reachable from the browser, not just from within the cluster. |
 | frontend.args | list | `[]` |  |
 | frontend.autoscaling.annotations | object | `{}` |  |
 | frontend.autoscaling.behavior | object | `{}` |  |

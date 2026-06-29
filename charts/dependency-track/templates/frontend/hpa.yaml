@@ -1,0 +1,39 @@
+{{- if and .Values.frontend.enabled .Values.frontend.autoscaling.enabled -}}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "dependencytrack.frontend.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "dependencytrack.componentLabels" (dict "ctx" . "component" "frontend" "role" "") | nindent 4 }}
+  {{- with .Values.frontend.autoscaling.annotations }}
+  annotations: {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "dependencytrack.frontend.fullname" . }}
+  minReplicas: {{ .Values.frontend.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.frontend.autoscaling.maxReplicas }}
+  metrics:
+    {{- if not (kindIs "invalid" .Values.frontend.autoscaling.targetCPUUtilizationPercentage) }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.frontend.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if not (kindIs "invalid" .Values.frontend.autoscaling.targetMemoryUtilizationPercentage) }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.frontend.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+  {{- with .Values.frontend.autoscaling.behavior }}
+  behavior: {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

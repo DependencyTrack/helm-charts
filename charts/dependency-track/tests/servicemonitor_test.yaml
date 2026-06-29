@@ -1,0 +1,42 @@
+suite: servicemonitor
+release:
+  name: dt
+  namespace: dt-test
+set:
+  database.username: dtrack
+  database.password: dtrack
+  secretManagement.database.kek.existingSecret.name: dt-kek
+templates:
+  - api-server/servicemonitor.yaml
+tests:
+  - it: ServiceMonitor is omitted when disabled
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: ServiceMonitor renders into the configured namespace with the configured interval
+    set:
+      apiServer.serviceMonitor.enabled: true
+      apiServer.serviceMonitor.namespace: prom-system
+      apiServer.serviceMonitor.scrapeInterval: 30s
+      apiServer.serviceMonitor.labels:
+        release: prometheus
+    asserts:
+      - equal:
+          path: metadata.namespace
+          value: prom-system
+      - equal:
+          path: metadata.labels.release
+          value: prometheus
+      - equal:
+          path: spec.endpoints[0].port
+          value: management
+      - equal:
+          path: spec.endpoints[0].path
+          value: /metrics
+      - equal:
+          path: spec.endpoints[0].interval
+          value: 30s
+      - equal:
+          path: spec.podTargetLabels[0]
+          value: dependencytrack.io/role

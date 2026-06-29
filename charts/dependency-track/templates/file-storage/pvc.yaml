@@ -1,0 +1,19 @@
+{{- if and (eq .Values.fileStorage.provider "local") (not .Values.fileStorage.local.existingClaim) -}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "dependencytrack.fileStorage.localClaimName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "dependencytrack.commonLabels" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes: {{- toYaml .Values.fileStorage.local.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.fileStorage.local.size }}
+  {{- with .Values.fileStorage.local.storageClassName }}
+  storageClassName: {{ . }}
+  {{- end }}
+{{- end }}

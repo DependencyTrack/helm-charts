@@ -1,0 +1,95 @@
+database:
+  jdbcUrl: "jdbc:postgresql://postgres.{{ .Release.Namespace }}.svc.cluster.local:5432/dtrack"
+  username: dtrack
+  password: dtrack
+secretManagement:
+  provider: database
+  database:
+    kek:
+      existingSecret:
+        name: dt-kek
+fileStorage:
+  provider: local
+  local:
+    size: 1Gi
+    accessModes:
+      - ReadWriteOnce
+
+apiServer:
+  topology: monolith
+  initContainers:
+    - name: wait-for-postgres
+      image: postgres:14-alpine
+      command:
+        - sh
+        - -c
+        - |
+          until pg_isready -h postgres.{{ .Release.Namespace }}.svc.cluster.local -p 5432; do
+            echo "waiting for postgres"
+            sleep 2
+          done
+  web:
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 1Gi
+      limits:
+        memory: 1Gi
+
+frontend:
+  replicaCount: 1
+
+extraObjects:
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: dt-kek
+      namespace: "{{ .Release.Namespace }}"
+    type: Opaque
+    stringData:
+      kek: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: postgres
+      namespace: "{{ .Release.Namespace }}"
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: "{{ .Release.Name }}"
+          app.kubernetes.io/component: postgres
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/instance: "{{ .Release.Name }}"
+            app.kubernetes.io/component: postgres
+        spec:
+          containers:
+            - name: postgres
+              image: postgres:14-alpine
+              env:
+                - name: POSTGRES_DB
+                  value: dtrack
+                - name: POSTGRES_USER
+                  value: dtrack
+                - name: POSTGRES_PASSWORD
+                  value: dtrack
+              ports:
+                - name: postgres
+                  containerPort: 5432
+                  protocol: TCP
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: postgres
+      namespace: "{{ .Release.Namespace }}"
+    spec:
+      type: ClusterIP
+      selector:
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        app.kubernetes.io/component: postgres
+      ports:
+        - port: 5432
+          targetPort: 5432

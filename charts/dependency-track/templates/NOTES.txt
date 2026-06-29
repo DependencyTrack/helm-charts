@@ -1,0 +1,47 @@
+Dependency-Track {{ .Chart.AppVersion }} has been installed.
+
+Release:    {{ .Release.Name }}
+Namespace:  {{ .Release.Namespace }}
+Topology:   {{ include "dependencytrack.topology" . }}
+
+Access the application:
+
+{{- if .Values.ingress.enabled }}
+  Ingress hostname: {{ .Values.ingress.hostname }}
+{{- else if .Values.httpRoute.enabled }}
+  HTTPRoute hostnames: {{ join ", " .Values.httpRoute.hostnames }}
+{{- else }}
+  {{- if .Values.frontend.enabled }}
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "dependencytrack.frontend.fullname" . }} 8081:{{ .Values.frontend.service.port }}
+  {{- end }}
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "dependencytrack.apiServer.webFullname" . }} 8080:{{ .Values.apiServer.service.port }}
+
+  The browser calls the api-server directly, so it must be reachable from the
+  browser and `frontend.apiBaseUrl` must point at that address (e.g. http://localhost:8080).
+{{- end }}
+
+The default admin credentials on first launch are `admin` / `admin`.
+Dependency-Track forces a password change on first login.
+Do this IMMEDIATELY, ideally before exposing the instance beyond `localhost`.
+
+api-server pods run DT's init tasks on startup (database migrations,
+default-object seeding, partition maintenance). A Postgres advisory lock serializes
+concurrent runs; one pod migrates, the rest wait and then no-op.
+If a pod stays `NotReady` for an unusually long time, inspect the api-server logs:
+
+  kubectl --namespace {{ .Release.Namespace }} logs -l app.kubernetes.io/component=api-server -c api-server
+
+{{- if and .Values.frontend.enabled (not .Values.frontend.apiBaseUrl) (not .Values.ingress.enabled) (not .Values.httpRoute.enabled) }}
+
+WARNING: frontend.enabled=true but no `frontend.apiBaseUrl` is set and neither
+`ingress` nor `httpRoute` is enabled. The UI will load but requests will fail to
+reach the API server. Either:
+  - enable Ingress / HTTPRoute (the chart will route /api -> api-server), or
+  - set frontend.apiBaseUrl to a URL clients can reach (e.g. via port-forward).
+{{- end }}
+
+{{- if and .Values.fileStorage.local.existingClaim (eq .Values.fileStorage.provider "local") }}
+
+NOTE: chart-managed PVC carries `helm.sh/resource-policy: keep`.
+`helm uninstall` does NOT delete the PVC. You must `kubectl delete pvc {{ include "dependencytrack.fileStorage.localClaimName" . }}` manually if you want to release the storage.
+{{- end }}

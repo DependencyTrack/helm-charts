@@ -1,0 +1,178 @@
+suite: storage
+release:
+  name: dt
+  namespace: dt-test
+set:
+  database.username: dtrack
+  database.password: dtrack
+  secretManagement.database.kek.existingSecret.name: dt-kek
+templates:
+  - file-storage/pvc.yaml
+  - api-server/deployment-web.yaml
+  - api-server/deployment-worker.yaml
+  - secrets/s3.yaml
+tests:
+  - it: local provider with an existingClaim does not render a PVC and mounts the supplied claim
+    set:
+      fileStorage.provider: local
+      fileStorage.local.existingClaim: my-storage
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: file-storage/pvc.yaml
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: file-storage
+            persistentVolumeClaim:
+              claimName: my-storage
+        template: api-server/deployment-web.yaml
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: file-storage
+            mountPath: /data
+        template: api-server/deployment-web.yaml
+
+  - it: s3 provider with plaintext credentials renders the chart-managed Secret and pod env
+    set:
+      fileStorage.provider: s3
+      fileStorage.s3.endpoint: https://s3.example.test
+      fileStorage.s3.region: us-east-1
+      fileStorage.s3.bucket: dtrack
+      fileStorage.s3.credentials.accessKeyId: AKIAEXAMPLE
+      fileStorage.s3.credentials.secretAccessKey: secret
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: file-storage/pvc.yaml
+      - exists:
+          path: data.accessKeyId
+        template: secrets/s3.yaml
+      - exists:
+          path: data.secretAccessKey
+        template: secrets/s3.yaml
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_FILE_STORAGE_PROVIDER
+            value: s3
+        template: api-server/deployment-web.yaml
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_FILE_STORAGE_S3_ACCESS_KEY
+            value: "${file::/etc/dt/secrets/s3/access-key-id}"
+        template: api-server/deployment-web.yaml
+
+  - it: s3 provider with an existing Secret does not render the chart-managed Secret
+    set:
+      fileStorage.provider: s3
+      fileStorage.s3.endpoint: https://s3.example.test
+      fileStorage.s3.region: us-east-1
+      fileStorage.s3.bucket: dtrack
+      fileStorage.s3.credentials.existingSecret.name: dt-s3
+    template: secrets/s3.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: s3 credentials refuse ambiguous existingSecret + plaintext combo
+    set:
+      fileStorage.provider: s3
+      fileStorage.s3.endpoint: https://s3.example.test
+      fileStorage.s3.region: us-east-1
+      fileStorage.s3.bucket: dtrack
+      fileStorage.s3.credentials.existingSecret.name: dt-s3
+      fileStorage.s3.credentials.accessKeyId: AKIAEXAMPLE
+      fileStorage.s3.credentials.secretAccessKey: secret
+    template: secrets/s3.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "fileStorage.s3.credentials.existingSecret.name is set; remove fileStorage.s3.credentials.accessKeyId and secretAccessKey to avoid ambiguity"
+
+  - it: s3 credentials refuse neither-existingSecret-nor-plaintext
+    set:
+      fileStorage.provider: s3
+      fileStorage.s3.endpoint: https://s3.example.test
+      fileStorage.s3.region: us-east-1
+      fileStorage.s3.bucket: dtrack
+    template: secrets/s3.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "fileStorage.s3.credentials.{accessKeyId,secretAccessKey} must be set, or fileStorage.s3.credentials.existingSecret.name must reference an existing Secret"
+
+  - it: local storage refuses web.replicaCount > 1 without ReadWriteMany
+    set:
+      fileStorage.provider: local
+      fileStorage.local.accessModes: [ReadWriteOnce]
+      apiServer.web.replicaCount: 2
+    template: api-server/deployment-web.yaml
+    asserts:
+      - failedTemplate:
+          errorPattern: 'apiServer\.\{web\} scales above one replica, but fileStorage\.provider=local'
+
+  - it: local storage refuses web.autoscaling without ReadWriteMany
+    set:
+      fileStorage.provider: local
+      fileStorage.local.accessModes: [ReadWriteOnce]
+      apiServer.web.autoscaling.enabled: true
+    template: api-server/deployment-web.yaml
+    asserts:
+      - failedTemplate:
+          errorPattern: 'apiServer\.\{web\} scales above one replica'
+
+  - it: local storage refuses a scaled worker without ReadWriteMany in split topology
+    set:
+      fileStorage.provider: local
+      fileStorage.local.accessModes: [ReadWriteOnce]
+      apiServer.topology: split
+      apiServer.worker.replicaCount: 2
+    template: api-server/deployment-worker.yaml
+    asserts:
+      - failedTemplate:
+          errorPattern: 'apiServer\.\{worker\} scales above one replica'
+
+  - it: local storage with ReadWriteMany permits multiple web replicas
+    set:
+      fileStorage.provider: local
+      fileStorage.local.accessModes: [ReadWriteMany]
+      apiServer.web.replicaCount: 3
+    template: api-server/deployment-web.yaml
+    asserts:
+      - hasDocuments:
+          count: 1
+
+  - it: split topology with single replicas per role is allowed on a local RWO PVC
+    set:
+      fileStorage.provider: local
+      fileStorage.local.accessModes: [ReadWriteOnce]
+      apiServer.topology: split
+    template: api-server/deployment-web.yaml
+    asserts:
+      - hasDocuments:
+          count: 1
+
+  - it: an existingClaim opts out of the replica check, since the chart is blind to its access mode
+    set:
+      fileStorage.provider: local
+      fileStorage.local.existingClaim: my-rwx-storage
+      fileStorage.local.accessModes: [ReadWriteOnce]
+      apiServer.web.replicaCount: 3
+    template: api-server/deployment-web.yaml
+    asserts:
+      - hasDocuments:
+          count: 1
+
+  - it: s3 storage permits multiple web replicas
+    set:
+      fileStorage.provider: s3
+      fileStorage.s3.endpoint: https://s3.example.test
+      fileStorage.s3.region: us-east-1
+      fileStorage.s3.bucket: dtrack
+      fileStorage.s3.credentials.existingSecret.name: dt-s3
+      apiServer.web.replicaCount: 3
+    template: api-server/deployment-web.yaml
+    asserts:
+      - hasDocuments:
+          count: 1

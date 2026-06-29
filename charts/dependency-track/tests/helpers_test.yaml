@@ -1,0 +1,72 @@
+suite: helpers
+release:
+  name: dt
+  namespace: dt-test
+set:
+  database.username: dtrack
+  database.password: dtrack
+  secretManagement.database.kek.existingSecret.name: dt-kek
+templates:
+  - api-server/deployment-web.yaml
+tests:
+  - it: fullname is truncated to 45 chars even with a long release name
+    release:
+      name: dt-prod-platform-team-please-truncate
+      namespace: dt-test
+    asserts:
+      - matchRegex:
+          path: metadata.name
+          pattern: '^.{1,63}$'
+      - notMatchRegex:
+          path: metadata.name
+          pattern: '-$'
+
+  - it: api-server image uses sha256 digest syntax when tag is a digest
+    set:
+      apiServer.image.tag: "sha256:abc123def456"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: docker.io/dependencytrack/apiserver@sha256:abc123def456
+
+  - it: api-server image with a 4.x tag is rejected
+    set:
+      apiServer.image.tag: "4.12.0"
+    asserts:
+      - failedTemplate:
+          errorMessage: 'image tag "4.12.0" is not supported by this chart version'
+
+  - it: api-server image with a 4.x sha256 digest is allowed
+    set:
+      apiServer.image.tag: "sha256:4abc"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: docker.io/dependencytrack/apiserver@sha256:4abc
+
+  - it: api-server image registry override beats image.registry
+    set:
+      image.registry: docker.io
+      apiServer.image.registry: ghcr.io
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: '^ghcr\.io/dependencytrack/apiserver:'
+
+  - it: apiServer.podAnnotations stamp the pod template, apiServer.annotations stamp the Deployment
+    set:
+      apiServer.podAnnotations:
+        kubectl.kubernetes.io/restartedAt: "2026-06-07T10:00:00Z"
+      apiServer.annotations:
+        argocd.argoproj.io/sync-wave: "5"
+    asserts:
+      - equal:
+          path: spec.template.metadata.annotations["kubectl.kubernetes.io/restartedAt"]
+          value: "2026-06-07T10:00:00Z"
+      - notExists:
+          path: metadata.annotations["kubectl.kubernetes.io/restartedAt"]
+      - equal:
+          path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+          value: "5"
+      - notExists:
+          path: spec.template.metadata.annotations["argocd.argoproj.io/sync-wave"]

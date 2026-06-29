@@ -1,0 +1,117 @@
+# Quickstart values: bring up Dependency-Track on any conformant Kubernetes
+# cluster with a single `helm install -f values-quickstart.yaml`.
+# Suitable for evaluating the chart, NOT for production!
+#
+# Differences from a real deployment:
+#   * Intentionally constrained resources (e.g. api-server limited to 1GiB memory)
+#     so the setup is feasible for local deployments. More resources are needed for
+#     production workloads.
+#   * Ships an inline Postgres Deployment and Service via `extraObjects`.
+#     No persistence, so pod restart loses all data.
+#   * Pins a fixture KEK Secret with a deterministic, public key.
+#     ANY DB-stored secret encrypted with this key is decryptable by anyone with this file!
+#     For real deployments, provision a real KEK separately and reference it via
+#     `secretManagement.database.kek.existingSecret.name`.
+#   * Defaults to monolith topology, i.e. one api-server Deployment.
+#   * No Ingress / HTTPRoute. Reaching the deployment requires port forwarding
+#     BOTH the frontend and the api-server. The frontend is a static SPA whose browser
+#     calls the api-server directly, so `frontend.apiBaseUrl` points at the
+#     api-server's forwarded address.
+---
+database:
+  jdbcUrl: "jdbc:postgresql://postgres.{{ .Release.Namespace }}.svc.cluster.local:5432/dtrack"
+  username: "dtrack"
+  password: "dtrack"
+
+secretManagement:
+  database:
+    kek:
+      # DO NOT USE IN PRODUCTION. The key is a public fixture, treat it as
+      # compromised. Generate a real one with `openssl rand -base64 32`.
+      value: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+
+fileStorage:
+  provider: local
+  local:
+    size: 2Gi
+    accessModes:
+      - ReadWriteOnce
+
+apiServer:
+  topology: monolith
+  # Hold the api-server JVM until Postgres is reachable so the init tasks
+  # don't spin on "connection refused" errors while the bundled DB is still starting.
+  initContainers:
+    - name: wait-for-postgres
+      image: postgres:14-alpine
+      command:
+        - sh
+        - -c
+        - |
+          until pg_isready -h postgres.{{ .Release.Namespace }}.svc.cluster.local -p 5432; do
+            echo "waiting for postgres"
+            sleep 2
+          done
+  web:
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        memory: 1Gi
+
+frontend:
+  replicaCount: 1
+  apiBaseUrl: "http://localhost:8080"
+
+extraObjects:
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: postgres
+      namespace: "{{ .Release.Namespace }}"
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: "{{ .Release.Name }}"
+          app.kubernetes.io/component: postgres
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/instance: "{{ .Release.Name }}"
+            app.kubernetes.io/component: postgres
+        spec:
+          containers:
+            - name: postgres
+              image: postgres:18-alpine
+              env:
+                - name: POSTGRES_DB
+                  value: dtrack
+                - name: POSTGRES_USER
+                  value: dtrack
+                - name: POSTGRES_PASSWORD
+                  value: dtrack
+              ports:
+                - name: postgres
+                  containerPort: 5432
+                  protocol: TCP
+              readinessProbe:
+                exec:
+                  command: ["pg_isready", "-U", "dtrack"]
+                initialDelaySeconds: 5
+                periodSeconds: 5
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: postgres
+      namespace: "{{ .Release.Namespace }}"
+    spec:
+      type: ClusterIP
+      selector:
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        app.kubernetes.io/component: postgres
+      ports:
+        - port: 5432
+          targetPort: 5432

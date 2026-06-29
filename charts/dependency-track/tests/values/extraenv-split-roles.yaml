@@ -1,0 +1,18 @@
+database:
+  username: dtrack
+  password: dtrack
+secretManagement:
+  database:
+    kek:
+      existingSecret:
+        name: dt-kek
+apiServer:
+  topology: split
+  web:
+    extraEnv:
+      - name: WEB_ONLY
+        value: yes
+  worker:
+    extraEnv:
+      - name: WORKER_ONLY
+        value: yes

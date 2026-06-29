@@ -1,0 +1,26 @@
+{{- if and .Values.frontend.enabled .Values.frontend.pdb.enabled }}
+{{- $min := .Values.frontend.pdb.minAvailable }}
+{{- $max := .Values.frontend.pdb.maxUnavailable }}
+{{- if and (not (kindIs "invalid" $min)) (not (kindIs "invalid" $max)) }}
+{{- fail "frontend.pdb: minAvailable and maxUnavailable are mutually exclusive - set exactly one" }}
+{{- end }}
+{{- if and (kindIs "invalid" $min) (kindIs "invalid" $max) }}
+{{- fail "frontend.pdb.enabled requires either minAvailable or maxUnavailable" }}
+{{- end -}}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "dependencytrack.frontend.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "dependencytrack.componentLabels" (dict "ctx" . "component" "frontend" "role" "") | nindent 4 }}
+spec:
+  {{- if not (kindIs "invalid" $min) }}
+  minAvailable: {{ $min }}
+  {{- end }}
+  {{- if not (kindIs "invalid" $max) }}
+  maxUnavailable: {{ $max }}
+  {{- end }}
+  selector:
+    matchLabels: {{- include "dependencytrack.selectorLabels" (dict "ctx" . "component" "frontend" "role" "") | nindent 6 }}
+{{- end }}

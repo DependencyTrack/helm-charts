@@ -1,0 +1,175 @@
+suite: initializer job
+release:
+  name: dt
+  namespace: dt-test
+set:
+  database.existingSecret.name: dt-db
+  secretManagement.database.kek.existingSecret.name: dt-kek
+tests:
+  - it: disabled by default - no initializer Job is rendered
+    template: api-server/initializer-job.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: enabled - renders a Job as a pre-install/pre-upgrade hook
+    set:
+      apiServer.initializer.enabled: true
+    template: api-server/initializer-job.yaml
+    asserts:
+      - isKind:
+          of: Job
+      - equal:
+          path: metadata.annotations["helm.sh/hook"]
+          value: "pre-install,pre-upgrade"
+      - equal:
+          path: metadata.annotations["helm.sh/hook-weight"]
+          value: "0"
+      - equal:
+          path: metadata.annotations["helm.sh/hook-delete-policy"]
+          value: "before-hook-creation"
+
+  - it: enabled - runs init tasks and exits, with no connection pool
+    set:
+      apiServer.initializer.enabled: true
+    template: api-server/initializer-job.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_INIT_TASKS_ENABLED
+            value: "true"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_INIT_TASKS_EXIT_AFTER_COMPLETION
+            value: "true"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_DATASOURCE_POOL_ENABLED
+            value: "false"
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_CONFIG_PROFILE
+            value: "web"
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_FILE_STORAGE_PROVIDER
+            value: "local"
+
+  - it: enabled - uses the default ServiceAccount and no token
+    set:
+      apiServer.initializer.enabled: true
+    template: api-server/initializer-job.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.serviceAccountName
+      - equal:
+          path: spec.template.spec.automountServiceAccountToken
+          value: false
+
+  - it: enabled - mounts only DB and KEK secrets, no file storage
+    set:
+      apiServer.initializer.enabled: true
+      fileStorage.provider: s3
+      fileStorage.s3.endpoint: http://s3.example
+      fileStorage.s3.region: us-east-1
+      fileStorage.s3.bucket: dtrack
+      fileStorage.s3.credentials.existingSecret.name: dt-s3
+    template: api-server/initializer-job.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.volumes
+          any: true
+          content:
+            name: s3-secret
+      - notContains:
+          path: spec.template.spec.volumes
+          any: true
+          content:
+            name: file-storage
+
+  - it: enabled - Job pods are not part of the api-server metrics family
+    set:
+      apiServer.initializer.enabled: true
+    template: api-server/initializer-job.yaml
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels["app.kubernetes.io/component"]
+          value: initializer
+      - notExists:
+          path: spec.template.metadata.labels["dependencytrack.io/role"]
+
+  - it: enabled - app pods defer init to the Job (web)
+    set:
+      apiServer.initializer.enabled: true
+    template: api-server/deployment-web.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_INIT_TASKS_ENABLED
+            value: "false"
+
+  - it: enabled - app pods defer init to the Job (worker, split)
+    set:
+      apiServer.initializer.enabled: true
+      apiServer.topology: split
+    template: api-server/deployment-worker.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_INIT_TASKS_ENABLED
+            value: "false"
+
+  - it: enabled - does NOT inherit apiServer.initContainers
+    set:
+      apiServer.initializer.enabled: true
+      apiServer.initContainers:
+        - name: wait-for-postgres
+          image: postgres:14-alpine
+    template: api-server/initializer-job.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.initContainers
+
+  - it: enabled - uses its own initContainers, independent of the app's
+    set:
+      apiServer.initializer.enabled: true
+      apiServer.initContainers:
+        - name: wait-for-postgres
+          image: postgres:14-alpine
+        - name: wait-for-seaweedfs
+          image: amazon/aws-cli:latest
+      apiServer.initializer.initContainers:
+        - name: wait-for-postgres
+          image: postgres:14-alpine
+    template: api-server/initializer-job.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.initContainers
+          count: 1
+      - contains:
+          path: spec.template.spec.initContainers
+          content:
+            name: wait-for-postgres
+            image: postgres:14-alpine
+      - notContains:
+          path: spec.template.spec.initContainers
+          any: true
+          content:
+            name: wait-for-seaweedfs
+
+  - it: enabled with plain DB credentials fails fast
+    set:
+      apiServer.initializer.enabled: true
+      database.existingSecret.name: ""
+      database.username: dtrack
+      database.password: dtrack
+    asserts:
+      - failedTemplate:
+          errorMessage: "apiServer.initializer.enabled requires database.existingSecret.name: the pre-install/pre-upgrade hook Job runs before chart-managed Secrets are created, so provision DB credentials separately."

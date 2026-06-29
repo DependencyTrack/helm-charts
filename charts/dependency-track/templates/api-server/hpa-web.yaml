@@ -1,0 +1,39 @@
+{{- if .Values.apiServer.web.autoscaling.enabled -}}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "dependencytrack.apiServer.webFullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "dependencytrack.componentLabels" (dict "ctx" . "component" "api-server" "role" "web") | nindent 4 }}
+  {{- with .Values.apiServer.web.autoscaling.annotations }}
+  annotations: {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "dependencytrack.apiServer.webFullname" . }}
+  minReplicas: {{ .Values.apiServer.web.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.apiServer.web.autoscaling.maxReplicas }}
+  metrics:
+    {{- if not (kindIs "invalid" .Values.apiServer.web.autoscaling.targetCPUUtilizationPercentage) }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.apiServer.web.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if not (kindIs "invalid" .Values.apiServer.web.autoscaling.targetMemoryUtilizationPercentage) }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.apiServer.web.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+  {{- with .Values.apiServer.web.autoscaling.behavior }}
+  behavior: {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

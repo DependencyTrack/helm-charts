@@ -1,55 +1,155 @@
 ---
-common:
-  nameOverride: ""
-  fullnameOverride: ""
-  image:
-    registry: docker.io
-    pullSecrets: []
-  secretKey:
-    # -- Whether the chart should generate a secret key upon deployment.
-    createSecret: false
-    # -- Use the secret key defined in an existing secret.
-    existingSecretName: ""
-  serviceAccount:
-    # -- Whether the chart should generate a serviceAccount
-    create: true
-    annotations: {}
-    # -- Use the name of the name of the release by default, or specify a custom name.
+nameOverride: ""
+fullnameOverride: ""
+image:
+  # -- Default container image registry. Overridable per component.
+  registry: docker.io
+  pullSecrets: []
+
+database:
+  # -- JDBC URL for the PostgreSQL database. Supports templating.
+  jdbcUrl: "jdbc:postgresql://postgresql:5432/dtrack?reWriteBatchedInserts=true"
+  # -- Plain username. Ignored when `existingSecret.name` is set. Not recommended for production.
+  username: ""
+  # -- Plain password. Ignored when `existingSecret.name` is set. Not recommended for production.
+  password: ""
+  # -- Reference to an existing Secret. Credentials are mounted as files under `/etc/dt/secrets/db/`.
+  existingSecret:
+    # -- Name of the existing secret.
     name: ""
-    # -- Whether the serviceAccount should mount the token.
-    automount: false
-  # -- Whether service links should be added to the Pods
-  enableServiceLinks: true
+    # -- Key in the secret that's holding the username.
+    usernameKey: username
+    # -- Key in the secret that's holding the password.
+    passwordKey: password
+
+serviceAccount:
+  # -- Whether to create a service account.
+  create: true
+  # -- Annotations to attach to the created service account.
+  annotations: {}
+  # -- Name of the service account. Defaults to the release fullname when empty.
+  # Provide a custom name and set `create: false` to use a custom service account.
+  name: ""
+
+enableServiceLinks: false
+
+fileStorage:
+  # -- Name of the file storage provider to use.
+  # Supported options are `local` (backed by a PVC) or `s3`.
+  # For multi-replica api-server use `s3`, or configure an RWX-capable `StorageClass`
+  # (e.g. EFS, Azure Files, CephFS) and set `accessModes: [ReadWriteMany]`.
+  # Note that most cloud-default block storage is RWO-only.
+  provider: local
+  local:
+    # -- Name of an existing PVC.
+    # When set, no PVC is created by the chart.
+    existingClaim: ""
+    # -- Storage capacity of the created PVC.
+    # Ignored when `existingClaim` is provided.
+    size: 10Gi
+    # -- Name of the `StorageClass` for the created PVC.
+    # Ignored when `existingClaim` is provided.
+    storageClassName: ""
+    # -- Access modes for the created PVC.
+    # MUST use `ReadWriteMany` in order to support multiple api-server replicas!
+    # Ignored when `existingClaim` is provided.
+    accessModes:
+      - ReadWriteOnce
+    # -- Mount path of the PVC.
+    # Should match the api server's `dt.data.directory` config property,
+    # which defaults to `/data`. If you alter that property, you need to
+    # modify this path accordingly.
+    mountPath: /data
+  s3:
+    # -- S3 endpoint to use.
+    endpoint: ""
+    # -- Region to use.
+    region: ""
+    # -- Name of the S3 bucket.
+    # The bucket must exist, and the application verifies this on startup.
+    # A non-existing bucket will cause application startup to fail.
+    bucket: ""
+    credentials:
+      # -- Reference an existing Secret.
+      # Credentials are mounted as files under `/etc/dt/secrets/s3/`.
+      existingSecret:
+        # -- Name of the existing secret.
+        name: ""
+        # -- Key in the secret that's holding the access key ID.
+        accessKeyIdKey: accessKeyId
+        # -- Key in the secret that's holding the secret access key.
+        secretAccessKeyKey: secretAccessKey
+      # -- Plain access key ID. Ignored when `existingSecret.name` is set. Not recommended for production.
+      accessKeyId: ""
+      # -- Plain secret access key. Ignored when `existingSecret.name` is set. Not recommended for production.
+      secretAccessKey: ""
+
+secretManagement:
+  # -- Name of the secret management provider to use.
+  # Supported options are `database` (encrypted in Postgres, KEK on disk)
+  # and `env` (read-only lookup against DT_SECRET_* env vars).
+  #
+  # With `provider: env` the chart wires nothing beyond `DT_SECRET_MANAGEMENT_PROVIDER`.
+  # Supply each secret yourself as a `DT_SECRET_*` variable via `apiServer.extraEnv`
+  # (or `extraEnvFrom`), e.g. from an externally-managed Secret.
+  provider: database
+  database:
+    # -- The key encryption key (KEK) configuration.
+    # Required when `provider: database`. The chart does not generate the KEK.
+    # Either supply it inline via `value` (the chart creates the Secret), or reference an `existingSecret`.
+    kek:
+      # -- Mode in which the KEK is provided.
+      #
+      # `mode: config` (default): a base64-encoded 32-byte AES key.
+      # Easy to provision (`openssl rand -base64 32`) but does NOT support in-place KEK rotation.
+      #
+      # `mode: keyset`: a Tink AES-GCM JSON keyset. Supports DT's rotation flow,
+      # and is required for long-running production deployments that expect
+      # to rotate the KEK without re-encrypting every DB-stored secret.
+      mode: config
+      # -- Inline KEK value. When set, the chart creates the KEK Secret for you.
+      # Mutually exclusive with `existingSecret.name`.
+      # For `mode: config` generate one with `openssl rand -base64 32`.
+      # For `mode: keyset` paste the Tink AES-GCM JSON keyset.
+      # NOTE: this is stored in plaintext in etcd. For stronger isolation,
+      # leave this empty and use `existingSecret` with external secret tooling.
+      value: ""
+      existingSecret:
+        # -- Name of the existing secret.
+        name: ""
+        # -- Key of the KEK in the existing secret.
+        # Defaults to `kek` in config mode and `kek-keyset.json` in keyset mode.
+        # Override only if your Secret backend uses a different key name.
+        key: ""
 
 apiServer:
-  # -- The type of deployment. Can be either Deployment or StatefulSet.
-  deploymentType: StatefulSet
-  annotations: {}
-  metrics:
-    # -- Enable Prometheus scraping annotations on pods
-    enabled: true
+  # -- The topology to deploy.
+  # Possible choices are `monolith` (single `Deployment`),
+  # or `split` (separate `web` and `worker` `Deployment`s, individually scalable).
+  # In the `monolith` topology, `web` values configure the single `Deployment`.
+  topology: monolith
+
   image:
-    # -- Override common.image.registry for the API server.
+    # -- Override `image.registry` for the API server.
     registry: ""
+    # -- Repository of the `apiserver` image.
     repository: dependencytrack/apiserver
-    # -- Can be a tag name such as "latest", or an image digest
-    # prefixed with "sha256:". Defaults to AppVersion of the chart.
+    # -- Tag name or `sha256:<digest>`. Defaults to the chart's `appVersion`.
     tag: ""
     pullPolicy: IfNotPresent
+
   command: []
   args: []
-  resources:
-    requests:
-      cpu: "2"
-      memory: 5Gi
-    limits:
-      memory: 5Gi
-  # -- Security context of the Pod.
-  # Aids in preventing permission issues with persistent volumes.
-  # For OpenShift, explicitly set this to null.
+
+  # -- Annotations on the Deployment(s).
+  annotations: {}
+
+  # -- `fsGroup: 1000` matches the DT container UID so chart-mounted PVCs are writable.
+  # On OpenShift (and any cluster that assigns UIDs/GIDs via SCC or PSA), set
+  # `podSecurityContext: ~` so the namespace picks the effective fsGroup.
   podSecurityContext:
     fsGroup: 1000
-  # -- Security context of the Container.
+  # -- Container security context. Defaults target the restricted Pod Security Standard.
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -59,98 +159,171 @@ apiServer:
     readOnlyRootFilesystem: true
     seccompProfile:
       type: RuntimeDefault
-  persistentVolume:
+
+  service:
+    type: ClusterIP
+    nodePort: ~
+    port: 8080
+    # -- Management port (health + metrics) exposed only on the pod.
+    managementPort: 9000
+    annotations: {}
+
+  serviceMonitor:
+    # -- Whether to create a Prometheus Operator ServiceMonitor scraping the management port.
     enabled: false
-    className: ""
-    size: 5Gi
-  extraEnv:
-    []
-    # - name: "ALPINE_DATABASE_PASSWORD"
-    #   valueFrom:
-    #     secretKeyRef:
-    #       key: db-password
-    #       name: dependencytrack-secrets
-    # - name: ALPINE_DATABASE_MODE
-    #   value: "external"
-  extraEnvFrom: []
-  # -- Additional containers to deploy. Supports templating.
-  extraContainers: []
-  extraPodLabels: {}
-  tolerations: []
+    # -- Namespace for the ServiceMonitor. Set it where your Prometheus selects ServiceMonitors.
+    namespace: monitoring
+    scrapeInterval: 60s
+    scrapeTimeout: 30s
+    labels: {}
+
   probes:
+    # -- Startup probe timing. The budget covers schema migrations on first
+    # install and upgrades: 60 * 30s = 30 min, enough for any realistic
+    # single-step DT migration. For multi-hour upgrade migrations, bump this and
+    # pass `helm upgrade --timeout 30m`, since Helm's 5-minute default fires first.
     startup:
-      path: "/health/started"
-      failureThreshold: 30
+      failureThreshold: 60
       initialDelaySeconds: 10
-      periodSeconds: 10
+      periodSeconds: 30
       successThreshold: 1
       timeoutSeconds: 5
     liveness:
-      path: "/health/live"
       failureThreshold: 3
       initialDelaySeconds: 10
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
     readiness:
-      path: "/health/ready"
       failureThreshold: 3
       initialDelaySeconds: 10
-      periodSeconds: 15
+      periodSeconds: 5
       successThreshold: 1
       timeoutSeconds: 5
-  additionalVolumeMounts: []
-  #   - name: foo
-  #     mountPath: /bar
-  additionalVolumes:
-    []
-    # - name: foo
-    #   emptyDir: {}
-  service:
-    type: ClusterIP
-    nodePort: ~
-    annotations: {}
-  serviceMonitor:
+
+  deployment:
+    # -- `maxSurge: 0` avoids cluster overcommit on multi-CPU pods.
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
+
+  # -- Initializer Job settings. Runs DT's init tasks (migrations,
+  # default-object seeding, partition maintenance) as a pre-install/pre-upgrade
+  # Helm hook instead of in every starting api-server pod. Requires
+  # `database.existingSecret`. See the Initializer section in the README.
+  initializer:
     enabled: false
-    namespace: monitoring
-    scrapeInterval: 60s
-    scrapeTimeout: 30s
-    labels: {}
-  # -- Additional init containers to deploy. Supports templating.
+    backoffLimit: 3
+    resources:
+      requests:
+        cpu: 150m
+        memory: 256Mi
+      limits:
+        memory: 256Mi
+    podAnnotations: {}
+    initContainers: []
+
+  # -- Extra env applied to web, worker and initializer. Don't set chart-managed
+  # variables (DT_DATASOURCE_*, DT_CONFIG_PROFILE, DT_METRICS_*, DT_MANAGEMENT_*,
+  # DT_FILE_STORAGE_*, DT_SECRET_MANAGEMENT_*, DT_INIT_TASKS_*).
+  extraEnv: []
+  extraEnvFrom: []
+  extraContainers: []
   initContainers: []
-  # Use the following to fix permissions on the /data volume,
-  # IF USING podSecurityContext IS NOT POSSIBLE (i.e. for OpenShift).
-  #
-  # initContainers:
-  # - name: fix-permissions
-  #   image: docker.io/library/busybox
-  #   command:
-  #   - sh
-  #   - -c
-  #   - |
-  #     chown -R 1000:1000 /data
-  #   volumeMounts:
-  #   - name: data
-  #     mountPath: /data
-  #   securityContext:
-  #     capabilities:
-  #       add:
-  #       - CHOWN
-  #     runAsNonRoot: false
-  #     runAsUser: 0
-  #     seccompProfile:
-  #       type: RuntimeDefault
-  nodeSelector: {}
+  additionalVolumes: []
+  additionalVolumeMounts: []
+
+  podAnnotations: {}
+  podLabels: {}
+
+  # -- Web role (API + UI). In `monolith` topology this configures the single Deployment.
+  web:
+    # -- Number of web replicas. Default 1. Bump only after switching
+    # `fileStorage.provider` to `s3` (or wiring an RWX-capable StorageClass).
+    # A multi-replica `local` PVC will not bind on cloud-default block storage.
+    replicaCount: 1
+    autoscaling:
+      enabled: false
+      annotations: {}
+      minReplicas: 1
+      maxReplicas: 5
+      targetCPUUtilizationPercentage: 70
+      targetMemoryUtilizationPercentage: ~
+      behavior: {}
+    pdb:
+      enabled: false
+      minAvailable: 1
+      maxUnavailable: ~
+    resources:
+      requests:
+        cpu: "500m"
+        memory: 2Gi
+      limits:
+        memory: 2Gi
+    # -- 120s allows in-flight BOM uploads to finish.
+    terminationGracePeriodSeconds: 120
+    revisionHistoryLimit: 5
+    priorityClassName: ""
+    extraEnv: []
+    extraEnvFrom: []
+    tolerations: []
+    nodeSelector: {}
+    affinity: {}
+    # -- Pod topology spread constraints. Recommended for production:
+    # - maxSkew: 1
+    #   topologyKey: kubernetes.io/hostname
+    #   whenUnsatisfiable: ScheduleAnyway
+    #   labelSelector:
+    #     matchLabels:
+    #       app.kubernetes.io/component: api-server
+    topologySpreadConstraints: []
+
+  # -- Worker role. Only rendered when `topology: split`.
+  worker:
+    replicaCount: 1
+    # -- CPU/memory-driven HPA. For queue-backlog scaling, wire your own
+    # ScaledObject/HPA via `extraObjects` against the `dt_dex_engine_*` metrics.
+    autoscaling:
+      enabled: false
+      annotations: {}
+      minReplicas: 1
+      maxReplicas: 5
+      targetCPUUtilizationPercentage: 70
+      targetMemoryUtilizationPercentage: ~
+      behavior: {}
+    pdb:
+      enabled: false
+      minAvailable: 1
+      maxUnavailable: ~
+    resources:
+      requests:
+        cpu: "500m"
+        memory: 2Gi
+      limits:
+        memory: 2Gi
+    # -- 300s leaves room for multi-minute background tasks (BOM ingest,
+    # vuln analysis, repo meta sync) to drain.
+    terminationGracePeriodSeconds: 300
+    revisionHistoryLimit: 5
+    priorityClassName: ""
+    extraEnv: []
+    extraEnvFrom: []
+    tolerations: []
+    nodeSelector: {}
+    affinity: {}
+    topologySpreadConstraints: []
 
 frontend:
+  # -- Whether to deploy the frontend UI. When disabled, the api-server serves the API only.
+  enabled: true
   replicaCount: 1
   annotations: {}
   image:
-    # -- Override common.image.registry for the frontend.
     registry: ""
     repository: dependencytrack/frontend
-    # -- Can be a tag name such as "latest", or an image digest
-    # prefixed with "sha256:". Defaults to AppVersion of the chart.
+    # -- Tag name or `sha256:<digest>`. Defaults to the chart's appVersion.
     tag: ""
     pullPolicy: IfNotPresent
   command: []
@@ -161,28 +334,35 @@ frontend:
       memory: 64Mi
     limits:
       memory: 128Mi
-  # -- Security context of the Pod.
-  # Aids in preventing permission issues with persistent volumes.
-  # For OpenShift, explicitly set this to null.
+  # -- On OpenShift (and any cluster that assigns UIDs/GIDs via SCC or PSA), set
+  # `podSecurityContext: ~` so the namespace picks the effective fsGroup.
   podSecurityContext:
     fsGroup: 1000
-  # -- Security context of the Container.
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
     runAsNonRoot: true
-    # RO filesystems are not supported by the frontend
+    # -- Whether the frontend root filesystem is read-only. Kept false because the
+    # frontend renders runtime config at startup and needs a writable rootfs.
     readOnlyRootFilesystem: false
     seccompProfile:
       type: RuntimeDefault
   extraEnv: []
   extraEnvFrom: []
-  # -- Additional containers to deploy. Supports templating.
   extraContainers: []
-  extraPodLabels: {}
+  initContainers: []
+  additionalVolumes: []
+  additionalVolumeMounts: []
+  podAnnotations: {}
+  podLabels: {}
   tolerations: []
+  nodeSelector: {}
+  affinity: {}
+  topologySpreadConstraints: []
+  priorityClassName: ""
+  revisionHistoryLimit: 5
   probes:
     liveness:
       failureThreshold: 3
@@ -196,24 +376,36 @@ frontend:
       periodSeconds: 15
       successThreshold: 1
       timeoutSeconds: 5
-  additionalVolumeMounts:
-    []
-    # - name: foo
-    #   mountPath: /bar
-  additionalVolumes:
-    []
-    # - name: foo
-    #   emptyDir: {}
   service:
     type: ClusterIP
     nodePort: ~
+    port: 8080
     annotations: {}
+  # -- Base URL the UI calls for the API. Leave empty when the chart's
+  # Ingress/HTTPRoute serves UI + API from the same host (relative URLs).
+  # Set to the external API base URL when the UI is served from a different host.
+  # The UI is a static SPA whose browser calls the api-server directly, so this address
+  # must be reachable from the browser, not just from within the cluster.
   apiBaseUrl: ""
-  # -- Additional init containers to deploy. Supports templating.
-  initContainers: []
-  nodeSelector: {}
+  deployment:
+    strategy:
+      type: RollingUpdate
+  autoscaling:
+    enabled: false
+    annotations: {}
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: ~
+    behavior: {}
+  pdb:
+    enabled: false
+    maxUnavailable: 1
+    minAvailable: ~
 
 ingress:
+  # -- Routes `/api` to api-server and `/` to frontend (or to api-server if
+  # `frontend.enabled: false`).
   enabled: false
   annotations: {}
   labels: {}
@@ -225,6 +417,7 @@ ingress:
   #      - example.com
 
 httpRoute:
+  # -- Whether to create a Gateway API HTTPRoute. Requires `parentRefs`.
   enabled: false
   annotations: {}
   labels: {}
@@ -235,15 +428,9 @@ httpRoute:
   #    namespace: default
   #    sectionName: https
 
-# -- Create extra manifests via values.
-extraObjects:
-  []
+# -- Extra manifests via values.
+extraObjects: []
   # - apiVersion: "kubernetes-client.io/v1"
   #   kind: ExternalSecret
   #   metadata:
-  #     name: tempo-secrets
-  #   spec:
-  #     backendType: aws
-  #     data:
-  #       - key: secret-access-key
-  #         name: awssm-secret
+  #     name: dt-secrets

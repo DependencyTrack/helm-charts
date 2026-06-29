@@ -2,6 +2,9 @@
 {{- $registry := .image.registry | default .fallbackRegistry }}
 {{- $repo := .image.repository | default .fallbackRepo }}
 {{- $tag := .image.tag | default .fallbackTag }}
+{{- if and (ne (substr 0 7 $tag) "sha256:") (regexMatch "^4\\..*" $tag) }}
+{{- fail (printf "image tag %q is not supported by this chart version" $tag) }}
+{{- end }}
 {{- if eq (substr 0 7 $tag) "sha256:" }}
 {{- printf "%s/%s@%s" $registry $repo $tag }}
 {{- else }}

@@ -29,6 +29,21 @@ tests:
           path: spec.template.spec.containers[0].image
           value: docker.io/dependencytrack/apiserver@sha256:abc123def456
 
+  - it: api-server image with a 4.x tag is rejected
+    set:
+      apiServer.image.tag: "4.12.0"
+    asserts:
+      - failedTemplate:
+          errorMessage: 'image tag "4.12.0" is not supported by this chart version'
+
+  - it: api-server image with a 4.x sha256 digest is allowed
+    set:
+      apiServer.image.tag: "sha256:4abc"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: docker.io/dependencytrack/apiserver@sha256:4abc
+
   - it: api-server image registry override beats image.registry
     set:
       image.registry: docker.io

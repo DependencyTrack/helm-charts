@@ -2,6 +2,26 @@ apiVersion: v1
 entries:
   dependency-track:
   - apiVersion: v2
+    appVersion: 5.0.2
+    created: "2026-06-29T13:20:37.068200403Z"
+    description: Dependency-Track is an intelligent Component Analysis platform that
+      allows organizations to identify and reduce risk in the software supply chain.
+    digest: a81c086e6711411f815cb4a9a23dc35bcd21026151ee97fb8728a9417d2e7365
+    home: https://github.com/DependencyTrack/dependency-track
+    icon: https://avatars.githubusercontent.com/u/40258585
+    kubeVersion: '>=1.27.0-0'
+    maintainers:
+    - email: nscuro@protonmail.com
+      name: nscuro
+      url: https://github.com/nscuro
+    name: dependency-track
+    sources:
+    - https://github.com/DependencyTrack/helm-charts/tree/main/charts/dependency-track
+    type: application
+    urls:
+    - https://github.com/DependencyTrack/helm-charts/releases/download/dependency-track-2.0.0-rc.1/dependency-track-2.0.0-rc.1.tgz
+    version: 2.0.0-rc.1
+  - apiVersion: v2
     appVersion: 4.14.2
     created: "2026-06-03T19:23:10.440911505Z"
     description: Dependency-Track is an intelligent Component Analysis platform that
@@ -1077,6 +1097,37 @@ entries:
   hyades:
   - apiVersion: v2
     appVersion: 5.0.2
+    created: "2026-06-29T13:20:37.24992653Z"
+    description: 'Hyades is the preview chart for Dependency-Track v5.  NOTE: This
+      chart will be discontinued when version 2 of the `dependency-track` chart is
+      released. New users should wait for v2, or be ready to migrate when v2 is released.'
+    digest: a0206145ed41ae740b363fa7ea9ac2b13daf50b91611b248a202ddbe00b366de
+    home: https://dependencytrack.github.io/docs/next
+    icon: https://avatars.githubusercontent.com/u/40258585
+    maintainers:
+    - email: nscuro@protonmail.com
+      name: nscuro
+      url: https://github.com/nscuro
+    - email: meha.bhargava@citi.com
+      name: mehab
+      url: https://github.com/mehab
+    - email: sahiba.mittal@citi.com
+      name: sahibamittal
+      url: https://github.com/sahibamittal
+    - email: vithika.shukla@citi.com
+      name: VithikaS
+      url: https://github.com/VithikaS
+    name: hyades
+    sources:
+    - https://github.com/DependencyTrack/helm-charts/tree/main/charts/hyades
+    - https://github.com/DependencyTrack/hyades-apiserver
+    - https://github.com/DependencyTrack/hyades-frontend
+    type: application
+    urls:
+    - https://github.com/DependencyTrack/helm-charts/releases/download/hyades-0.23.0/hyades-0.23.0.tgz
+    version: 0.23.0
+  - apiVersion: v2
+    appVersion: 5.0.2
     created: "2026-06-18T13:58:14.945212162Z"
     description: 'Hyades is the preview chart for Dependency-Track v5.  NOTE: This
       chart will be discontinued when version 2 of the `dependency-track` chart is
@@ -1739,4 +1790,4 @@ entries:
     urls:
     - https://github.com/DependencyTrack/helm-charts/releases/download/hyades-0.2.0/hyades-0.2.0.tgz
     version: 0.2.0
-generated: "2026-06-18T13:58:14.945544134Z"
+generated: "2026-06-29T13:20:37.250510992Z"

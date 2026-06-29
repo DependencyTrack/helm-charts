@@ -30,9 +30,11 @@ helm install dt oci://ghcr.io/dependencytrack/charts/dependency-track \
   --create-namespace -n dependency-track \
   -f https://raw.githubusercontent.com/DependencyTrack/helm-charts/main/charts/dependency-track/values-quickstart.yaml
 
-kubectl -n dependency-track port-forward svc/dt-dependency-track-frontend 8080:8080
-# Open http://localhost:8080 - default credentials: admin / admin
+kubectl -n dependency-track port-forward svc/dt-dependency-track-api-server 8080:8080 &
+kubectl -n dependency-track port-forward svc/dt-dependency-track-frontend 8081:8080 &
 ```
+
+Open http://localhost:8081 and login with the default credentials (`admin` / `admin`).
 
 > [!WARNING]
 > The quickstart values bundle an inline Postgres and a fixture KEK Secret.

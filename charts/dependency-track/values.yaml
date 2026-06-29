@@ -382,8 +382,10 @@ frontend:
     port: 8080
     annotations: {}
   # -- Base URL the UI calls for the API. Leave empty when the chart's
-  # Ingress/HTTPRoute serves UI + API from the same host (relative URLs). Set to
-  # the external API base URL when the UI is served from a different host.
+  # Ingress/HTTPRoute serves UI + API from the same host (relative URLs).
+  # Set to the external API base URL when the UI is served from a different host.
+  # The UI is a static SPA whose browser calls the api-server directly, so this address
+  # must be reachable from the browser, not just from within the cluster.
   apiBaseUrl: ""
   deployment:
     strategy:

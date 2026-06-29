@@ -12,9 +12,12 @@ Access the application:
   HTTPRoute hostnames: {{ join ", " .Values.httpRoute.hostnames }}
 {{- else }}
   {{- if .Values.frontend.enabled }}
-  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "dependencytrack.frontend.fullname" . }} 8080:{{ .Values.frontend.service.port }}
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "dependencytrack.frontend.fullname" . }} 8081:{{ .Values.frontend.service.port }}
   {{- end }}
-  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "dependencytrack.apiServer.webFullname" . }} 8081:{{ .Values.apiServer.service.port }}
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "dependencytrack.apiServer.webFullname" . }} 8080:{{ .Values.apiServer.service.port }}
+
+  The browser calls the api-server directly, so it must be reachable from the
+  browser and `frontend.apiBaseUrl` must point at that address (e.g. http://localhost:8080).
 {{- end }}
 
 The default admin credentials on first launch are `admin` / `admin`.

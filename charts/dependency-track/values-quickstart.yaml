@@ -13,7 +13,10 @@
 #     For real deployments, provision a real KEK separately and reference it via
 #     `secretManagement.database.kek.existingSecret.name`.
 #   * Defaults to monolith topology, i.e. one api-server Deployment.
-#   * No Ingress / HTTPRoute. Reaching the deployment requires port forwarding.
+#   * No Ingress / HTTPRoute. Reaching the deployment requires port forwarding
+#     BOTH the frontend and the api-server. The frontend is a static SPA whose browser
+#     calls the api-server directly, so `frontend.apiBaseUrl` points at the
+#     api-server's forwarded address.
 ---
 database:
   jdbcUrl: "jdbc:postgresql://postgres.{{ .Release.Namespace }}.svc.cluster.local:5432/dtrack"
@@ -60,6 +63,7 @@ apiServer:
 
 frontend:
   replicaCount: 1
+  apiBaseUrl: "http://localhost:8080"
 
 extraObjects:
   - apiVersion: apps/v1

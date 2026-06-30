@@ -4,6 +4,10 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "global": {
+      "type": "object",
+      "description": "Builtin Helm value; required so the chart validates when used as a subchart (ref helm/helm#10392)"
+    },
     "nameOverride": {
       "type": "string"
     },

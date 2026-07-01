@@ -31,7 +31,7 @@ v2, or be ready to migrate when v2 is released.
 |-----|------|---------|-------------|
 | apiServer.additionalVolumeMounts | list | `[]` |  |
 | apiServer.additionalVolumes | list | `[]` |  |
-| apiServer.annotations | object | `{}` |  |
+| apiServer.annotations | object | `{}` | Additional annotations to add to the API-server Deployment resource. |
 | apiServer.args | list | `[]` |  |
 | apiServer.autoScaling | object | `{"annotations":{},"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":70,"targetMemoryUtilizationPercentage":70}` | Enables horizontal pod autoscaling |
 | apiServer.command | list | `[]` |  |
@@ -40,18 +40,20 @@ v2, or be ready to migrate when v2 is released.
 | apiServer.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | apiServer.extraEnv | list | `[]` |  |
 | apiServer.extraEnvFrom | list | `[]` |  |
-| apiServer.extraLabels | object | `{}` |  |
 | apiServer.image.pullPolicy | string | `"Always"` |  |
 | apiServer.image.registry | string | `""` | Override common.image.registry for the API server. |
 | apiServer.image.repository | string | `"dependencytrack/apiserver"` |  |
 | apiServer.image.tag | string | `""` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | apiServer.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
+| apiServer.labels | object | `{}` | Additional labels to add to the API-server Deployment resource. |
 | apiServer.nodeSelector | object | `{}` |  |
 | apiServer.persistentVolume.accessModes | list | `[]` | Access modes for the PVC. When empty, access modes are determined automatically: - ReadWriteMany when autoScaling is enabled or replicaCount > 1 - ReadWriteOnce otherwise |
 | apiServer.persistentVolume.className | string | `""` | Storage class name. If empty, the default storage class will be used. |
 | apiServer.persistentVolume.enabled | bool | `false` | Whether to create a PersistentVolumeClaim for the API server. |
 | apiServer.persistentVolume.existingClaim | string | `""` | Use an existing PVC instead of creating a new one. When set, the PVC will not be created by the chart. |
 | apiServer.persistentVolume.size | string | `"5Gi"` | Size of the PVC. |
+| apiServer.podAnnotations | object | `{}` | Additional annotations to add to the API-server pods. |
+| apiServer.podLabels | object | `{}` | Additional labels to add to the API-server pods. |
 | apiServer.probes.liveness.failureThreshold | int | `3` |  |
 | apiServer.probes.liveness.initialDelaySeconds | int | `10` |  |
 | apiServer.probes.liveness.periodSeconds | int | `15` |  |
@@ -97,7 +99,7 @@ v2, or be ready to migrate when v2 is released.
 | extraObjects | list | `[]` |  |
 | frontend.additionalVolumeMounts | list | `[]` |  |
 | frontend.additionalVolumes | list | `[]` |  |
-| frontend.annotations | object | `{}` |  |
+| frontend.annotations | object | `{}` | Additional annotations to add to the frontend Deployment resource. |
 | frontend.apiBaseUrl | string | `""` |  |
 | frontend.args | list | `[]` |  |
 | frontend.autoScaling | object | `{"annotations":{},"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":70,"targetMemoryUtilizationPercentage":70}` | Enables horizontal pod autoscaling |
@@ -107,13 +109,15 @@ v2, or be ready to migrate when v2 is released.
 | frontend.extraContainers | list | `[]` | Additional containers to deploy. Supports templating. |
 | frontend.extraEnv | list | `[]` |  |
 | frontend.extraEnvFrom | list | `[]` |  |
-| frontend.extraLabels | object | `{}` |  |
 | frontend.image.pullPolicy | string | `"Always"` |  |
 | frontend.image.registry | string | `""` | Override common.image.registry for the API frontend. |
 | frontend.image.repository | string | `"dependencytrack/frontend"` |  |
 | frontend.image.tag | string | `""` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
 | frontend.initContainers | list | `[]` | Additional init containers to deploy. Supports templating. |
+| frontend.labels | object | `{}` | Additional labels to add to the frontend Deployment resource. |
 | frontend.nodeSelector | object | `{}` |  |
+| frontend.podAnnotations | object | `{}` | Additional annotations to add to the frontend pods. |
+| frontend.podLabels | object | `{}` | Additional labels to add to the frontend pods. |
 | frontend.probes.liveness.failureThreshold | int | `3` |  |
 | frontend.probes.liveness.initialDelaySeconds | int | `5` |  |
 | frontend.probes.liveness.periodSeconds | int | `15` |  |
@@ -144,7 +148,7 @@ v2, or be ready to migrate when v2 is released.
 | ingress.hostname | string | `"example.com"` |  |
 | ingress.ingressClassName | string | `""` |  |
 | ingress.tls | list | `[]` |  |
-| initializer.annotations | object | `{}` |  |
+| initializer.annotations | object | `{}` | Additional annotations to add to the initializer Job resource. |
 | initializer.args | list | `[]` |  |
 | initializer.command | list | `[]` |  |
 | initializer.enabled | bool | `false` | Whether to enable the initializer Job. When enabled, an init container will be added to all deployments that require database access. The init container will wait for the initializer Job to complete. Requires the service account token to be mounted. |
@@ -154,8 +158,11 @@ v2, or be ready to migrate when v2 is released.
 | initializer.image.registry | string | `""` | Override common.image.registry for the API server. |
 | initializer.image.repository | string | `"dependencytrack/apiserver"` |  |
 | initializer.image.tag | string | `""` | Can be a tag name such as "latest", or an image digest prefixed with "sha256:". |
+| initializer.labels | object | `{}` | Additional labels to add to the initializer Job resource. |
 | initializer.noHelmHook | bool | `false` | Whether to NOT deploy the initializer Job as `post-install` and `post-upgrade` Helm hook. Deploying as Helm hook can create deadlock situations when `helm install` and `helm upgrade` are executed with `--wait` flag. See <https://github.com/helm/helm/issues/10555>. Note that without hooks, `helm upgrade` may fail due to Job fields being immutable. |
 | initializer.nodeSelector | object | `{}` |  |
+| initializer.podAnnotations | object | `{}` | Additional annotations to add to the initializer pods. |
+| initializer.podLabels | object | `{}` | Additional labels to add to the initializer pods. |
 | initializer.resources.limits.memory | string | `"256Mi"` |  |
 | initializer.resources.requests.cpu | string | `"150m"` |  |
 | initializer.resources.requests.memory | string | `"256Mi"` |  |
@@ -167,3 +174,5 @@ v2, or be ready to migrate when v2 is released.
 | initializer.waiter.image.repository | string | `"bitnami/kubectl"` |  |
 | initializer.waiter.image.tag | string | `"latest"` |  |
 
+----------------------------------------------
+Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)

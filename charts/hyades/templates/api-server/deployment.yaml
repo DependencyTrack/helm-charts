@@ -5,7 +5,15 @@ kind: Deployment
 metadata:
   name: {{ include "hyades.apiServerFullname" . }}
   namespace: {{ .Release.Namespace }}
-  labels: {{- include "hyades.apiServerLabels" . | nindent 4 }}
+  {{- with .Values.apiServer.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "hyades.apiServerLabels" . | nindent 4 }}
+    {{- with .Values.apiServer.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   {{- if (not .Values.apiServer.autoScaling.enabled) }}
   replicas: {{ .Values.apiServer.replicaCount }}
@@ -16,15 +24,16 @@ spec:
     matchLabels: {{- include "hyades.apiServerSelectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels: {{ include "hyades.apiServerSelectorLabels" . | nindent 8 }}
-      {{- if .Values.apiServer.extraLabels }}
-      {{- toYaml .Values.apiServer.extraLabels | nindent 8 }}
-      {{- end }}
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: /metrics
-        {{- with .Values.apiServer.annotations }}
+        {{- with .Values.apiServer.podAnnotations }}
         {{ toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "hyades.apiServerSelectorLabels" . | nindent 8 }}
+        {{- with .Values.apiServer.podLabels }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
       {{- with .Values.common.image.pullSecrets }}

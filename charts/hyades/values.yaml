@@ -34,7 +34,14 @@ apiServer:
     # -- The deployment strategy to use.
     strategy:
       type: RollingUpdate
+  # -- Additional labels to add to the API-server Deployment resource.
+  labels: {}
+  # -- Additional annotations to add to the API-server Deployment resource.
   annotations: {}
+  # -- Additional labels to add to the API-server pods.
+  podLabels: {}
+  # -- Additional annotations to add to the API-server pods.
+  podAnnotations: {}
   image: &apiServerImage
     # -- Override common.image.registry for the API server.
     registry: ""
@@ -63,7 +70,6 @@ apiServer:
       type: RuntimeDefault
   extraEnv: []
   extraEnvFrom: []
-  extraLabels: {}
   probes:
     startup:
       failureThreshold: 30
@@ -154,7 +160,14 @@ initializer:
   # and `helm upgrade` are executed with `--wait` flag. See <https://github.com/helm/helm/issues/10555>.
   # Note that without hooks, `helm upgrade` may fail due to Job fields being immutable.
   noHelmHook: false
+  # -- Additional labels to add to the initializer Job resource.
+  labels: {}
+  # -- Additional annotations to add to the initializer Job resource.
   annotations: {}
+  # -- Additional labels to add to the initializer pods.
+  podLabels: {}
+  # -- Additional annotations to add to the initializer pods.
+  podAnnotations: {}
   image: *apiServerImage
   command: []
   args: []
@@ -197,7 +210,14 @@ frontend:
     # -- The deployment strategy to use.
     strategy:
       type: RollingUpdate
+  # -- Additional labels to add to the frontend Deployment resource.
+  labels: {}
+  # -- Additional annotations to add to the frontend Deployment resource.
   annotations: {}
+  # -- Additional labels to add to the frontend pods.
+  podLabels: {}
+  # -- Additional annotations to add to the frontend pods.
+  podAnnotations: {}
   image:
     # -- Override common.image.registry for the API frontend.
     registry: ""
@@ -227,7 +247,6 @@ frontend:
       type: RuntimeDefault
   extraEnv: []
   extraEnvFrom: []
-  extraLabels: {}
   probes:
     liveness:
       failureThreshold: 3

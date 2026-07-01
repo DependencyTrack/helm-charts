@@ -5,18 +5,35 @@ kind: Job
 metadata:
   name: {{ include "hyades.initializerFullname" . }}
   namespace: {{ .Release.Namespace }}
-  labels: {{- include "hyades.initializerLabels" . | nindent 4 }}
-  {{- if not .Values.initializer.noHelmHook }}
+  {{- if or (not .Values.initializer.noHelmHook) .Values.initializer.annotations }}
   annotations:
+    {{- if not .Values.initializer.noHelmHook }}
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
+    {{- end }}
+    {{- with .Values.initializer.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- end }}
+  {{- if or (include "hyades.initializerLabels" . | trim) .Values.initializer.labels }}
+  labels:
+    {{- include "hyades.initializerLabels" . | nindent 4 }}
+    {{- with .Values.initializer.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
 spec:
   template:
     metadata:
-      labels: {{- include "hyades.initializerSelectorLabels" . | nindent 8 }}
-      {{- with .Values.initializer.annotations }}
+      {{- with .Values.initializer.podAnnotations }}
       annotations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if or (include "hyades.initializerSelectorLabels" . | trim) .Values.initializer.podLabels }}
+      labels:
+        {{- include "hyades.initializerSelectorLabels" . | nindent 8 }}
+        {{- with .Values.initializer.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
     spec:
       restartPolicy: Never

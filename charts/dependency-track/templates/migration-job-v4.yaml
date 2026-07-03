@@ -23,6 +23,8 @@ spec:
         - name: bootstrap
           image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
           imagePullPolicy: IfNotPresent
+          resources:
+            {{- toYaml .resources | nindent 12 }}
           env:
             - name: TARGET_URL
               value: {{ tpl .targetDatabase.jdbcUrl $ | quote }}
@@ -47,6 +49,8 @@ spec:
         - name: verify
           image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
           imagePullPolicy: IfNotPresent
+          resources:
+            {{- toYaml .resources | nindent 12 }}
           env:
             - name: TARGET_URL
               value: {{ tpl .targetDatabase.jdbcUrl $ | quote }}
@@ -71,6 +75,8 @@ spec:
         - name: dry-run
           image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
           imagePullPolicy: IfNotPresent
+          resources:
+            {{- toYaml .resources | nindent 12 }}
           env:
             - name: TARGET_URL
               value: {{ tpl .targetDatabase.jdbcUrl $ | quote }}
@@ -117,6 +123,8 @@ spec:
         - name: migrate
           image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
           imagePullPolicy: IfNotPresent
+          resources:
+            {{- toYaml .resources | nindent 12 }}
           env:
             - name: TARGET_URL
               value: {{ tpl .targetDatabase.jdbcUrl $ | quote }}

@@ -32,7 +32,8 @@ Run `pg_dump` against the Dependency-Track database and store the dump somewhere
 
 ### 3. Migrate the database to Dependency-Track 5
 
-Follow the [Migrating from v4][migrate-v4] guide against your database.
+Follow the [Migrating from v4][migrate-v4] guide against your database manually or use the [MigrationJob][migration-job-ref] feature of the previous chart's major version **before** updating to this chart.
+
 The database must be on a v5-compatible baseline before you install the new chart.
 Chart 2.0 then runs any remaining [init tasks][init-tasks-ref] (database migrations,
 default-object seeding, partition maintenance) on first startup, either in the api-server
@@ -348,3 +349,4 @@ Then verify as in [step 8 of the 1.x guide](#8-verify).
 [properties-ref]: https://dependencytrack.github.io/docs/next/reference/configuration/properties/
 [secret-mgmt-ref]: https://dependencytrack.github.io/docs/next/guides/administration/configuring-secret-management/#database
 [tink-keyset]: https://developers.google.com/tink/design/keysets
+[migration-job-ref]: https://github.com/DependencyTrack/helm-charts/pull/380

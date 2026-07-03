@@ -22,34 +22,33 @@ common:
   enableServiceLinks: true
 
 migration:
-  v4:
-    # -- Whether to enable the v4 migration job
-    enabled: false
-    image:
-      registry: ghcr.io
-      repository: dependencytrack/v4-migrator
-      tag: "5-snapshot"
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-      limits:
-        cpu: 1
-        memory: 256Mi
-    sourceDatabase:
-      # -- Source database URL
-      jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-postgres:5432/owasp-dt"
-      existingSecret:
-        name: "{{ .Release.Name }}-database-secret"
-        usernameKey: username
-        passwordKey: password
-    targetDatabase:
-      # -- Target database URL
-      jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-postgres-v5:5432/owasp-dt"
-      existingSecret:
-        name: "{{ .Release.Name }}-database-secret"
-        usernameKey: username
-        passwordKey: password
+  # -- Whether to enable the migration job
+  enabled: false
+  image:
+    registry: ghcr.io
+    repository: dependencytrack/v4-migrator
+    tag: "5-snapshot"
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 1
+      memory: 256Mi
+  sourceDatabase:
+    # -- Source database URL
+    jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-postgres:5432/owasp-dt"
+    existingSecret:
+      name: "{{ .Release.Name }}-database-secret"
+      usernameKey: username
+      passwordKey: password
+  targetDatabase:
+    # -- Target database URL
+    jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-postgres-v5:5432/owasp-dt"
+    existingSecret:
+      name: "{{ .Release.Name }}-database-secret"
+      usernameKey: username
+      passwordKey: password
 
 apiServer:
   # -- The type of deployment. Can be either Deployment or StatefulSet.

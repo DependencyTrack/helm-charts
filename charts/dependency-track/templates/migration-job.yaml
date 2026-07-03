@@ -1,12 +1,12 @@
-{{- with .Values.migration.v4 }}
+{{- with .Values.migration }}
 {{- if .enabled }}
 {{- $suffix := randAlphaNum 6 | lower }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ $.Release.Name }}-v4-migrator-{{ $suffix }}
+  name: {{ $.Release.Name }}-migration-{{ $suffix }}
   labels:
-    app.kubernetes.io/name: {{ $.Release.Name }}-v4-migrator
+    app.kubernetes.io/name: {{ $.Release.Name }}-migration
     app.kubernetes.io/component: migration
 spec:
   backoffLimit: 0
@@ -15,7 +15,7 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ $.Release.Name }}-v4-migrator
+        app.kubernetes.io/name: {{ $.Release.Name }}-migration
         app.kubernetes.io/component: migration
     spec:
       restartPolicy: Never

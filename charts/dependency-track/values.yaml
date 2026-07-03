@@ -21,6 +21,26 @@ common:
   # -- Whether service links should be added to the Pods
   enableServiceLinks: true
 
+migration:
+  v4:
+    enabled: false
+    image:
+      registry: ghcr.io
+      repository: dependencytrack/v4-migrator
+      tag: "5-snapshot"
+    sourceDatabase:
+      jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-postgres:5432/owasp-dt"
+      existingSecret:
+        name: "{{ .Release.Name }}-database-secret"
+        usernameKey: username
+        passwordKey: password
+    targetDatabase:
+      jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-postgres-v5:5432/owasp-dt"
+      existingSecret:
+        name: "{{ .Release.Name }}-database-secret"
+        usernameKey: username
+        passwordKey: password
+
 apiServer:
   # -- The type of deployment. Can be either Deployment or StatefulSet.
   deploymentType: StatefulSet

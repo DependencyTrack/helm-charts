@@ -1,0 +1,162 @@
+{{- with .Values.migration.v4 }}
+{{- if .enabled }}
+{{- $suffix := randAlphaNum 6 | lower }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $.Release.Name }}-v4-migrator-{{ $suffix }}
+  labels:
+    app.kubernetes.io/name: {{ $.Release.Name }}-v4-migrator
+    app.kubernetes.io/component: migration
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 604800
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ $.Release.Name }}-v4-migrator
+        app.kubernetes.io/component: migration
+    spec:
+      restartPolicy: Never
+      initContainers:
+        - name: bootstrap
+          image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TARGET_URL
+              value: {{ tpl .targetDatabase.jdbcUrl $ | quote }}
+            - name: TARGET_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .targetDatabase.existingSecret.name $ | quote }}
+                  key: {{ .targetDatabase.existingSecret.usernameKey | quote }}
+            - name: TARGET_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .targetDatabase.existingSecret.name $ | quote }}
+                  key: {{ .targetDatabase.existingSecret.passwordKey | quote }}
+          args:
+            - bootstrap
+            - --target-url
+            - $(TARGET_URL)
+            - --target-user
+            - $(TARGET_USER)
+            - --target-pass
+            - $(TARGET_PASS)
+        - name: verify
+          image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TARGET_URL
+              value: {{ tpl .targetDatabase.jdbcUrl $ | quote }}
+            - name: TARGET_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .targetDatabase.existingSecret.name $ | quote }}
+                  key: {{ .targetDatabase.existingSecret.usernameKey | quote }}
+            - name: TARGET_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .targetDatabase.existingSecret.name $ | quote }}
+                  key: {{ .targetDatabase.existingSecret.passwordKey | quote }}
+          args:
+            - verify
+            - --target-url
+            - $(TARGET_URL)
+            - --target-user
+            - $(TARGET_USER)
+            - --target-pass
+            - $(TARGET_PASS)
+        - name: dry-run
+          image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TARGET_URL
+              value: {{ tpl .targetDatabase.jdbcUrl $ | quote }}
+            - name: TARGET_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .targetDatabase.existingSecret.name $ | quote }}
+                  key: {{ .targetDatabase.existingSecret.usernameKey | quote }}
+            - name: TARGET_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .targetDatabase.existingSecret.name $ | quote }}
+                  key: {{ .targetDatabase.existingSecret.passwordKey | quote }}
+            - name: SOURCE_URL
+              value: {{ tpl .sourceDatabase.jdbcUrl $ | quote }}
+            - name: SOURCE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .sourceDatabase.existingSecret.name $ | quote }}
+                  key: {{ .sourceDatabase.existingSecret.usernameKey | quote }}
+            - name: SOURCE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .sourceDatabase.existingSecret.name $ | quote }}
+                  key: {{ .sourceDatabase.existingSecret.passwordKey | quote }}
+          args:
+            - run
+            - --target-url
+            - $(TARGET_URL)
+            - --target-user
+            - $(TARGET_USER)
+            - --target-pass
+            - $(TARGET_PASS)
+            - --source-url
+            - $(SOURCE_URL)
+            - --source-user
+            - $(SOURCE_USER)
+            - --source-pass
+            - $(SOURCE_PASS)
+            - --metrics-retention-days
+            - "90"
+            - --dry-run
+      containers:
+        - name: migrate
+          image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TARGET_URL
+              value: {{ tpl .targetDatabase.jdbcUrl $ | quote }}
+            - name: TARGET_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .targetDatabase.existingSecret.name $ | quote }}
+                  key: {{ .targetDatabase.existingSecret.usernameKey | quote }}
+            - name: TARGET_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .targetDatabase.existingSecret.name $ | quote }}
+                  key: {{ .targetDatabase.existingSecret.passwordKey | quote }}
+            - name: SOURCE_URL
+              value: {{ tpl .sourceDatabase.jdbcUrl $ | quote }}
+            - name: SOURCE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .sourceDatabase.existingSecret.name $ | quote }}
+                  key: {{ .sourceDatabase.existingSecret.usernameKey | quote }}
+            - name: SOURCE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .sourceDatabase.existingSecret.name $ | quote }}
+                  key: {{ .sourceDatabase.existingSecret.passwordKey | quote }}
+          args:
+            - run
+            - --target-url
+            - $(TARGET_URL)
+            - --target-user
+            - $(TARGET_USER)
+            - --target-pass
+            - $(TARGET_PASS)
+            - --source-url
+            - $(SOURCE_URL)
+            - --source-user
+            - $(SOURCE_USER)
+            - --source-pass
+            - $(SOURCE_PASS)
+            - --metrics-retention-days
+            - "90"
+{{- end }}
+{{- end }}

@@ -10,8 +10,8 @@ metadata:
     app.kubernetes.io/component: migration
 spec:
   backoffLimit: 0
-  activeDeadlineSeconds: 604800
-  ttlSecondsAfterFinished: 86400
+  activeDeadlineSeconds: 604800 # a week
+  ttlSecondsAfterFinished: 86400 # a day
   template:
     metadata:
       labels:
@@ -22,7 +22,7 @@ spec:
       initContainers:
         - name: bootstrap
           image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .image.pullPolicy }}
           resources:
             {{- toYaml .resources | nindent 12 }}
           env:
@@ -48,7 +48,7 @@ spec:
             - $(TARGET_PASS)
         - name: verify
           image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .image.pullPolicy }}
           resources:
             {{- toYaml .resources | nindent 12 }}
           env:
@@ -74,7 +74,7 @@ spec:
             - $(TARGET_PASS)
         - name: dry-run
           image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .image.pullPolicy }}
           resources:
             {{- toYaml .resources | nindent 12 }}
           env:
@@ -122,7 +122,7 @@ spec:
       containers:
         - name: migrate
           image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .image.pullPolicy }}
           resources:
             {{- toYaml .resources | nindent 12 }}
           env:

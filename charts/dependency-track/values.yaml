@@ -28,6 +28,7 @@ migration:
     registry: ghcr.io
     repository: dependencytrack/v4-migrator
     tag: "5-snapshot"
+    pullPolicy: IfNotPresent
   resources:
     requests:
       cpu: 100m

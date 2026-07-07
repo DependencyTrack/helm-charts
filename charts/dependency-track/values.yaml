@@ -21,9 +21,47 @@ common:
   # -- Whether service links should be added to the Pods
   enableServiceLinks: true
 
+migration:
+  # -- Whether to enable the migration job (see [MIGRATION.md](MIGRATION.md))
+  enabled: false
+  image:
+    registry: ghcr.io
+    repository: dependencytrack/v4-migrator
+    tag: "5-snapshot"
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 1
+      memory: 256Mi
+  sourceDatabase:
+    # -- Source database URL
+    jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-postgres:5432/owasp-dt"
+    existingSecret:
+      # -- Name of the existing secret
+      name: "{{ .Release.Name }}-database-secret"
+      # -- Key in the secret that's holding the username for source database
+      usernameKey: username
+      # -- Key in the secret that's holding the password for source database
+      passwordKey: password
+  targetDatabase:
+    # -- Target database URL
+    jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-postgres-v5:5432/owasp-dt"
+    existingSecret:
+      # -- Name of the existing secret
+      name: "{{ .Release.Name }}-database-secret"
+      # -- Key in the secret that's holding the username for target database
+      usernameKey: username
+      # -- Key in the secret that's holding the password for target database
+      passwordKey: password
+
 apiServer:
   # -- The type of deployment. Can be either Deployment or StatefulSet.
   deploymentType: StatefulSet
+  # -- The number of replicas to deploy
+  replicaCount: 1
   annotations: {}
   metrics:
     # -- Enable Prometheus scraping annotations on pods

@@ -7,7 +7,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels: {{- include "dependencytrack.apiServerLabels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.apiServer.replicaCount }}
   selector:
     matchLabels: {{- include "dependencytrack.apiServerSelectorLabels" . | nindent 6 }}
   template:

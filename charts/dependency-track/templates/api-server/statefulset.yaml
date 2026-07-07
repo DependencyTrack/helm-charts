@@ -8,7 +8,7 @@ metadata:
   labels: {{- include "dependencytrack.apiServerLabels" . | nindent 4 }}
 spec:
   serviceName: {{ include "dependencytrack.apiServerFullname" . }}
-  replicas: 1
+  replicas: {{ .Values.apiServer.replicaCount }}
   selector:
     matchLabels: {{- include "dependencytrack.apiServerSelectorLabels" . | nindent 6 }}
   template:

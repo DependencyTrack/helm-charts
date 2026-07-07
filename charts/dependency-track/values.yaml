@@ -40,15 +40,21 @@ migration:
     # -- Source database URL
     jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-postgres:5432/owasp-dt"
     existingSecret:
+      # -- Name of the existing secret
       name: "{{ .Release.Name }}-database-secret"
+      # -- Key in the secret that's holding the username for source database
       usernameKey: username
+      # -- Key in the secret that's holding the password for source database
       passwordKey: password
   targetDatabase:
     # -- Target database URL
     jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-postgres-v5:5432/owasp-dt"
     existingSecret:
+      # -- Name of the existing secret
       name: "{{ .Release.Name }}-database-secret"
+      # -- Key in the secret that's holding the username for target database
       usernameKey: username
+      # -- Key in the secret that's holding the password for target database
       passwordKey: password
 
 apiServer:

@@ -22,7 +22,7 @@ common:
   enableServiceLinks: true
 
 migration:
-  # -- Whether to enable the migration job
+  # -- Whether to enable the migration job (see [MIGRATION.md](MIGRATION.md))
   enabled: false
   image:
     registry: ghcr.io
@@ -54,6 +54,8 @@ migration:
 apiServer:
   # -- The type of deployment. Can be either Deployment or StatefulSet.
   deploymentType: StatefulSet
+  # -- The number of replicas to deploy
+  replicaCount: 1
   annotations: {}
   metrics:
     # -- Enable Prometheus scraping annotations on pods

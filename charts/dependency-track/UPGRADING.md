@@ -349,4 +349,4 @@ Then verify as in [step 8 of the 1.x guide](#8-verify).
 [properties-ref]: https://dependencytrack.github.io/docs/next/reference/configuration/properties/
 [secret-mgmt-ref]: https://dependencytrack.github.io/docs/next/guides/administration/configuring-secret-management/#database
 [tink-keyset]: https://developers.google.com/tink/design/keysets
-[migration-job-ref]: https://github.com/DependencyTrack/helm-charts/pull/380
+[migration-job-ref]: https://github.com/DependencyTrack/helm-charts/blob/dependency-track-1.x/charts/dependency-track/MIGRATION.md

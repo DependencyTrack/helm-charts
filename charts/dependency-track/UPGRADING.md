@@ -69,8 +69,9 @@ Chart v2 does not generate these. Create them with your usual secret tooling
 - **S3 credentials Secret.** Only needed when `fileStorage.provider: s3`. Keys `accessKeyId` and
   `secretAccessKey` by default (override via
   `fileStorage.s3.credentials.existingSecret.accessKeyIdKey` and `secretAccessKeyKey`), mounted under
-  `/etc/dt/secrets/s3/`. Skip it on EKS, GKE, or AKS if you attach a workload identity to the chart's
-  ServiceAccount instead. See the [file storage reference][file-storage-ref].
+  `/etc/dt/secrets/s3/`. On AWS you can skip the Secret entirely: set
+  `fileStorage.s3.authentication.type: auto` and attach an IAM role to the chart's ServiceAccount
+  via IRSA. See the [file storage reference][file-storage-ref].
 
 The v4 `secret.key` (`common.secretKey.*`) is **gone**. Dependency-Track 5 keeps secrets in Postgres,
 encrypted with the KEK. There is nothing to copy over from the old file.

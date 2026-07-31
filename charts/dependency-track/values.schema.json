@@ -121,6 +121,18 @@
             "bucket": {
               "type": "string"
             },
+            "authentication": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "enum": [
+                    "static",
+                    "auto"
+                  ]
+                }
+              }
+            },
             "credentials": {
               "type": "object",
               "additionalProperties": false,

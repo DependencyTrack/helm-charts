@@ -69,9 +69,31 @@ fileStorage:
     # The bucket must exist, and the application verifies this on startup.
     # A non-existing bucket will cause application startup to fail.
     bucket: ""
+    authentication:
+      # -- How the api server authenticates against S3.
+      #
+      # `static` (default): use the credentials from `credentials` below.
+      # This is the only option for S3-compatible object stores such as MinIO or Ceph.
+      #
+      # `auto`: the chart injects no credentials at all, and the api server resolves
+      # them from its environment. Supported sources are `AWS_*` environment variables,
+      # the shared AWS config file, EKS IRSA, ECS task roles, and EC2 instance profiles.
+      # Startup fails if none of them yield credentials. For IRSA, annotate the
+      # api server's ServiceAccount with the role ARN via `serviceAccount.annotations`.
+      # AWS-only, and requires an api server that supports ambient credential
+      # resolution (Dependency-Track >= 5.1.0).
+      #
+      # NOTE: EKS Pod Identity is NOT supported. The api server's S3 client
+      # (minio-java) does not read `AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE` and
+      # rejects the non-loopback Pod Identity Agent endpoint. Use IRSA instead.
+      #
+      # Setting `auto` alongside any `credentials` value is rejected, so a
+      # credential that would be silently ignored fails the render instead.
+      type: static
     credentials:
       # -- Reference an existing Secret.
       # Credentials are mounted as files under `/etc/dt/secrets/s3/`.
+      # Ignored when `authentication.type` is `auto`.
       existingSecret:
         # -- Name of the existing secret.
         name: ""

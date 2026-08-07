@@ -128,7 +128,7 @@
                 "type": {
                   "enum": [
                     "static",
-                    "auto"
+                    "aws"
                   ]
                 }
               }

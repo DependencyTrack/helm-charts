@@ -64,6 +64,12 @@ tests:
             name: DT_FILE_STORAGE_S3_ACCESS_KEY
             value: "${file::/etc/dt/secrets/s3/access-key-id}"
         template: api-server/deployment-web.yaml
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_FILE_STORAGE_S3_CREDENTIALS_SOURCE
+            value: "aws"
+        template: api-server/deployment-web.yaml
 
   - it: s3 provider with an existing Secret does not render the chart-managed Secret
     set:
@@ -102,13 +108,13 @@ tests:
       - failedTemplate:
           errorMessage: "fileStorage.s3.credentials.{accessKeyId,secretAccessKey} must be set, or fileStorage.s3.credentials.existingSecret.name must reference an existing Secret"
 
-  - it: s3 provider with authentication.type=auto renders no Secret, volume, mount, or credential env
+  - it: s3 provider with authentication.type=aws renders no Secret, volume, mount, or credential env
     set:
       fileStorage.provider: s3
       fileStorage.s3.endpoint: https://s3.us-east-1.amazonaws.com
       fileStorage.s3.region: us-east-1
       fileStorage.s3.bucket: dtrack
-      fileStorage.s3.authentication.type: auto
+      fileStorage.s3.authentication.type: aws
     asserts:
       - hasDocuments:
           count: 0
@@ -121,6 +127,12 @@ tests:
           content:
             name: DT_FILE_STORAGE_PROVIDER
             value: s3
+        template: api-server/deployment-web.yaml
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_FILE_STORAGE_S3_CREDENTIALS_SOURCE
+            value: "aws"
         template: api-server/deployment-web.yaml
       - contains:
           path: spec.template.spec.containers[0].env
@@ -154,16 +166,21 @@ tests:
             readOnly: true
         template: api-server/deployment-web.yaml
 
-  - it: s3 authentication.type=auto applies to the worker role too
+  - it: s3 authentication.type=aws applies to the worker role too
     set:
       fileStorage.provider: s3
       fileStorage.s3.endpoint: https://s3.us-east-1.amazonaws.com
       fileStorage.s3.region: us-east-1
       fileStorage.s3.bucket: dtrack
-      fileStorage.s3.authentication.type: auto
+      fileStorage.s3.authentication.type: aws
       apiServer.topology: split
     template: api-server/deployment-worker.yaml
     asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DT_FILE_STORAGE_S3_CREDENTIALS_SOURCE
+            value: "aws"
       - notContains:
           path: spec.template.spec.containers[0].env
           content:
@@ -175,40 +192,40 @@ tests:
             name: s3-secret
           any: true
 
-  - it: s3 authentication.type=auto refuses plaintext credentials that would be ignored
+  - it: s3 authentication.type=aws refuses plaintext credentials that would be ignored
     set:
       fileStorage.provider: s3
       fileStorage.s3.endpoint: https://s3.us-east-1.amazonaws.com
       fileStorage.s3.region: us-east-1
       fileStorage.s3.bucket: dtrack
-      fileStorage.s3.authentication.type: auto
+      fileStorage.s3.authentication.type: aws
       fileStorage.s3.credentials.accessKeyId: AKIAEXAMPLE
       fileStorage.s3.credentials.secretAccessKey: secret
     template: api-server/deployment-web.yaml
     asserts:
       - failedTemplate:
-          errorPattern: 'fileStorage\.s3\.credentials\.\{accessKeyId,secretAccessKey\} set, but fileStorage\.s3\.authentication\.type=auto'
+          errorPattern: 'fileStorage\.s3\.credentials\.\{accessKeyId,secretAccessKey\} set, but fileStorage\.s3\.authentication\.type=aws'
 
-  - it: s3 authentication.type=auto refuses an existingSecret that would be ignored
+  - it: s3 authentication.type=aws refuses an existingSecret that would be ignored
     set:
       fileStorage.provider: s3
       fileStorage.s3.endpoint: https://s3.us-east-1.amazonaws.com
       fileStorage.s3.region: us-east-1
       fileStorage.s3.bucket: dtrack
-      fileStorage.s3.authentication.type: auto
+      fileStorage.s3.authentication.type: aws
       fileStorage.s3.credentials.existingSecret.name: dt-s3
     template: api-server/deployment-web.yaml
     asserts:
       - failedTemplate:
-          errorPattern: 'fileStorage\.s3\.credentials\.\{existingSecret\.name\} set, but fileStorage\.s3\.authentication\.type=auto'
+          errorPattern: 'fileStorage\.s3\.credentials\.\{existingSecret\.name\} set, but fileStorage\.s3\.authentication\.type=aws'
 
-  - it: s3 authentication.type=auto permits multiple web replicas
+  - it: s3 authentication.type=aws permits multiple web replicas
     set:
       fileStorage.provider: s3
       fileStorage.s3.endpoint: https://s3.us-east-1.amazonaws.com
       fileStorage.s3.region: us-east-1
       fileStorage.s3.bucket: dtrack
-      fileStorage.s3.authentication.type: auto
+      fileStorage.s3.authentication.type: aws
       apiServer.web.replicaCount: 3
     template: api-server/deployment-web.yaml
     asserts:

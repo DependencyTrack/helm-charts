@@ -59,20 +59,20 @@
 {{- end }}
 
 {{/*
-  With authentication.type=auto the chart injects no credentials at all.
+  With authentication.type=aws the chart injects no credentials at all.
   Fail loudly when credentials are configured anyway, so an operator who expects
   them to be in effect never silently gets ambient credential resolution instead.
 */}}
 {{- define "dependencytrack.validate.s3Authentication" }}
 {{- if eq .Values.fileStorage.provider "s3" }}
-{{- if eq .Values.fileStorage.s3.authentication.type "auto" }}
+{{- if eq .Values.fileStorage.s3.authentication.type "aws" }}
 {{- $creds := .Values.fileStorage.s3.credentials }}
 {{- $touched := list }}
 {{- if $creds.existingSecret.name }}{{- $touched = append $touched "existingSecret.name" }}{{- end }}
 {{- if $creds.accessKeyId }}{{- $touched = append $touched "accessKeyId" }}{{- end }}
 {{- if $creds.secretAccessKey }}{{- $touched = append $touched "secretAccessKey" }}{{- end }}
 {{- if $touched }}
-{{- fail (printf "fileStorage.s3.credentials.{%s} set, but fileStorage.s3.authentication.type=auto injects no credentials and resolves them from the pod's environment instead. Remove these values, or set fileStorage.s3.authentication.type=static to use them." (join "," $touched)) }}
+{{- fail (printf "fileStorage.s3.credentials.{%s} set, but fileStorage.s3.authentication.type=aws injects no credentials and resolves them from the pod's environment instead. Remove these values, or set fileStorage.s3.authentication.type=static to use them." (join "," $touched)) }}
 {{- end }}
 {{- end }}
 {{- end }}
@@ -150,6 +150,9 @@
   value: "${file::{{ include "dependencytrack.secretMountDir.s3" $ctx }}/access-key-id}"
 - name: DT_FILE_STORAGE_S3_SECRET_KEY
   value: "${file::{{ include "dependencytrack.secretMountDir.s3" $ctx }}/secret-access-key}"
+{{- else }}
+- name: DT_FILE_STORAGE_S3_CREDENTIALS_SOURCE
+  value: "aws"
 {{- end }}
 {{- end }}
 {{- if $v.apiServer.initializer.enabled }}

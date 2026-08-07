@@ -77,7 +77,7 @@ kek
 
 {{/*
   Whether the api server is expected to receive static S3 credentials from the chart.
-  False for `authentication.type: auto`, where credentials are resolved from the
+  False for `authentication.type: aws`, where credentials are resolved from the
   pod's environment (IRSA, ECS task role, EC2 instance profile, ...) instead.
 */}}
 {{- define "dependencytrack.s3.staticAuth" }}

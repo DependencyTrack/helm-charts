@@ -36,6 +36,16 @@ migration:
     limits:
       cpu: 1
       memory: 256Mi
+  # -- Security context of the Containers.
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    seccompProfile:
+      type: RuntimeDefault
   sourceDatabase:
     # -- Source database URL
     jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-postgres:5432/owasp-dt"

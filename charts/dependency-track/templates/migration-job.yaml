@@ -26,8 +26,12 @@ spec:
         - name: bootstrap
           image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
           imagePullPolicy: {{ .image.pullPolicy }}
+          securityContext: {{ toYaml .securityContext | nindent 12 }}
           resources:
             {{- toYaml .resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
           env:
             - name: TARGET_URL
               value: {{ tpl .targetDatabase.jdbcUrl $ | quote }}
@@ -52,8 +56,12 @@ spec:
         - name: verify
           image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
           imagePullPolicy: {{ .image.pullPolicy }}
+          securityContext: {{ toYaml .securityContext | nindent 12 }}
           resources:
             {{- toYaml .resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
           env:
             - name: TARGET_URL
               value: {{ tpl .targetDatabase.jdbcUrl $ | quote }}
@@ -78,8 +86,12 @@ spec:
         - name: dry-run
           image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
           imagePullPolicy: {{ .image.pullPolicy }}
+          securityContext: {{ toYaml .securityContext | nindent 12 }}
           resources:
             {{- toYaml .resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
           env:
             - name: TARGET_URL
               value: {{ tpl .targetDatabase.jdbcUrl $ | quote }}
@@ -126,8 +138,12 @@ spec:
         - name: migrate
           image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"
           imagePullPolicy: {{ .image.pullPolicy }}
+          securityContext: {{ toYaml .securityContext | nindent 12 }}
           resources:
             {{- toYaml .resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
           env:
             - name: TARGET_URL
               value: {{ tpl .targetDatabase.jdbcUrl $ | quote }}
@@ -169,5 +185,8 @@ spec:
             - $(SOURCE_PASS)
             - --metrics-retention-days
             - "90"
+      volumes:
+        - name: tmp
+          emptyDir: {}
 {{- end }}
 {{- end }}

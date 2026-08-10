@@ -19,6 +19,9 @@ spec:
         app.kubernetes.io/component: migration
     spec:
       restartPolicy: Never
+      {{- with $.Values.common.image.pullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 6 }}
+      {{- end }}
       initContainers:
         - name: bootstrap
           image: "{{ .image.registry }}/{{ .image.repository }}:{{ .image.tag }}"

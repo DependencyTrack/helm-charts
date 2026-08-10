@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - main
+    - dependency-track-1.x
     paths:
     - .github/workflows/**
     - charts/**
@@ -35,7 +36,7 @@ jobs:
       uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # tag=v8.1.1
       with:
         add-paths: "charts/*/README.md"
-        branch: update-helm-docs
+        branch: update-helm-docs-${{ github.ref_name }}
         body: "Updates Helm chart documentation using [helm-docs](https://github.com/norwoodj/helm-docs)"
         commit-message: Update helm docs
         delete-branch: true

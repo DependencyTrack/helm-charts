@@ -27,7 +27,7 @@ migration:
   image:
     registry: ghcr.io
     repository: dependencytrack/v4-migrator
-    tag: "5-snapshot"
+    tag: "5.0.4"
     pullPolicy: IfNotPresent
   resources:
     requests:

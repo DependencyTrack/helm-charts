@@ -25,6 +25,7 @@ migration:
     jdbcUrl: # Required: Configure the target database URL
     existingSecret: # Required: Configure the target database credentials
   image: # Optionally adjust the migrator image here
+    tag: "5.0.4" # Set this to the target v5 version that you plan to deploy
  
 apiServer:
   replicaCount: 0  # Recommended

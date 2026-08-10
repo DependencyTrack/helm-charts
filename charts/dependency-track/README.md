@@ -1,6 +1,6 @@
 # dependency-track
 
-![Version: 1.3.0](https://img.shields.io/badge/Version-1.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.14.3](https://img.shields.io/badge/AppVersion-4.14.3-informational?style=flat-square)
+![Version: 1.4.0](https://img.shields.io/badge/Version-1.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.14.3](https://img.shields.io/badge/AppVersion-4.14.3-informational?style=flat-square)
 
 Dependency-Track is an intelligent Component Analysis platform
 that allows organizations to identify and reduce risk in the software supply chain.
@@ -142,6 +142,7 @@ that allows organizations to identify and reduce risk in the software supply cha
 | migration.resources.limits.memory | string | `"256Mi"` |  |
 | migration.resources.requests.cpu | string | `"100m"` |  |
 | migration.resources.requests.memory | string | `"128Mi"` |  |
+| migration.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security context of the Containers. |
 | migration.sourceDatabase.existingSecret.name | string | `"{{ .Release.Name }}-database-secret"` | Name of the existing secret |
 | migration.sourceDatabase.existingSecret.passwordKey | string | `"password"` | Key in the secret that's holding the password for source database |
 | migration.sourceDatabase.existingSecret.usernameKey | string | `"username"` | Key in the secret that's holding the username for source database |

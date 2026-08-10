@@ -4,12 +4,14 @@ on:
   push:
     branches:
     - main
+    - dependency-track-1.x
     paths:
     - .github/workflows/**
     - charts/**
   pull_request:
     branches:
     - main
+    - dependency-track-1.x
     paths:
     - .github/workflows/**
     - charts/**
@@ -38,7 +40,7 @@ jobs:
     - name: Set up Chart Testing
       uses: helm/chart-testing-action@6ec842c01de15ebb84c8627d2744a0c2f2755c9f # tag=v2.8.0
     - name: Lint Chart
-      run: ct lint --config ct.yaml
+      run: ct lint --config ct.yaml --target-branch "${{ github.base_ref || github.ref_name }}"
     - name: Scan for Misconfiguration
       uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # tag=v0.36.0
       with:
@@ -71,4 +73,4 @@ jobs:
     - name: Create Kind Cluster
       uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc # tag=v1.14.0
     - name: Test
-      run: ct install --config ct.yaml --debug
+      run: ct install --config ct.yaml --debug --target-branch "${{ github.base_ref || github.ref_name }}"

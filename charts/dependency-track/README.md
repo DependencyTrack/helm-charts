@@ -30,7 +30,9 @@ Kubernetes: `>=1.27.0-0`
 Evaluate the chart on any conformant Kubernetes cluster, no Postgres or KEK Secret needed:
 
 ```sh
-helm install dt oci://ghcr.io/dependencytrack/charts/dependency-track \
+helm repo add dependencytrack https://dependencytrack.github.io/helm-charts
+
+helm install dt dependencytrack/dependency-track \
   --create-namespace -n dependency-track \
   -f https://raw.githubusercontent.com/DependencyTrack/helm-charts/main/charts/dependency-track/values-quickstart.yaml
 

@@ -4,14 +4,20 @@
 
 ## Usage
 
-Add Dependency-Track's repository:
+Charts are published as OCI artifacts to GitHub Container Registry.
+This is the preferred way to consume them:
 
 ```shell
-helm repo add dependency-track https://dependencytrack.github.io/helm-charts
+helm install dt oci://ghcr.io/dependencytrack/helm-charts/dependency-track
 ```
 
-View available charts:
+> [!NOTE]
+> OCI is only available for `dependency-track` chart version 2.1.0 and later.
+
+Alternatively, the charts remain available from the classic Helm repository:
 
 ```shell
-helm search repo dependency-track
+helm repo add dependencytrack https://dependencytrack.github.io/helm-charts
+
+helm search repo dependencytrack
 ```

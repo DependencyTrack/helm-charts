@@ -180,7 +180,7 @@ kubectl delete secret <release>-dependency-track-secret-key -n <namespace> --ign
 kubectl delete pvc data-<release>-dependency-track-api-server-0 -n <namespace> --ignore-not-found
 
 # 4. Install v2 with your new values file.
-helm install <release> oci://ghcr.io/dependencytrack/charts/dependency-track \
+helm install <release> oci://ghcr.io/dependencytrack/helm-charts/dependency-track \
   -n <namespace> \
   -f values-v2.yaml
 ```
@@ -335,7 +335,7 @@ kubectl get pvc -n <namespace> -l app.kubernetes.io/instance=<release>
 kubectl delete pvc <old-claim> -n <namespace> --ignore-not-found
 
 # 4. Install the new chart with your translated values file, pointing at the same database.
-helm install <release> oci://ghcr.io/dependencytrack/charts/dependency-track \
+helm install <release> oci://ghcr.io/dependencytrack/helm-charts/dependency-track \
   -n <namespace> \
   -f values-v2.yaml
 ```

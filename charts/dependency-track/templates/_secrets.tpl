@@ -75,8 +75,13 @@ kek
 {{- .Values.fileStorage.s3.credentials.existingSecret.secretAccessKeyKey | default "secretAccessKey" }}
 {{- end }}
 
-{{- define "dependencytrack.s3.chartManaged" }}
-{{- if and (eq .Values.fileStorage.provider "s3") (not .Values.fileStorage.s3.credentials.existingSecret.name) -}}true{{- end }}
+{{/*
+  Whether the api server is expected to receive static S3 credentials from the chart.
+  False for `credentials.source: aws`, where credentials are resolved from the
+  pod's environment (IRSA, ECS task role, EC2 instance profile, ...) instead.
+*/}}
+{{- define "dependencytrack.s3.staticCredentials" }}
+{{- if and (eq .Values.fileStorage.provider "s3") (eq .Values.fileStorage.s3.credentials.source "static") -}}true{{- end }}
 {{- end }}
 
 {{- define "dependencytrack.secretMountDir.db" -}}/etc/dt/secrets/db{{- end }}
@@ -114,7 +119,7 @@ kek
       - key: {{ include "dependencytrack.secretManagement.database.kekKey" $ctx }}
         path: {{ include "dependencytrack.secretManagement.database.kekKey" $ctx }}
 {{- end }}
-{{- if and .includeFileStorage (eq $ctx.Values.fileStorage.provider "s3") }}
+{{- if and .includeFileStorage (eq (include "dependencytrack.s3.staticCredentials" $ctx) "true") }}
 - name: s3-secret
   secret:
     secretName: {{ include "dependencytrack.s3.secretName" $ctx }}
@@ -137,7 +142,7 @@ kek
   mountPath: {{ include "dependencytrack.secretMountDir.kek" $ctx }}
   readOnly: true
 {{- end }}
-{{- if and .includeFileStorage (eq $ctx.Values.fileStorage.provider "s3") }}
+{{- if and .includeFileStorage (eq (include "dependencytrack.s3.staticCredentials" $ctx) "true") }}
 - name: s3-secret
   mountPath: {{ include "dependencytrack.secretMountDir.s3" $ctx }}
   readOnly: true

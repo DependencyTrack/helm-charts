@@ -1,0 +1,30 @@
+suite: notes
+release:
+  name: dt
+  namespace: dt-test
+set:
+  database.username: dtrack
+  database.password: dtrack
+  secretManagement.database.kek.existingSecret.name: dt-kek
+templates:
+  - NOTES.txt
+tests:
+  - it: install does not print the upgrade warning
+    asserts:
+      - notMatchRegexRaw:
+          pattern: BEFORE YOU UPGRADE
+
+  - it: upgrade links the release notes of the target app version
+    release:
+      name: dt
+      namespace: dt-test
+      upgrade: true
+    chart:
+      appVersion: 9.9.9
+    asserts:
+      - matchRegexRaw:
+          pattern: BEFORE YOU UPGRADE
+      - matchRegexRaw:
+          pattern: https://dependencytrack\.github\.io/docs/next/guides/upgrading/
+      - matchRegexRaw:
+          pattern: https://github\.com/DependencyTrack/dependency-track/releases/tag/9\.9\.9

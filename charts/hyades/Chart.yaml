@@ -1,30 +1,18 @@
 apiVersion: v2
 name: hyades
-version: 0.24.0
+version: 0.25.0
 type: application
 appVersion: 5.0.3
+deprecated: true
 description: |-
-  Hyades is the preview chart for Dependency-Track v5.
+  DEPRECATED: hyades was the preview chart for Dependency-Track v5.
+  It is discontinued in favor of version 2 of the `dependency-track` chart.
 
-  NOTE: This chart will be discontinued when version 2 of the
-  `dependency-track` chart is released. New users should wait for
-  v2, or be ready to migrate when v2 is released.
+  Migration guide:
+  https://github.com/DependencyTrack/helm-charts/blob/main/charts/dependency-track/UPGRADING.md
 home: https://dependencytrack.github.io/docs/next
 sources:
 - https://github.com/DependencyTrack/helm-charts/tree/main/charts/hyades
 - https://github.com/DependencyTrack/hyades-apiserver
 - https://github.com/DependencyTrack/hyades-frontend
 icon: https://avatars.githubusercontent.com/u/40258585
-maintainers:
-- name: nscuro
-  email: nscuro@protonmail.com
-  url: https://github.com/nscuro
-- name: mehab
-  email: meha.bhargava@citi.com
-  url: https://github.com/mehab
-- name: sahibamittal
-  email: sahiba.mittal@citi.com
-  url: https://github.com/sahibamittal
-- name: VithikaS
-  email: vithika.shukla@citi.com
-  url: https://github.com/VithikaS

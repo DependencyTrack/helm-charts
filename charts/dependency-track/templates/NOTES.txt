@@ -1,4 +1,4 @@
-Dependency-Track {{ .Chart.AppVersion }} has been installed.
+Dependency-Track {{ .Chart.AppVersion }} has been {{ if .Release.IsUpgrade }}upgraded{{ else }}installed{{ end }}.
 
 Release:    {{ .Release.Name }}
 Namespace:  {{ .Release.Namespace }}
@@ -44,4 +44,16 @@ reach the API server. Either:
 
 NOTE: chart-managed PVC carries `helm.sh/resource-policy: keep`.
 `helm uninstall` does NOT delete the PVC. You must `kubectl delete pvc {{ include "dependencytrack.fileStorage.localClaimName" . }}` manually if you want to release the storage.
+{{- end }}
+
+{{- if .Release.IsUpgrade }}
+
+BEFORE YOU UPGRADE: application upgrades can carry schema migrations and breaking
+changes the chart does not shield you from. Read, in this order:
+
+  1. Upgrade guide   https://dependencytrack.github.io/docs/next/guides/upgrading/
+  2. Release notes   https://github.com/DependencyTrack/dependency-track/releases/tag/{{ .Chart.AppVersion }}
+  3. Chart changes   https://github.com/DependencyTrack/helm-charts/blob/main/charts/dependency-track/UPGRADING.md
+
+Run `helm upgrade --dry-run` to see this before it applies.
 {{- end }}

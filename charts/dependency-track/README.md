@@ -25,6 +25,18 @@ Kubernetes: `>=1.27.0-0`
 > Chart v2.x is only compatible with Dependency-Track 5.0.0 and later.
 > If you are running Dependency-Track 4.x, use chart v1.x instead.
 
+> [!IMPORTANT]
+> **Read the upgrade notes before you upgrade `appVersion`.**
+> Dependency-Track releases can carry schema migrations and breaking changes
+> that the chart does not shield you from.
+>
+> 1. The [upgrade guide](https://dependencytrack.github.io/docs/next/guides/upgrading/)
+>    covers the application-level procedure.
+> 2. The [release notes](https://github.com/DependencyTrack/dependency-track/releases)
+>    of every version you skip past, not just the target one.
+> 3. [UPGRADING.md](https://github.com/DependencyTrack/helm-charts/blob/main/charts/dependency-track/UPGRADING.md)
+>    covers the chart-level changes.
+
 ## Quickstart
 
 Evaluate the chart on any conformant Kubernetes cluster, no Postgres or KEK Secret needed:

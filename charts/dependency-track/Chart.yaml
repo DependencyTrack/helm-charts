@@ -15,3 +15,11 @@ maintainers:
   - name: nscuro
     email: nscuro@protonmail.com
     url: https://github.com/nscuro
+annotations:
+  artifacthub.io/links: |
+    - name: Upgrade guide
+      url: https://dependencytrack.github.io/docs/next/guides/upgrading/
+    - name: Chart upgrade notes
+      url: https://github.com/DependencyTrack/helm-charts/blob/main/charts/dependency-track/UPGRADING.md
+    - name: Dependency-Track release notes
+      url: https://github.com/DependencyTrack/dependency-track/releases

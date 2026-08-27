@@ -70,7 +70,7 @@ Chart v2 does not generate these. Create them with your usual secret tooling
   `secretAccessKey` by default (override via
   `fileStorage.s3.credentials.existingSecret.accessKeyIdKey` and `secretAccessKeyKey`), mounted under
   `/etc/dt/secrets/s3/`. On AWS you can skip the Secret entirely: set
-  `fileStorage.s3.authentication.type: aws` and attach an IAM role to the chart's ServiceAccount
+  `fileStorage.s3.credentials.source: aws` and attach an IAM role to the chart's ServiceAccount
   via IRSA. See the [file storage reference][file-storage-ref].
 
 The v4 `secret.key` (`common.secretKey.*`) is **gone**. Dependency-Track 5 keeps secrets in Postgres,

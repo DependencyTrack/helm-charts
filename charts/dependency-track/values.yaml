@@ -69,32 +69,38 @@ fileStorage:
     # The bucket must exist, and the application verifies this on startup.
     # A non-existing bucket will cause application startup to fail.
     bucket: ""
-    authentication:
-      # -- How the api server authenticates against S3.
-      #
-      # `static` (default): use the credentials from `credentials` below.
-      # This is the only option for S3-compatible object stores such as MinIO or Ceph.
-      #
-      # `aws`: the chart injects no credentials and instead sets
-      # `DT_FILE_STORAGE_S3_CREDENTIALS_SOURCE=aws`, so the api server resolves
-      # them from its environment. Supported sources are `AWS_*` environment variables,
-      # the shared AWS config file, EKS IRSA, ECS task roles, and EC2 instance profiles.
-      # Startup fails if none of them yield credentials. For IRSA, annotate the
-      # api server's ServiceAccount with the role ARN via `serviceAccount.annotations`.
-      # AWS-only, and requires an api server that supports the credentials-source
-      # property (Dependency-Track >= 5.1.0).
-      #
-      # NOTE: EKS Pod Identity is NOT supported. The api server's S3 client
-      # (minio-java) does not read `AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE` and
-      # rejects the non-loopback Pod Identity Agent endpoint. Use IRSA instead.
-      #
-      # Setting `aws` alongside any `credentials` value is rejected, so a
-      # credential that would be silently ignored fails the render instead.
-      type: static
     credentials:
+      # -- Source of the S3 credentials.
+      #
+      # `static` (default): use the credentials configured below.
+      # The only option for S3-compatible object stores such as MinIO or Ceph.
+      #
+      # `aws`: AWS only, and REQUIRES Dependency-Track >= 5.1.0.
+      # The chart mounts no Secret and passes no credentials.
+      # The api server reads them from its own environment instead,
+      # taking the first source that provides them:
+      #
+      # 1. The `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables
+      # 2. The shared AWS credentials file (`AWS_SHARED_CREDENTIALS_FILE`, or `~/.aws/credentials`)
+      # 3. EKS IRSA, via `AWS_WEB_IDENTITY_TOKEN_FILE`
+      # 4. ECS task roles, via `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` or `AWS_CONTAINER_CREDENTIALS_FULL_URI`
+      # 5. The EC2 instance metadata service
+      #
+      # The api server fails to start if no source provides credentials.
+      # For IRSA, put the role ARN on the api server's ServiceAccount via `serviceAccount.annotations`.
+      #
+      # NOTE: older api servers ignore this setting. They start with no S3 credentials at all
+      # and fail the bucket check with `Failed to determine if bucket <name> exists`.
+      #
+      # NOTE: EKS Pod Identity is NOT supported. The api server's S3 client does not read
+      # `AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE`, and it rejects the Pod Identity Agent endpoint
+      # because that address is not a loopback address. Use IRSA instead.
+      #
+      # Setting `aws` together with any other value in this block fails the render.
+      source: static
       # -- Reference an existing Secret.
       # Credentials are mounted as files under `/etc/dt/secrets/s3/`.
-      # Ignored when `authentication.type` is `aws`.
+      # Must be empty when `source` is `aws`.
       existingSecret:
         # -- Name of the existing secret.
         name: ""

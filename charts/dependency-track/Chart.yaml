@@ -1,8 +1,8 @@
 apiVersion: v2
 name: dependency-track
-version: 2.2.0
+version: 2.3.0
 type: application
-appVersion: 5.0.5
+appVersion: 5.1.0
 kubeVersion: ">=1.27.0-0"
 description: |-
   Dependency-Track is an intelligent Component Analysis platform

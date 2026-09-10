@@ -353,6 +353,9 @@
             "backoffLimit": {
               "type": "integer"
             },
+            "annotations": {
+              "type": "object"
+            },
             "resources": {
               "type": "object"
             },

@@ -1,6 +1,7 @@
 ---
 nameOverride: ""
 fullnameOverride: ""
+
 image:
   # -- Default container image registry. Overridable per component.
   registry: docker.io
@@ -32,6 +33,15 @@ serviceAccount:
   name: ""
 
 enableServiceLinks: false
+
+# -- Node selector applied to all chart-managed pods (api-server web/worker,
+# frontend, and the initializer Job). Replaced entirely by a component-level
+# `nodeSelector` (`apiServer.web.*`, `apiServer.worker.*`, `frontend.*`,
+# `apiServer.initializer.*`) when one is set to a non-empty value.
+nodeSelector: {}
+# -- Tolerations applied to all chart-managed pods. Replaced entirely by a
+# component-level `tolerations` when one is set to a non-empty value.
+tolerations: []
 
 fileStorage:
   # -- Name of the file storage provider to use.
@@ -252,6 +262,10 @@ apiServer:
       limits:
         memory: 256Mi
     podAnnotations: {}
+    # -- Node selector for the initializer Job's pod. Replaces the root-level `nodeSelector` when set to a non-empty value.
+    nodeSelector: {}
+    # -- Tolerations for the initializer Job's pod. Replaces the root-level `tolerations` when set to a non-empty value.
+    tolerations: []
     initContainers: []
 
   # -- Extra env applied to web, worker and initializer. Don't set chart-managed

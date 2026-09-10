@@ -17,6 +17,12 @@
     "enableServiceLinks": {
       "type": "boolean"
     },
+    "nodeSelector": {
+      "type": "object"
+    },
+    "tolerations": {
+      "$ref": "#/$defs/objectArray"
+    },
     "image": {
       "type": "object",
       "additionalProperties": false,
@@ -352,6 +358,12 @@
             },
             "podAnnotations": {
               "type": "object"
+            },
+            "nodeSelector": {
+              "type": "object"
+            },
+            "tolerations": {
+              "$ref": "#/$defs/objectArray"
             },
             "initContainers": {
               "type": "array"

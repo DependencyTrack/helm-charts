@@ -1,4 +1,4 @@
-suite: global pod scheduling
+suite: pod scheduling
 release:
   name: dt
   namespace: dt-test
@@ -16,7 +16,7 @@ tests:
       - notExists:
           path: spec.template.spec.tolerations
 
-  - it: global nodeSelector and tolerations apply to every workload
+  - it: root-level nodeSelector and tolerations apply to every workload
     values:
       - values/scheduling-all.yaml
     templates:
@@ -35,9 +35,9 @@ tests:
             operator: Exists
             effect: NoSchedule
 
-  - it: web nodeSelector replaces the global nodeSelector
+  - it: web nodeSelector replaces the root-level nodeSelector
     set:
-      global.nodeSelector.disktype: ssd
+      nodeSelector.disktype: ssd
       apiServer.web.nodeSelector.zone: a
     template: api-server/deployment-web.yaml
     asserts:
@@ -47,9 +47,9 @@ tests:
       - notExists:
           path: spec.template.spec.nodeSelector.disktype
 
-  - it: frontend keeps the global nodeSelector when web overrides it
+  - it: frontend keeps the root-level nodeSelector when web overrides it
     set:
-      global.nodeSelector.disktype: ssd
+      nodeSelector.disktype: ssd
       apiServer.web.nodeSelector.zone: a
     template: frontend/deployment.yaml
     asserts:
@@ -57,10 +57,10 @@ tests:
           path: spec.template.spec.nodeSelector.disktype
           value: ssd
 
-  - it: worker nodeSelector replaces the global nodeSelector (split)
+  - it: worker nodeSelector replaces the root-level nodeSelector (split)
     set:
       apiServer.topology: split
-      global.nodeSelector.disktype: ssd
+      nodeSelector.disktype: ssd
       apiServer.worker.nodeSelector.role: worker
     template: api-server/deployment-worker.yaml
     asserts:
@@ -70,7 +70,7 @@ tests:
       - notExists:
           path: spec.template.spec.nodeSelector.disktype
 
-  - it: web tolerations replace the global tolerations
+  - it: web tolerations replace the root-level tolerations
     values:
       - values/scheduling-tolerations-override.yaml
     template: api-server/deployment-web.yaml
@@ -90,10 +90,10 @@ tests:
           content:
             key: dedicated
 
-  - it: initializer nodeSelector replaces the global nodeSelector
+  - it: initializer nodeSelector replaces the root-level nodeSelector
     set:
       apiServer.initializer.enabled: true
-      global.nodeSelector.disktype: ssd
+      nodeSelector.disktype: ssd
       apiServer.initializer.nodeSelector.role: init
     template: api-server/initializer-job.yaml
     asserts:

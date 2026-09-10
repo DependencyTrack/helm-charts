@@ -106,10 +106,10 @@ spec:
         {{- with .Values.apiServer.additionalVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-      {{- with .Values.apiServer.worker.tolerations | default .Values.global.tolerations }}
+      {{- with .Values.apiServer.worker.tolerations | default .Values.tolerations }}
       tolerations: {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.apiServer.worker.nodeSelector | default .Values.global.nodeSelector }}
+      {{- with .Values.apiServer.worker.nodeSelector | default .Values.nodeSelector }}
       nodeSelector: {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.apiServer.worker.affinity }}

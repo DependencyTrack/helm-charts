@@ -6,11 +6,10 @@ secretManagement:
     kek:
       existingSecret:
         name: dt-kek
-global:
-  tolerations:
-    - key: dedicated
-      operator: Exists
-      effect: NoSchedule
+tolerations:
+  - key: dedicated
+    operator: Exists
+    effect: NoSchedule
 apiServer:
   web:
     tolerations:

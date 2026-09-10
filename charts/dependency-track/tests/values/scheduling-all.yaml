@@ -10,10 +10,9 @@ apiServer:
   topology: split
   initializer:
     enabled: true
-global:
-  nodeSelector:
-    disktype: ssd
-  tolerations:
-    - key: dedicated
-      operator: Exists
-      effect: NoSchedule
+nodeSelector:
+  disktype: ssd
+tolerations:
+  - key: dedicated
+    operator: Exists
+    effect: NoSchedule

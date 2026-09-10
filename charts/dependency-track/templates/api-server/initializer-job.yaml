@@ -59,10 +59,10 @@ spec:
         - name: tmp
           emptyDir: {}
         {{- include "dependencytrack.secretVolumes" (dict "ctx" . "includeFileStorage" false) | nindent 8 }}
-      {{- with .Values.apiServer.initializer.tolerations | default .Values.global.tolerations }}
+      {{- with .Values.apiServer.initializer.tolerations | default .Values.tolerations }}
       tolerations: {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.apiServer.initializer.nodeSelector | default .Values.global.nodeSelector }}
+      {{- with .Values.apiServer.initializer.nodeSelector | default .Values.nodeSelector }}
       nodeSelector: {{- toYaml . | nindent 8 }}
       {{- end }}
 {{- end }}

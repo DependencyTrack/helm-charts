@@ -6,6 +6,11 @@
 # * KEK in keyset mode
 # * PodDisruptionBudgets on web, worker, and frontend
 # * ingress enabled
+global:
+  tolerations:
+    - key: dedicated
+      operator: Exists
+      effect: NoSchedule
 database:
   jdbcUrl: "jdbc:postgresql://postgres.{{ .Release.Namespace }}.svc.cluster.local:5432/dtrack"
   existingSecret:

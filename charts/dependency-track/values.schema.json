@@ -6,7 +6,15 @@
   "properties": {
     "global": {
       "type": "object",
-      "description": "Builtin Helm value; required so the chart validates when used as a subchart (ref helm/helm#10392)"
+      "description": "Builtin Helm value; required so the chart validates when used as a subchart (ref helm/helm#10392)",
+      "properties": {
+        "nodeSelector": {
+          "type": "object"
+        },
+        "tolerations": {
+          "$ref": "#/$defs/objectArray"
+        }
+      }
     },
     "nameOverride": {
       "type": "string"
@@ -352,6 +360,12 @@
             },
             "podAnnotations": {
               "type": "object"
+            },
+            "nodeSelector": {
+              "type": "object"
+            },
+            "tolerations": {
+              "$ref": "#/$defs/objectArray"
             },
             "initContainers": {
               "type": "array"

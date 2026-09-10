@@ -148,7 +148,9 @@ Do note however:
 | apiServer.image.repository | string | `"dependencytrack/apiserver"` | Repository of the `apiserver` image. |
 | apiServer.image.tag | string | `""` | Tag name or `sha256:<digest>`. Defaults to the chart's `appVersion`. |
 | apiServer.initContainers | list | `[]` |  |
-| apiServer.initializer | object | `{"backoffLimit":3,"enabled":false,"initContainers":[],"podAnnotations":{},"resources":{"limits":{"memory":"256Mi"},"requests":{"cpu":"150m","memory":"256Mi"}}}` | Initializer Job settings. Runs DT's init tasks (migrations, default-object seeding, partition maintenance) as a pre-install/pre-upgrade Helm hook instead of in every starting api-server pod. Requires `database.existingSecret`. See the Initializer section in the README. |
+| apiServer.initializer | object | `{"backoffLimit":3,"enabled":false,"initContainers":[],"nodeSelector":{},"podAnnotations":{},"resources":{"limits":{"memory":"256Mi"},"requests":{"cpu":"150m","memory":"256Mi"}},"tolerations":[]}` | Initializer Job settings. Runs DT's init tasks (migrations, default-object seeding, partition maintenance) as a pre-install/pre-upgrade Helm hook instead of in every starting api-server pod. Requires `database.existingSecret`. See the Initializer section in the README. |
+| apiServer.initializer.nodeSelector | object | `{}` | Node selector for the initializer Job's pod. Replaces `global.nodeSelector` when set to a non-empty value. |
+| apiServer.initializer.tolerations | list | `[]` | Tolerations for the initializer Job's pod. Replaces `global.tolerations` when set to a non-empty value. |
 | apiServer.podAnnotations | object | `{}` |  |
 | apiServer.podLabels | object | `{}` |  |
 | apiServer.podSecurityContext | object | `{"fsGroup":1000}` | `fsGroup: 1000` matches the DT container UID so chart-mounted PVCs are writable. On OpenShift (and any cluster that assigns UIDs/GIDs via SCC or PSA), set `podSecurityContext: ~` so the namespace picks the effective fsGroup. |
@@ -266,6 +268,8 @@ Do note however:
 | frontend.tolerations | list | `[]` |  |
 | frontend.topologySpreadConstraints | list | `[]` |  |
 | fullnameOverride | string | `""` |  |
+| global.nodeSelector | object | `{}` | Node selector applied to all chart-managed pods (api-server web/worker, frontend, and the initializer Job). Replaced entirely by a component-level `nodeSelector` (`apiServer.web.*`, `apiServer.worker.*`, `frontend.*`, `apiServer.initializer.*`) when one is set to a non-empty value. |
+| global.tolerations | list | `[]` | Tolerations applied to all chart-managed pods. Replaced entirely by a component-level `tolerations` when one is set to a non-empty value. |
 | httpRoute.annotations | object | `{}` |  |
 | httpRoute.enabled | bool | `false` | Whether to create a Gateway API HTTPRoute. Requires `parentRefs`. |
 | httpRoute.hostnames[0] | string | `"example.com"` |  |

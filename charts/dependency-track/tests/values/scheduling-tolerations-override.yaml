@@ -1,0 +1,19 @@
+database:
+  existingSecret:
+    name: dt-db
+secretManagement:
+  database:
+    kek:
+      existingSecret:
+        name: dt-kek
+global:
+  tolerations:
+    - key: dedicated
+      operator: Exists
+      effect: NoSchedule
+apiServer:
+  web:
+    tolerations:
+      - key: gpu
+        operator: Exists
+        effect: NoSchedule

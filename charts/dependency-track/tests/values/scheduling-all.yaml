@@ -1,0 +1,19 @@
+database:
+  existingSecret:
+    name: dt-db
+secretManagement:
+  database:
+    kek:
+      existingSecret:
+        name: dt-kek
+apiServer:
+  topology: split
+  initializer:
+    enabled: true
+global:
+  nodeSelector:
+    disktype: ssd
+  tolerations:
+    - key: dedicated
+      operator: Exists
+      effect: NoSchedule

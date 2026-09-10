@@ -95,10 +95,10 @@ spec:
         {{- with .Values.frontend.additionalVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-      {{- with .Values.frontend.tolerations }}
+      {{- with .Values.frontend.tolerations | default .Values.global.tolerations }}
       tolerations: {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.frontend.nodeSelector }}
+      {{- with .Values.frontend.nodeSelector | default .Values.global.nodeSelector }}
       nodeSelector: {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.frontend.affinity }}

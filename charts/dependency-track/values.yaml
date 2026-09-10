@@ -1,6 +1,17 @@
 ---
 nameOverride: ""
 fullnameOverride: ""
+
+global:
+  # -- Node selector applied to all chart-managed pods (api-server web/worker,
+  # frontend, and the initializer Job). Replaced entirely by a component-level
+  # `nodeSelector` (`apiServer.web.*`, `apiServer.worker.*`, `frontend.*`,
+  # `apiServer.initializer.*`) when one is set to a non-empty value.
+  nodeSelector: {}
+  # -- Tolerations applied to all chart-managed pods. Replaced entirely by a
+  # component-level `tolerations` when one is set to a non-empty value.
+  tolerations: []
+
 image:
   # -- Default container image registry. Overridable per component.
   registry: docker.io
@@ -252,6 +263,10 @@ apiServer:
       limits:
         memory: 256Mi
     podAnnotations: {}
+    # -- Node selector for the initializer Job's pod. Replaces `global.nodeSelector` when set to a non-empty value.
+    nodeSelector: {}
+    # -- Tolerations for the initializer Job's pod. Replaces `global.tolerations` when set to a non-empty value.
+    tolerations: []
     initContainers: []
 
   # -- Extra env applied to web, worker and initializer. Don't set chart-managed

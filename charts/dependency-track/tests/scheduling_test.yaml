@@ -1,0 +1,104 @@
+suite: global pod scheduling
+release:
+  name: dt
+  namespace: dt-test
+set:
+  database.existingSecret.name: dt-db
+  secretManagement.database.kek.existingSecret.name: dt-kek
+tests:
+  - it: defaults - no nodeSelector or tolerations are rendered
+    templates:
+      - api-server/deployment-web.yaml
+      - frontend/deployment.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.nodeSelector
+      - notExists:
+          path: spec.template.spec.tolerations
+
+  - it: global nodeSelector and tolerations apply to every workload
+    values:
+      - values/scheduling-all.yaml
+    templates:
+      - api-server/deployment-web.yaml
+      - api-server/deployment-worker.yaml
+      - frontend/deployment.yaml
+      - api-server/initializer-job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.nodeSelector.disktype
+          value: ssd
+      - contains:
+          path: spec.template.spec.tolerations
+          content:
+            key: dedicated
+            operator: Exists
+            effect: NoSchedule
+
+  - it: web nodeSelector replaces the global nodeSelector
+    set:
+      global.nodeSelector.disktype: ssd
+      apiServer.web.nodeSelector.zone: a
+    template: api-server/deployment-web.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.nodeSelector.zone
+          value: a
+      - notExists:
+          path: spec.template.spec.nodeSelector.disktype
+
+  - it: frontend keeps the global nodeSelector when web overrides it
+    set:
+      global.nodeSelector.disktype: ssd
+      apiServer.web.nodeSelector.zone: a
+    template: frontend/deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.nodeSelector.disktype
+          value: ssd
+
+  - it: worker nodeSelector replaces the global nodeSelector (split)
+    set:
+      apiServer.topology: split
+      global.nodeSelector.disktype: ssd
+      apiServer.worker.nodeSelector.role: worker
+    template: api-server/deployment-worker.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.nodeSelector.role
+          value: worker
+      - notExists:
+          path: spec.template.spec.nodeSelector.disktype
+
+  - it: web tolerations replace the global tolerations
+    values:
+      - values/scheduling-tolerations-override.yaml
+    template: api-server/deployment-web.yaml
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.tolerations
+          count: 1
+      - contains:
+          path: spec.template.spec.tolerations
+          content:
+            key: gpu
+            operator: Exists
+            effect: NoSchedule
+      - notContains:
+          path: spec.template.spec.tolerations
+          any: true
+          content:
+            key: dedicated
+
+  - it: initializer nodeSelector replaces the global nodeSelector
+    set:
+      apiServer.initializer.enabled: true
+      global.nodeSelector.disktype: ssd
+      apiServer.initializer.nodeSelector.role: init
+    template: api-server/initializer-job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.nodeSelector.role
+          value: init
+      - notExists:
+          path: spec.template.spec.nodeSelector.disktype

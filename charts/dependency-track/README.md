@@ -148,7 +148,8 @@ Do note however:
 | apiServer.image.repository | string | `"dependencytrack/apiserver"` | Repository of the `apiserver` image. |
 | apiServer.image.tag | string | `""` | Tag name or `sha256:<digest>`. Defaults to the chart's `appVersion`. |
 | apiServer.initContainers | list | `[]` |  |
-| apiServer.initializer | object | `{"backoffLimit":3,"enabled":false,"initContainers":[],"nodeSelector":{},"podAnnotations":{},"resources":{"limits":{"memory":"256Mi"},"requests":{"cpu":"150m","memory":"256Mi"}},"tolerations":[]}` | Initializer Job settings. Runs DT's init tasks (migrations, default-object seeding, partition maintenance) as a pre-install/pre-upgrade Helm hook instead of in every starting api-server pod. Requires `database.existingSecret`. See the Initializer section in the README. |
+| apiServer.initializer | object | `{"annotations":{},"backoffLimit":3,"enabled":false,"initContainers":[],"nodeSelector":{},"podAnnotations":{},"resources":{"limits":{"memory":"256Mi"},"requests":{"cpu":"150m","memory":"256Mi"}},"tolerations":[]}` | Initializer Job settings. Runs DT's init tasks (migrations, default-object seeding, partition maintenance) as a pre-install/pre-upgrade Helm hook instead of in every starting api-server pod. Requires `database.existingSecret`. See the Initializer section in the README. |
+| apiServer.initializer.annotations | object | `{}` | Annotations on the initializer Job itself. Merged with (and may override) the chart-managed `helm.sh/*` hook annotations. |
 | apiServer.initializer.nodeSelector | object | `{}` | Node selector for the initializer Job's pod. Replaces the root-level `nodeSelector` when set to a non-empty value. |
 | apiServer.initializer.tolerations | list | `[]` | Tolerations for the initializer Job's pod. Replaces the root-level `tolerations` when set to a non-empty value. |
 | apiServer.podAnnotations | object | `{}` |  |

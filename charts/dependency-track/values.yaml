@@ -255,6 +255,9 @@ apiServer:
   initializer:
     enabled: false
     backoffLimit: 3
+    # -- Annotations on the initializer Job itself.
+    # Merged with (and may override) the chart-managed `helm.sh/*` hook annotations.
+    annotations: {}
     resources:
       requests:
         cpu: 150m

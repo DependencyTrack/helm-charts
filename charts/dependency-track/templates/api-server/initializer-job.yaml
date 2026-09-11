@@ -8,7 +8,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels: {{- include "dependencytrack.componentLabels" (dict "ctx" . "component" "initializer" "role" "") | nindent 4 }}
   {{- $hookAnnotations := dict "helm.sh/hook" "pre-install,pre-upgrade" "helm.sh/hook-weight" "0" "helm.sh/hook-delete-policy" "before-hook-creation" }}
-  {{- $annotations := mergeOverwrite $hookAnnotations .Values.apiServer.initializer.annotations }}
+  {{- $annotations := mergeOverwrite $hookAnnotations (.Values.apiServer.initializer.annotations | default dict) }}
   annotations: {{- toYaml $annotations | nindent 4 }}
 spec:
   backoffLimit: {{ .Values.apiServer.initializer.backoffLimit }}

@@ -354,7 +354,10 @@
               "type": "integer"
             },
             "annotations": {
-              "type": "object"
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
             },
             "resources": {
               "type": "object"

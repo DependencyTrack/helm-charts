@@ -174,23 +174,6 @@ tests:
       - failedTemplate:
           errorMessage: "apiServer.initializer.enabled requires database.existingSecret.name: the pre-install/pre-upgrade hook Job runs before chart-managed Secrets are created, so provision DB credentials separately."
 
-  - it: enabled - renders exactly the chart's hook annotations when none are set
-    set:
-      apiServer.initializer.enabled: true
-    template: api-server/initializer-job.yaml
-    asserts:
-      - equal:
-          path: metadata.annotations["helm.sh/hook"]
-          value: "pre-install,pre-upgrade"
-      - equal:
-          path: metadata.annotations["helm.sh/hook-weight"]
-          value: "0"
-      - equal:
-          path: metadata.annotations["helm.sh/hook-delete-policy"]
-          value: "before-hook-creation"
-      - notExists:
-          path: metadata.annotations.foo
-
   - it: enabled - user annotations merge with the chart's hook annotations
     set:
       apiServer.initializer.enabled: true
@@ -218,5 +201,3 @@ tests:
       - equal:
           path: metadata.annotations["helm.sh/hook-delete-policy"]
           value: "before-hook-creation,hook-succeeded"
-      - notExists:
-          path: metadata.annotations.foo

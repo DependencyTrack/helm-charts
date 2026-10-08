@@ -5,7 +5,11 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ include "dependencytrack.fileStorage.localClaimName" . }}
   namespace: {{ .Release.Namespace }}
-  labels: {{- include "dependencytrack.commonLabels" . | nindent 4 }}
+  labels: 
+    {{- include "dependencytrack.commonLabels" . | nindent 4 }}
+    {{- with .Values.fileStorage.local.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   annotations:
     helm.sh/resource-policy: keep
 spec:

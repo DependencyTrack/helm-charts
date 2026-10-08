@@ -70,6 +70,8 @@ fileStorage:
     # which defaults to `/data`. If you alter that property, you need to
     # modify this path accordingly.
     mountPath: /data
+    # -- Labels to attach to the created PVC. Ignored when `existingClaim` is provided.
+    labels: {}
   s3:
     # -- S3 endpoint to use.
     endpoint: ""

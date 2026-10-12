@@ -16,6 +16,7 @@ spec:
       port: {{ .Values.frontend.service.port }}
       targetPort: web
       protocol: TCP
+      appProtocol: http
       {{- if not (kindIs "invalid" .Values.frontend.service.nodePort) }}
       nodePort: {{ .Values.frontend.service.nodePort }}
       {{- end }}

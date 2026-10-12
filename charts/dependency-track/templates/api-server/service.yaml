@@ -15,6 +15,7 @@ spec:
       port: {{ .Values.apiServer.service.port }}
       targetPort: web
       protocol: TCP
+      appProtocol: http
       {{- if not (kindIs "invalid" .Values.apiServer.service.nodePort) }}
       nodePort: {{ .Values.apiServer.service.nodePort }}
       {{- end }}
@@ -35,4 +36,5 @@ spec:
       port: {{ .Values.apiServer.service.managementPort }}
       targetPort: management
       protocol: TCP
+      appProtocol: http
   selector: {{- include "dependencytrack.selectorLabels" (dict "ctx" . "component" "api-server" "role" "") | nindent 4 }}

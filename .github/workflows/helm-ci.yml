@@ -49,7 +49,7 @@ jobs:
         python-version: "3.11"
         check-latest: true
     - name: Set up Chart Testing
-      uses: helm/chart-testing-action@6ec842c01de15ebb84c8627d2744a0c2f2755c9f # tag=v2.8.0
+      uses: helm/chart-testing-action@720270857a28afd41e2426521a7801db09e9b510 # tag=v2.9.0
     - name: Lint Chart
       run: ct lint --config ct.yaml
     - name: Validate Kubernetes manifest conformance
@@ -83,7 +83,7 @@ jobs:
         python-version: "3.11"
         check-latest: true
     - name: Set up Chart Testing
-      uses: helm/chart-testing-action@6ec842c01de15ebb84c8627d2744a0c2f2755c9f # tag=v2.8.0
+      uses: helm/chart-testing-action@720270857a28afd41e2426521a7801db09e9b510 # tag=v2.9.0
     - name: Create Kind Cluster
       uses: helm/kind-action@1544676c07bb3570fcb70166beaa07c4528fd4aa # tag=v1.15.1
     - name: Test

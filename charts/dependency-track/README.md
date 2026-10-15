@@ -196,6 +196,7 @@ Do note however:
 | extraObjects | list | `[]` | Extra manifests via values. |
 | fileStorage.local.accessModes | list | `["ReadWriteOnce"]` | Access modes for the created PVC. MUST use `ReadWriteMany` in order to support multiple api-server replicas! Ignored when `existingClaim` is provided. |
 | fileStorage.local.existingClaim | string | `""` | Name of an existing PVC. When set, no PVC is created by the chart. |
+| fileStorage.local.labels | object | `{}` | Labels to attach to the created PVC. Ignored when `existingClaim` is provided. |
 | fileStorage.local.mountPath | string | `"/data"` | Mount path of the PVC. Should match the api server's `dt.data.directory` config property, which defaults to `/data`. If you alter that property, you need to modify this path accordingly. |
 | fileStorage.local.size | string | `"10Gi"` | Storage capacity of the created PVC. Ignored when `existingClaim` is provided. |
 | fileStorage.local.storageClassName | string | `""` | Name of the `StorageClass` for the created PVC. Ignored when `existingClaim` is provided. |

@@ -34,6 +34,50 @@ tests:
             mountPath: /data
         template: api-server/deployment-web.yaml
 
+  - it: PVC carries the common labels and no extras when fileStorage.local.labels is unset
+    template: file-storage/pvc.yaml
+    asserts:
+      - isSubset:
+          path: metadata.labels
+          content:
+            app.kubernetes.io/part-of: dependency-track
+            app.kubernetes.io/managed-by: Helm
+      - notExists:
+          path: metadata.labels["velero-backup"]
+
+  - it: fileStorage.local.labels are attached to the PVC alongside the common labels
+    set:
+      fileStorage.provider: local
+      fileStorage.local.labels:
+        velero-backup: "true"
+        team: platform
+    template: file-storage/pvc.yaml
+    asserts:
+      - isSubset:
+          path: metadata.labels
+          content:
+            velero-backup: "true"
+            team: platform
+      - isSubset:
+          path: metadata.labels
+          content:
+            app.kubernetes.io/part-of: dependency-track
+            app.kubernetes.io/managed-by: Helm
+      - matchRegex:
+          path: metadata.labels["helm.sh/chart"]
+          pattern: ^dependency-track-
+
+  - it: fileStorage.local.labels are ignored when an existingClaim is supplied
+    set:
+      fileStorage.provider: local
+      fileStorage.local.existingClaim: my-storage
+      fileStorage.local.labels:
+        velero-backup: "true"
+    template: file-storage/pvc.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
   - it: s3 provider with plaintext credentials renders the chart-managed Secret and pod env
     set:
       fileStorage.provider: s3

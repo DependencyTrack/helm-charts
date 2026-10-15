@@ -111,6 +111,9 @@
             },
             "mountPath": {
               "type": "string"
+            },
+            "labels": {
+              "type": "object"
             }
           }
         },

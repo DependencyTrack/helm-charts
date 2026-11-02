@@ -42,7 +42,7 @@ jobs:
           --export-secret-keys > "$RUNNER_TEMP/secring.gpg"
     - name: Release Chart
       id: release
-      uses: helm/chart-releaser-action@cae68fefc6b5f367a0275617c9f83181ba54714f # tag=v1.7.0
+      uses: helm/chart-releaser-action@df287104677278f869ca5480bd260358397cc3f9 # tag=v1.8.0
       env:
         CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         CR_SIGN: "true"

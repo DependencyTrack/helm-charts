@@ -201,3 +201,33 @@ tests:
       - equal:
           path: metadata.annotations["helm.sh/hook-delete-policy"]
           value: "before-hook-creation,hook-succeeded"
+
+  - it: enabled - accepts credentials and KEK from volumes
+    set:
+      apiServer.initializer.enabled: true
+      database.existingSecret.name: ""
+      database.credentialsVolume.csi.driver: secrets-store.csi.k8s.io
+      database.credentialsVolume.csi.volumeAttributes.secretProviderClass: dt-db
+      secretManagement.database.kek.existingSecret.name: ""
+      secretManagement.database.kek.volume.csi.driver: secrets-store.csi.k8s.io
+      secretManagement.database.kek.volume.csi.volumeAttributes.secretProviderClass: dt-kek
+    template: api-server/initializer-job.yaml
+    asserts:
+      - isKind:
+          of: Job
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: db-secret
+            csi:
+              driver: secrets-store.csi.k8s.io
+              volumeAttributes:
+                secretProviderClass: dt-db
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: sm-database-kek
+            csi:
+              driver: secrets-store.csi.k8s.io
+              volumeAttributes:
+                secretProviderClass: dt-kek

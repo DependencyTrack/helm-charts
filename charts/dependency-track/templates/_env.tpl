@@ -32,7 +32,7 @@
 
 {{- define "dependencytrack.validate.initializer" }}
 {{- if .Values.apiServer.initializer.enabled }}
-{{- if not .Values.database.existingSecret.name }}
+{{- if not (or .Values.database.existingSecret.name .Values.database.credentialsVolume) }}
 {{- fail "apiServer.initializer.enabled requires database.existingSecret.name: the pre-install/pre-upgrade hook Job runs before chart-managed Secrets are created, so provision DB credentials separately." }}
 {{- end }}
 {{- if eq (include "dependencytrack.secretManagement.database.kek.chartManaged" .) "true" }}

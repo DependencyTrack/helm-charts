@@ -22,6 +22,9 @@ database:
     usernameKey: username
     # -- Key in the secret that's holding the password.
     passwordKey: password
+  # -- Volume source (a single type such as `csi`, without `name`) providing the credentials as files `username` and `password`.
+  # When set, the chart creates no Secret. Mutually exclusive with `username`, `password` and `existingSecret.name`.
+  credentialsVolume: {}
 
 serviceAccount:
   # -- Whether to create a service account.
@@ -162,6 +165,11 @@ secretManagement:
         # Defaults to `kek` in config mode and `kek-keyset.json` in keyset mode.
         # Override only if your Secret backend uses a different key name.
         key: ""
+      # -- Volume source (a single type such as `csi`, without `name`) providing the KEK as a file.
+      # The file must be named `kek` (config mode) or `kek-keyset.json` (keyset mode), unless overridden
+      # via `existingSecret.key`. When set, the chart creates no Secret.
+      # Mutually exclusive with `value` and `existingSecret.name`.
+      volume: {}
 
 apiServer:
   # -- The topology to deploy.

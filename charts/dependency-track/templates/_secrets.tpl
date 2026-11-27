@@ -91,9 +91,11 @@ kek
 {{- define "dependencytrack.validate.kek" }}
 {{- if eq (include "dependencytrack.secretManagement.database.active" .) "true" }}
 {{- $kek := .Values.secretManagement.database.kek }}
-{{- if and $kek.value $kek.existingSecret.name }}
+{{- if and $kek.volume (or $kek.value $kek.existingSecret.name) }}
+{{- fail "secretManagement.database.kek.volume is set; remove secretManagement.database.kek.value and secretManagement.database.kek.existingSecret.name to avoid ambiguity about which KEK is in effect" }}
+{{- else if and $kek.value $kek.existingSecret.name }}
 {{- fail "secretManagement.database.kek.value and secretManagement.database.kek.existingSecret.name are both set; remove one to avoid ambiguity about which KEK is in effect" }}
-{{- else if not (or $kek.value $kek.existingSecret.name) }}
+{{- else if not (or $kek.value $kek.existingSecret.name $kek.volume) }}
 {{- fail "secretManagement.database.kek is required when secretManagement.provider=database. Either set secretManagement.database.kek.value (chart creates the Secret; generate one with `openssl rand -base64 32`), or provision the KEK Secret separately and reference it via secretManagement.database.kek.existingSecret.name." }}
 {{- end }}
 {{- end }}
@@ -102,6 +104,9 @@ kek
 {{- define "dependencytrack.secretVolumes" -}}
 {{- $ctx := .ctx -}}
 - name: db-secret
+{{- with $ctx.Values.database.credentialsVolume }}
+  {{- toYaml . | nindent 2 }}
+{{- else }}
   secret:
     secretName: {{ include "dependencytrack.db.secretName" $ctx }}
     defaultMode: 0444
@@ -110,14 +115,19 @@ kek
         path: username
       - key: {{ include "dependencytrack.db.passwordKey" $ctx }}
         path: password
+{{- end }}
 {{- if eq (include "dependencytrack.secretManagement.database.active" $ctx) "true" }}
 - name: sm-database-kek
+{{- with $ctx.Values.secretManagement.database.kek.volume }}
+  {{- toYaml . | nindent 2 }}
+{{- else }}
   secret:
     secretName: {{ include "dependencytrack.secretManagement.database.kekSecretName" $ctx }}
     defaultMode: 0444
     items:
       - key: {{ include "dependencytrack.secretManagement.database.kekKey" $ctx }}
         path: {{ include "dependencytrack.secretManagement.database.kekKey" $ctx }}
+{{- end }}
 {{- end }}
 {{- if and .includeFileStorage (eq (include "dependencytrack.s3.staticCredentials" $ctx) "true") }}
 - name: s3-secret
